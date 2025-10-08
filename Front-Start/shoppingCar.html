@@ -5,12 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShoppingCar</title>
+    <!-- Reset -->
     <link rel="stylesheet" href="./css/Reset.css">
+    <!-- main_setting -->
     <link rel="stylesheet" href="./css/main_setting.css">
+    <!-- 小iconCDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
+        /* shoppingCar CSS */
         .shoppingCar {
             width: 100vw;
             height: 100vh;
@@ -18,6 +22,18 @@
             font-weight: bold;
         }
 
+        /* 關閉動畫：淡出、微上移 */
+        .shoppingCar.is-closing .cart {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+
+        /* 動畫結束後真正隱藏 */
+        .shoppingCar.is-hidden {
+            display: none;
+        }
+
+        /* 白色固定在畫面右邊 */
         .cart {
             position: fixed;
             top: 90px;
@@ -26,6 +42,9 @@
             padding: 30px;
             background-color: white;
             border-radius: 30px;
+            /* 讓 cart 本體有過渡 */
+            transition: opacity .2s ease, transform .2s ease;
+            max-width: calc(100vw - 2rem);
         }
 
         .cart-title-box {
@@ -39,6 +58,7 @@
         }
 
         .close-btn {
+            border: 1px solid var(--main-black);
             box-shadow: 0px 1px 2px var(--main-black);
             color: black;
             background-color: var(--light-orange);
@@ -76,13 +96,49 @@
         }
 
         .cart-item-info {
+
             margin-left: 50px;
             line-height: 2rem;
             width: 50%;
         }
 
+
+        /* 下拉式選單設定 */
+        .sel-opt {
+            /* 移除預設樣式 (Chrome / Safari / Edge) */
+            appearance: none;
+            /* Firefox */
+            -moz-appearance: none;
+            /* Safari / iOS */
+            -webkit-appearance: none;
+            /* 點擊時不出現外框 */
+            outline: none;
+
+            height: 36px;
+            width: 120px;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 5px 10px;
+            background: none;
+            border: none;
+            line-height: 1.2;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        /* 移除 focus 狀態的預設外框 */
+        .sel-opt:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        /* 滑鼠移入 */
+        .sel-opt:hover {
+            background-color: var(--product-pink-cover);
+        }
+
         .cart-item-cout {
-            margin-top: 50px;
+            margin-top: 70px;
             display: flex;
             justify-content: space-between;
         }
@@ -100,12 +156,46 @@
             width: 100%;
         }
 
+        .cart-item-nmb {
+            height: 90%;
+            width: 30px;
+            font-size: 16px;
+            color: black;
+            text-align: center;
+            border: none;
+        }
+
+        /* 隱藏數字輸入框右側的上下箭頭（Chrome、Edge、Safari 等） */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* 隱藏 Firefox 的上下箭頭 */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* 移除點擊輸入時的預設藍色外框 */
+        input[type=number]:focus {
+            outline: none;
+            box-shadow: none;
+            border-color: inherit;
+            /* 可保持你原本的邊框顏色 */
+        }
+
+        /* 如果你想讓滑鼠移入時邊框也不變色 */
+        input[type=number]:hover {
+            border-color: inherit;
+        }
+
         .cout-btn {
             cursor: pointer;
         }
 
         .cout-btn:hover {
-            background: var(--light-orange );
+            background: var(--product-pink-cover);
         }
 
         .subtotal {
@@ -121,7 +211,108 @@
             clear: both;
             background-color: var(--light-orange);
         }
-        
+
+        /* 通用：避免超出螢幕 */
+        .cart {
+            max-width: calc(100vw - 2rem);
+        }
+
+        /* 平板以下（<= 768px）：底部抽屜 */
+        @media (max-width: 768px) {
+            .cart {
+                position: fixed;
+                /* bottom:0 + 左右撐滿 */
+                inset: auto 0 0 0;
+                width: 100vw;     
+                border-radius: 24px 24px 0 0;
+                /* 取消桌機定位 */
+                right: auto;
+                top: 90px;
+                padding: 16px;
+            }
+
+            .cart-title {
+                font-size: 22px;
+                margin: 8px 0;
+            }
+
+            .close-btn {
+                height: 40px;
+                width: 40px;
+                line-height: 40px;
+            }
+
+            .item-box {
+                flex-direction: column;                
+                gap: 16px;
+                margin: 12px 0;
+            }
+
+            .cart-item-img {
+                width: 140px;
+                height: 140px;
+                margin: 0 auto;
+                font-size: 48px;
+            }
+
+            .cart-item-img img {
+                height: 70px;
+                margin-left: 0;
+            }
+
+            .cart-item-info {
+                width: 80%;
+                line-height: 2rem;
+                margin-bottom: 50px;
+            }
+
+            .cart-item-sel-box {
+                gap: 8px;
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 50px;
+            }
+
+            .cart-item-size {
+                text-align: end;
+            }
+
+            .cart-item-cout {
+                margin-top: 16px;
+                align-items: center;
+                gap: 12px;
+            }
+            
+     
+            .cart-item-nmb {
+                width: 44px;
+                font-size: 16px;
+            }
+            
+            .subtotal {
+                border-top: 3px dotted #000;
+                line-height: 2.5;
+                float: none;
+                width: 80%;
+                margin:auto;
+            }
+
+            .payment-btn {
+                width: 90%;
+                text-align: center;
+                padding: 12px 0;
+            }
+        }
+
+        /* 桌機優化（>= 992px）：右側固定卡片 */
+        @media (min-width: 992px) {
+            .cart {
+                right: 90px;
+                top: 90px;
+                width: 500px;
+                padding: 30px;
+            }
+        }
     </style>
 </head>
 
@@ -130,32 +321,47 @@
         <div class="cart">
             <div class="cart-title-box">
                 <p class="cart-title">Cart</p>
-                <div class="btn close-btn"><i class="fa-solid fa-xmark"></i></div>
+                <div class="btn close-btn" id="close-btn" name="close-btn"><i class="fa-solid fa-xmark"></i></div>
             </div>
             <div class="item-box">
-                <div class="cart-item-img">
+                <div class="cart-item-img" id="cart-item-img" name="cart-item-img">
                     <h2>12</h2>
-                    <img src="./images/lemon-lime_mockup.png" alt="">
+                    <img src="./images/lemon-lime_mockup.png" alt="Lemon">
                 </div>
                 <div class="cart-item-info">
-                    <div class="cart-item-name">Lemon</div>
-                    <div class="cart-item-size">12 x 355ml</div>
+                    <div class="cart-item-sel-box">
+                        <form action="">
+                            <select class="sel-opt cart-item-name" id="cart-item-name" name="cart-item-name">
+                                <option value="Lemon">Lemon</option>
+                                <option value="Grape">Grape</option>
+                                <option value="Strawberry">Strawberry</option>
+                            </select>
+                        </form>
+                        <form action="">
+                            <select class="sel-opt cart-item-size" id="cart-item-size" name="cart-item-size">
+                                <option value="4">4 x 355ml</option>
+                                <option value="12">12 x 355ml</option>
+                            </select>
+                        </form>
+                    </div>
                     <div class="cart-item-cout">
                         <ul>
                             <li class="cout-btn subtraction">
                                 <i class="fa-solid fa-minus"></i>
                             </li>
-                            <li class="cart-item-nmb">
-                                1
+                            <li>
+                                <input type="number" class="cart-item-nmb" id="cart-item-nmb" name="cart-item-nmb"
+                                    value="1" min="1">
                             </li>
                             <li class="cout-btn Addition">
                                 <i class="fa-solid fa-plus"></i>
                             </li>
                         </ul>
                         <div>
-                            <span class="cart-item-price">499 </span>
+                            <span class="cart-item-price" id="cart-item-price" name="cart-item-price">499</span>
                             $ x
-                            <span class="cart-item-nmb">1</span>
+                            <span class="cart-item-qty-display" id="cart-item-qty-display"
+                                name="cart-item-qty-display">1</span>
                         </div>
                     </div>
                 </div>
@@ -163,7 +369,7 @@
             </div>
             <div class="subtotal">
                 <p>Subtotal</p>
-                <div class="subtotal-sum">
+                <div class="subtotal-sum" id="subtotal-sum" name="subtotal-sum">
                     $499
                 </div>
             </div>
@@ -171,6 +377,152 @@
             <div class="btn btn-l payment-btn">Payment</div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ====== 元件參照 ======
+            const nameSelect = document.getElementById('cart-item-name');   // Lemon/Grape/Strawberry
+            const sizeSelect = document.getElementById('cart-item-size');   // 4 / 12
+            const packBadgeH2 = document.querySelector('#cart-item-img h2');
+            const imgWrap = document.getElementById('cart-item-img');
+            const imgEl = document.querySelector('#cart-item-img img');
+            const unitPriceEl = document.getElementById('cart-item-price'); // 顯示單價（不含 $ 符號，因你的字面有 " $ x "）
+            const qtyInput = document.querySelector('input.cart-item-nmb'); // 可輸入的數量 input
+            const qtyDisplay = document.querySelector('.cart-item-qty-display'); // 右邊顯示數量
+            const minusBtn = document.querySelector('.subtraction');
+            const plusBtn = document.querySelector('.Addition');
+            const subtotalEl = document.getElementById('subtotal-sum');
+            const closeBtn = document.getElementById('close-btn');
+            const shoppingCar = document.querySelector('.shoppingCar');
+            const cartPanel = document.querySelector('.cart');
+
+            // ====== 價格表（依規格）======
+            const PRICE_MAP = {
+                '4': 199,
+                '12': 499
+            };
+
+            // ====== 口味 → 外觀設定 ======
+            const VARIANT_MAP = {
+                Lemon: {
+                    bg: 'var(--product-green-mid)',
+                    img: './images/lemon-lime_mockup.png',
+                    alt: 'Lemon'
+                },
+                Grape: {
+                    bg: 'var(--product-purple-mid)',
+                    img: './images/grape_mockup.png',
+                    alt: 'Grape'
+                },
+                Strawberry: {
+                    bg: 'var(--product-pink-mid)',
+                    img: './images/strawberry-lemonade_mockup.png',
+                    alt: 'Strawberry'
+                }
+            };
+
+            // ====== 狀態 ======
+            const state = {
+                name: nameSelect.value || 'Lemon',
+                size: sizeSelect.value || '12',
+                qty: clampInt(qtyInput?.value, 1, 9999)
+            };
+
+            // ====== 小工具 ======
+            function toInt(v, fallback = 0) {
+                const n = parseInt(String(v).replace(/[^\d]/g, ''), 10);
+                return Number.isFinite(n) ? n : fallback;
+            }
+            function clampInt(v, min, max) {
+                const n = toInt(v, min);
+                return Math.max(min, Math.min(max, n));
+            }
+            function money(n) {
+                return `$${n}`;
+            }
+
+            // ====== 套用口味外觀 ======
+            function applyVariant(name) {
+                const v = VARIANT_MAP[name] || VARIANT_MAP.Lemon;
+                imgWrap.style.backgroundColor = v.bg;
+                imgEl.src = v.img;
+                imgEl.alt = v.alt;
+            }
+
+            // ====== 渲染 ======
+            function render() {
+                // 圓形徽章顯示包數
+                packBadgeH2.textContent = state.size;
+
+                // 單價（保持你原本的字面 " $ x "，所以這裡只放數字）
+                const unitPrice = PRICE_MAP[state.size] ?? 0;
+                unitPriceEl.textContent = unitPrice;
+
+                // 數量（同步 input 與右側顯示）
+                qtyInput.value = state.qty;
+                if (qtyDisplay) qtyDisplay.textContent = state.qty;
+
+                // 小計（含 $ 符號）
+                subtotalEl.textContent = money(unitPrice * state.qty);
+
+                // 口味外觀
+                applyVariant(state.name);
+            }
+            // ====== 事件：按下關閉按鈕 ======
+            closeBtn.addEventListener('click', () => {
+                // 先加上關閉動畫的 class
+                shoppingCar.classList.add('is-closing');
+
+                // 等過渡結束再把整個容器 display:none
+                cartPanel.addEventListener('transitionend', () => {
+                    shoppingCar.classList.remove('is-closing');
+                    shoppingCar.classList.add('is-hidden');
+                    shoppingCar.setAttribute('aria-hidden', 'true');
+                }, { once: true });
+            });
+
+            // ====== 事件：口味切換 ======
+            nameSelect.addEventListener('change', () => {
+                state.name = nameSelect.value;
+                render();
+            });
+
+            // ====== 事件：規格切換（影響單價與徽章）=====
+            sizeSelect.addEventListener('change', () => {
+                state.size = sizeSelect.value;
+                render();
+            });
+
+            // ====== 事件：加減數量 ======
+            minusBtn.addEventListener('click', () => {
+                state.qty = Math.max(1, state.qty - 1);
+                render();
+            });
+            plusBtn.addEventListener('click', () => {
+                state.qty = Math.min(9999, state.qty + 1);
+                render();
+            });
+
+            // 直接輸入數量（即時）
+            qtyInput.addEventListener('input', () => {
+                const n = clampInt(qtyInput.value, 1, 9999);
+                // 只在合法時更新 state（避免輸入空字串造成抖動）
+                if (String(n) === String(qtyInput.value).replace(/[^\d]/g, '') && n >= 1) {
+                    state.qty = n;
+                    render();
+                }
+            });
+            // 失焦時做最後保險修正
+            qtyInput.addEventListener('blur', () => {
+                state.qty = clampInt(qtyInput.value, 1, 9999);
+                render();
+            });
+
+            // ====== 初始化 ======
+            render();
+        });
+
+    </script>
 </body>
 
 </html>
