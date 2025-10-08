@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Soda.Services;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Soda.Models
@@ -32,7 +33,7 @@ namespace Soda.Models
         [StringLength(20)]
         public string? PhoneNumber { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTimeExtensions.ToTaipeiTimeString(DateTime.UtcNow);
 
         public DateTime? UpdatedAt { get; set; }
 
