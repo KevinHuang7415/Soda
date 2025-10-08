@@ -223,7 +223,7 @@
                 position: fixed;
                 /* bottom:0 + 左右撐滿 */
                 inset: auto 0 0 0;
-                width: 100vw;     
+                width: 100vw;
                 border-radius: 24px 24px 0 0;
                 /* 取消桌機定位 */
                 right: auto;
@@ -243,7 +243,7 @@
             }
 
             .item-box {
-                flex-direction: column;                
+                flex-direction: column;
                 gap: 16px;
                 margin: 12px 0;
             }
@@ -282,19 +282,19 @@
                 align-items: center;
                 gap: 12px;
             }
-            
-     
+
+
             .cart-item-nmb {
                 width: 44px;
                 font-size: 16px;
             }
-            
+
             .subtotal {
                 border-top: 3px dotted #000;
                 line-height: 2.5;
                 float: none;
                 width: 80%;
-                margin:auto;
+                margin: auto;
             }
 
             .payment-btn {
@@ -469,16 +469,31 @@
                 applyVariant(state.name);
             }
             // ====== 事件：按下關閉按鈕 ======
-            closeBtn.addEventListener('click', () => {
-                // 先加上關閉動畫的 class
+            // 共用的關閉流程
+            function closeCart() {
+                if (shoppingCar.classList.contains('is-hidden')) return; // 已關就不重複
                 shoppingCar.classList.add('is-closing');
-
-                // 等過渡結束再把整個容器 display:none
                 cartPanel.addEventListener('transitionend', () => {
                     shoppingCar.classList.remove('is-closing');
                     shoppingCar.classList.add('is-hidden');
                     shoppingCar.setAttribute('aria-hidden', 'true');
                 }, { once: true });
+            }
+
+            // 1) 右上角關閉鈕
+            closeBtn.addEventListener('click', closeCart);
+
+            // 2) 點擊 cart 以外的區域（overlay 背景）也關閉
+            shoppingCar.addEventListener('click', (e) => {
+                // 只有點到 overlay 自己（不是 cart 或其子元素）才關
+                if (e.target === shoppingCar || !cartPanel.contains(e.target)) {
+                    closeCart();
+                }
+            });
+
+            // 3) 鍵盤 Esc 也關閉
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeCart();
             });
 
             // ====== 事件：口味切換 ======
