@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShoppingCar</title>
+    <link rel="stylesheet" href="./css/Reset.css">
+    <link rel="stylesheet" href="./css/main_setting.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .shoppingCar {
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--product-pink-cover);
+            font-weight: bold;
+        }
+
+        .cart {
+            position: fixed;
+            top: 90px;
+            right: 90px;
+            width: 500px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 30px;
+        }
+
+        .cart-title-box {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cart-title {
+            font-size: 30px;
+            margin: 20px 0;
+        }
+
+        .close-btn {
+            box-shadow: 0px 1px 2px var(--main-black);
+            color: black;
+            background-color: var(--light-orange);
+            display: inline-block;
+            border-radius: 50%;
+            height: 50px;
+            width: 50px;
+            line-height: 50px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .item-box {
+            display: flex;
+            margin: 20px 0;
+        }
+
+        .cart-item-img {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-radius: 50%;
+            background-color: var(--product-green-mid);
+            font-size: 60px;
+            color: white;
+            width: 200px;
+            height: 200px;
+            text-align: center;
+        }
+
+        .cart-item-img img {
+            height: 90px;
+            margin-left: 10px;
+        }
+
+        .cart-item-info {
+            margin-left: 50px;
+            line-height: 2rem;
+            width: 50%;
+        }
+
+        .cart-item-cout {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cart-item-info ul {
+            width: 100px;
+            display: flex;
+            border: 1px solid #000;
+            border-radius: 5px;
+            justify-content: space-around;
+        }
+
+        .cart-item-info li {
+            text-align: center;
+            width: 100%;
+        }
+
+        .cout-btn {
+            cursor: pointer;
+        }
+
+        .cout-btn:hover {
+            background: var(--light-orange );
+        }
+
+        .subtotal {
+            font-size: 20px;
+            display: flex;
+            justify-content: space-between;
+            float: right;
+            width: 50%;
+            margin: 50px 0;
+        }
+
+        .payment-btn {
+            clear: both;
+            background-color: var(--light-orange);
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="shoppingCar">
+        <div class="cart">
+            <div class="cart-title-box">
+                <p class="cart-title">Cart</p>
+                <div class="btn close-btn"><i class="fa-solid fa-xmark"></i></div>
+            </div>
+            <div class="item-box">
+                <div class="cart-item-img">
+                    <h2>12</h2>
+                    <img src="./images/lemon-lime_mockup.png" alt="">
+                </div>
+                <div class="cart-item-info">
+                    <div class="cart-item-name">Lemon</div>
+                    <div class="cart-item-size">12 x 355ml</div>
+                    <div class="cart-item-cout">
+                        <ul>
+                            <li class="cout-btn subtraction">
+                                <i class="fa-solid fa-minus"></i>
+                            </li>
+                            <li class="cart-item-nmb">
+                                1
+                            </li>
+                            <li class="cout-btn Addition">
+                                <i class="fa-solid fa-plus"></i>
+                            </li>
+                        </ul>
+                        <div>
+                            <span class="cart-item-price">499 </span>
+                            $ x
+                            <span class="cart-item-nmb">1</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="subtotal">
+                <p>Subtotal</p>
+                <div class="subtotal-sum">
+                    $499
+                </div>
+            </div>
+
+            <div class="btn btn-l payment-btn">Payment</div>
+        </div>
+    </div>
+</body>
+
+</html>

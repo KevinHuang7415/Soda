@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>checkouts</title>
+    <link rel="stylesheet" href="./css/Reset.css">
+    <link rel="stylesheet" href="./css/main_setting.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <style>
+        .checkouts-container {}
+
+        .checkouts-header {
+            margin: auto;
+            width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 30px;
+            height: 90px;
+            align-content: center;
+            line-height: 90px;
+            color: var(--main-orange);
+        }
+
+        .checkouts-main {
+            margin: auto;
+            width: 1200px;
+        }
+
+        .checkouts-header a {
+            color: var(--main-orange);
+        }
+
+        .logo {
+            height: 50px;
+            padding-top: 20px;
+        }
+
+        .pay-btn-box {
+            text-align: center;
+        }
+
+        .pay-btn {
+            font-size: 50px;
+            display: flex;
+        }
+
+        .pay-btn li {
+            border: 1px solid #000;
+            border-radius: 5px;
+            width: 150px;
+        }
+
+        .checkouts-main {
+            display: flex;
+        }
+
+        .checkouts-info {
+            width: 50%;
+            height: 100vh;
+            background-color: #9e9e9e6c;
+        }
+
+        .shopping-list {
+            width: 50%;
+            height: 100vh;
+            background-color: var(--light-yellow);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="checkouts-header">
+        <a href="index.html"><img class="logo" src="./images/logo.png" alt="logo"></a>
+        <a href="prodoct.html"><i class="fa-solid fa-basket-shopping"></i></a>
+    </div>
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                    aria-expanded="true" aria-controls="collapseOne">
+                    Accordion Item #1
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse
+                    plugin adds the appropriate classes that we use to style each element. These classes control the
+                    overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of
+                    this with custom CSS or overriding our default variables. It's also worth noting that just about any
+                    HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="checkouts-main">
+        <div class="checkouts-info">
+            <div class="pay-btn-box">
+                <p>Express checkout</p>
+                <ul class="pay-btn">
+                    <li><i class="fa-brands fa-google-pay"></i></li>
+                    <li><i class="fa-brands fa-cc-paypal"></i></li>
+                    <li><i class="fa-brands fa-cc-apple-pay"></i></li>
+                </ul>
+            </div>
+            <input class="form-control form-control-lg" type="text" placeholder=".form-control-lg"
+                aria-label=".form-control-lg example">
+
+        </div>
+        <div class="shopping-list">
+
+        </div>
+    </div>
+
+    </div>
+
+
+</body>
+
+</html>

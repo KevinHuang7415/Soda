@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create an Account</title>
+<style>
+  body {
+    background-color: #fff7e6;
+    font-family: Arial, sans-serif;
+    width: 100%;
+  }
+
+  .container {
+    width: 30%;
+    margin: auto;
+    margin-top: 180px;
+
+  }
+  .create_acc{
+    width: 100%;
+    margin-bottom: 50px;
+  }
+
+  h1 {
+    font-size: 4em;
+    font-weight: bold;
+    margin-bottom: 40px;
+    line-height: 1.1;
+  }
+
+  label {
+    display: block;
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+
+  input {
+    width: 92%;
+    padding: 24px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 16px;
+  }
+  ::-webkit-input-placeholder{
+    font-size: 25px;
+  }
+  button {
+    width: 100%;
+    padding: 22px;
+    margin-top: 50px;
+    font-size: 30px;
+    background-color: #8cc9ff;
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 4px 0 #000;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  button:hover {
+    background-color: #74b8f7;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="create_acc">
+        <h1>CREATE AN ACCOUNT</h1>
+    </div>
+    
+    <form method="post" id="create_acc">
+      <label for="FirstName">First name</label>
+      <input type="text" id="FirstName" placeholder="First name">
+
+      <label for="LastName">Surname</label>
+      <input type="text" id="LastName" placeholder="Surname">
+
+      <label for="Email">E-mail</label>
+      <input type="email" id="Email" placeholder="E-mail">
+
+      <label for="Password">Password</label>
+      <input type="password" id="Password" placeholder="Password">
+
+      <button type="submit">Create</button>
+    </form>
+  </div>
+</body>
+<script>
+ document.getElementById("create_acc").addEventListener("submit", function (e) {
+      e.preventDefault(); 
+
+      const data = {
+        firstName: document.getElementById("first").value,
+        surName: document.getElementById("sur").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+      };
+
+      fetch("http://localhost:5203/Home/CreateAccount", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("伺服器回應錯誤：" + response.status);
+        }
+        return response.json();
+      })
+      .then(result => {
+        alert("帳號建立成功！");
+        console.log(result);
+      })
+      .catch(err => {
+        console.error("發生錯誤：", err);
+        alert("建立失敗，請稍後再試！");
+      });
+    });
+  </script>
+</html>
