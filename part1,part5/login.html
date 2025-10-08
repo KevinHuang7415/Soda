@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dribbble-style sign-in box</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,600"
+          rel="stylesheet">
+
+    <!-- Font Awesome (for the social icons) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+          rel="stylesheet">
+
+    <style>
+        /* -------------------------------------------------
+           Variables (compiled from SASS)
+        ------------------------------------------------- */
+        :root{
+            --charcoal:#444;
+            --grey:#f3f4f4;
+            --link:#3a8bbb;
+            --pink:#ea4c89;
+            --slate:#9da3a5;
+            --white:#fff;
+        }
+
+        /* -------------------------------------------------
+           Global layout
+        ------------------------------------------------- */
+        html,body{
+            height:100vh;
+            margin:0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:var(--grey);
+            font-family:'Work Sans',sans-serif;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+        }
+
+        /* -------------------------------------------------
+           The sign‑in box
+        ------------------------------------------------- */
+        .box{
+            background:var(--white);
+            border-radius:.625rem;
+            box-shadow:0 0 40px 0 rgba(234,76,137,.6);
+            width:18.75rem;            /* 300px */
+            height:31.25rem;           /* 500px */
+            display:flex;
+            flex-direction:column;
+            position:absolute;
+            left:50%; top:50%;
+            transform:translate(-50%,-50%);
+        }
+
+        .logo,
+        .signin,
+        input,
+        button,
+        .foot-txt,
+        .signin-row{
+            margin:0 auto;
+            position:relative;
+        }
+
+        .logo{
+            width:3.125rem;   /* 50px */
+            height:3.125rem;
+            margin-top:1.875rem; /* 30px */
+        }
+
+        p{color:var(--charcoal);}
+
+        .signin{
+            font:600 1.8rem 'Work Sans',sans-serif;
+            padding:.17em;
+        }
+
+        .signin-text{
+            color:var(--slate);
+            font:500 .85rem 'Work Sans',sans-serif;
+            margin:0;
+            padding-top:.625rem;
+            text-align:center;
+        }
+
+        .signin-row{
+            display:flex;
+            justify-content:space-around;
+            width:11rem;
+            margin:.625rem auto .3rem;
+            padding:.625rem;
+        }
+
+        .signin-row > i{
+            color:var(--charcoal);
+            font-size:2rem;
+            transition:all .15s ease-out;
+        }
+
+        i:hover{cursor:pointer;}
+
+        .ic1:hover{color:#1da1f2;}   /* Twitter */
+        .ic2:hover{color:#3b5998;}   /* Facebook */
+        .ic3:hover{color:#4285f4;}   /* Google */
+
+        input{
+            -webkit-appearance:none;
+            -moz-appearance:none;
+            background:none;
+            border:0;
+            border-bottom:2px solid var(--slate);
+            font:500 .9rem 'Work Sans',sans-serif;
+            height:2.15em;
+            width:80%;
+            margin-top:.7em;
+            transition:all .15s ease-out;
+        }
+
+        input:focus{
+            border-bottom:2px solid var(--pink);
+            outline:none;
+        }
+
+        ::-webkit-input-placeholder{color:var(--slate);}
+        ::-moz-placeholder{color:var(--slate);}
+        :-ms-input-placeholder{color:var(--slate);}
+        :-moz-placeholder{color:var(--slate);}
+
+        button{
+            background:var(--pink);
+            border:0;
+            border-radius:1.4em;
+            color:var(--white);
+            font:1.1rem 'Work Sans',sans-serif;
+            width:80%;
+            padding:.6em;
+            margin:1.7em auto .6em;
+            transition:all .15s ease-out;
+        }
+
+        button:hover{
+            background:var(--charcoal);
+            cursor:pointer;
+        }
+
+        button:focus{outline:none;}
+
+        .foot-txt{
+            color:var(--slate);
+            font:500 .85rem 'Work Sans',sans-serif;
+            padding:.3em;
+        }
+
+        .foot-txt:hover{
+            cursor:pointer;
+            text-decoration:underline;
+        }
+
+        .bold{font-weight:600;}
+    </style>
+</head>
+
+<body>
+<div class="box">
+    <img class="logo"
+         src="https://www.dropbox.com/s/vwcn548w1gsk7lb/dribbble-ball-icon.png?raw=1"
+         alt="dribble-logo">
+
+    <p class="signin">Sign in</p>
+
+    <p class="signin-text">
+        Login with Twitter, Facebook,<br>Google or:
+    </p>
+
+    <div class="signin-row">
+        <i class="ic1 fab fa-twitter"></i>
+        <i class="ic2 fab fa-facebook"></i>
+        <i class="ic3 fab fa-google"></i>
+    </div>
+
+    <input name="user" type="text" placeholder="Username or Email">
+    <br>
+    <input name="pass" type="password" placeholder="Password" required>
+
+    <button>Sign In</button>
+
+    <p class="foot-txt">Forgot your password?</p>
+    <p class="foot-txt">
+        Not a member? <span class="bold">Sign up now</span>
+    </p>
+</div>
+</body>
+</html>

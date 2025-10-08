@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SODA x SAJA BOYS</title>
+  <!-- bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background-color: #ffe600;
+    }
+
+    /* ======== 第一部分 ======== */
+    .part1 {
+      position: relative;
+      width: 100%;
+      height: 56.25vw;
+      /* 16:9 比例 */
+      background-color: #ffe600;
+    }
+
+    /* 導覽列 */
+    .navbar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      background: linear-gradient(to bottom, #87f4fc, yellow);
+      position: absolute;
+      width: 100%;
+      height: 4vw;
+      z-index: 10;
+    }
+
+    .nav-item {
+      margin-right: 1vw;
+      position: relative;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1.6vw;
+    }
+
+    .nav-item-style {
+      background-color: #f0f0f0;
+      border: 0.05vw solid #000;
+      padding: 0.4vw 0.4vw 0 0.4vw;
+      border-radius: 50%;
+    }
+
+    .nav-item img {
+      min-width: 1.2vw;
+      min-height: 1.2vw;
+      width: 2vw;
+      height: 2vw;
+    }
+
+    /* 下拉 DIV */
+    .dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: white;
+      border-radius: 0.5vw;
+      box-shadow: 0 0.3vw 1vw rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      transform: translateY(-1vw);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 11;
+    }
+
+    .dropdown.active {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .dropdown-item {
+      padding: 0.8vw 1.2vw;
+      font-size: 0.9vw;
+      transition: background 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background: #f0f0f0;
+    }
+
+    /* ======== 主視覺圖片 ======== */
+    .soda-title-big {
+      position: absolute;
+      top: 8vw;
+      left: 34vw;
+      width: 40vw;
+    }
+
+    .union {
+      position: absolute;
+      top: 20vw;
+      left: 48vw;
+      width: 10vw;
+    }
+
+    .saja {
+      position: absolute;
+      top: 28vw;
+      left: 18vw;
+      width: 30vw;
+    }
+
+    .boys {
+      position: absolute;
+      top: 30vw;
+      left: 50vw;
+      width: 30vw;
+      z-index: 2;
+    }
+
+    .sajaboys-logo {
+      position: absolute;
+      top: 30vw;
+      right: 1vw;
+      width: 20vw;
+      z-index: 1;
+    }
+
+    /* ======== 星星動畫 ======== */
+    @keyframes floatStar {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(-1vw) rotate(10deg);
+      }
+
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+    }
+
+    @keyframes floatStarReverse {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      50% {
+        transform: translateY(1vw) rotate(-10deg);
+      }
+
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+    }
+
+    .star {
+      position: absolute;
+      width: 8vw;
+      animation: floatStar 4s ease-in-out infinite;
+    }
+
+    .star.reverse {
+      animation: floatStarReverse 5s ease-in-out infinite;
+    }
+
+    /* 星星分布位置 */
+    .star1 {
+      top: 12vw;
+      left: 8vw;
+      width: 8vw;
+    }
+
+    .star2 {
+      top: 11vw;
+      right: 10vw;
+      width: 8vw;
+    }
+
+    .star3 {
+      bottom: 10vw;
+      left: vw;
+      width: vw;
+    }
+
+    .star4 {
+      top: 20vw;
+      left: 27vw;
+      width: 8vw;
+    }
+
+    .star5 {
+      bottom: 2vw;
+      right: 2vw;
+      width: 8vw;
+      z-index: 2;
+    }
+
+    img {
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    /* ======== 第五部分 ======== */
+    .wrap {
+      background-color: #f6f884;
+    }
+
+    .part4 {
+      display: flex;
+      justify-content: center;
+      font-size: 20px;
+      color: #fff;
+      text-align: center;
+      letter-spacing: 0.3em;
+    }
+
+    .text-shadow {
+      text-shadow: 1px 1px #000, 1px -1px #000,
+        -1px 1px #000, -1px -1px #000;
+    }
+
+    .discount {
+      background-color: #f5cb11;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 2vw;
+      padding: 2vw;
+      border-radius: 20px;
+    }
+
+    .discount img {
+      width: 200px;
+      object-fit: contain;
+    }
+
+    footer {
+      background-color: #aeacfc;
+      text-align: center;
+    }
+
+    .coupon {
+      background-color: #fff;
+    }
+
+    /* ======== 手機畫面 ======== */
+    @media (max-width:768px) {
+      .part1 {
+        width: 100%;
+        height: 36vw;
+      }
+
+      .part4 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 100px;
+      }
+
+      .discount {
+        width: 50%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="part1">
+    <!-- 導覽列 -->
+    <div class="navbar">
+      <img src="./img/soda_title.png" alt="SODA標題" style="height:2vw; margin-right:auto;">
+      <div class="nav-item nav-item-style" id="about">About</div>
+      <div class="nav-item nav-item-style" id="shop">Shop</div>
+      <div class="nav-item nav-item-style"><a href="#"><img src="./img/user.svg" alt=""></a></div>
+      <div class="nav-item nav-item-style"><a href="#"><img src="./img/shopping-cart.svg" alt=""></a><span
+          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          4+
+          <span class="visually-hidden">unread messages</span>
+        </span></div>
+
+      <!-- 下拉選單 -->
+      <div class="dropdown" id="aboutMenu">
+        <div class="dropdown-item">Our Story</div>
+        <div class="dropdown-item">Team</div>
+        <div class="dropdown-item">Contact</div>
+      </div>
+    </div>
+
+    <!-- 主視覺圖片 -->
+    <img src="./img/soda_title_big.png" alt="SODA" class="soda-title-big">
+    <img src="./img/Union.png" alt="X" class="union">
+    <img src="./img/saja.png" alt="SAJA" class="saja">
+    <img src="./img/boys.png" alt="BOYS" class="boys">
+    <img src="./img/sajaboys_logo 1.png" alt="LOGO" class="sajaboys-logo">
+
+    <!-- 星星動畫 -->
+    <img src="./img/Star 1.png" class="star star1" alt="">
+    <img src="./img/Star 2.png" class="star star2 reverse" alt="">
+    <img src="./img/Star 3.png" class="star star3" alt="">
+    <img src="./img/Star 4.png" class="star star4 reverse" alt="">
+    <img src="./img/Star 5.png" class="star star5" alt="">
+  </div>
+
+  <!-- 第五部分 -->
+
+  <div class="wrap">
+
+    <div class="part4">
+      <div class="discount text-shadow">
+        <h2 id="bent1">歡慶聖誕節</h2>
+        <h3 id="bent2" style="letter-spacing: 0.1em;">即日起-12/31</h3>
+        <b style="color: red ;font-size: 24px; margin-top: 10px;">全面<span style="font-size:64px;">88</span>折</b>
+      </div>
+
+      <div class="discount text-shadow">
+        <h2>新朋友限定</h2>
+        <img src="./img/discount.png" alt="">
+      </div>
+
+      <div class="discount">
+        <h2 class="text-shadow">全館滿額再折</h2>
+        <div class="coupon">
+          <p style="color: black;font-weight: bold;">滿2500元<span style="color: red;">在折200元</span></p>
+          <div class="coupon-input">
+            <p style="color: black;font-weight: bold; font-size: 14px;">請輸入折扣碼:SODA200</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<div>
+  <footer>
+    Copyright &copy;<ins>第五組</ins> All Rights Reserved.
+  </footer>
+  <!-- 引入 Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <!-- 引入 jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="./js/jquery.arctext.js"></script>
+  <script>
+    const about = document.getElementById("about");
+    const menu = document.getElementById("aboutMenu");
+
+    // 顯示選單
+    about.addEventListener("mouseenter", () => {
+      menu.classList.add("active");
+      const rect = about.getBoundingClientRect();
+      menu.style.left = rect.left + "px";
+    });
+
+    // 隱藏選單
+    about.addEventListener("mouseleave", () => {
+      setTimeout(() => {
+        if (!menu.matches(":hover")) {
+          menu.classList.remove("active");
+        }
+      }, 100);
+    });
+
+    menu.addEventListener("mouseleave", () => {
+      menu.classList.remove("active");
+    });
+    //彎曲字體
+    $(function () {
+      $('#bent1, #bent2').arctext({ radius: 200 });
+    });
+  </script>
+</body>
+
+</html>

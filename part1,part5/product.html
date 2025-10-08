@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Product – Fullscreen layout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Mukta+Malar:400,700,800" rel="stylesheet">
+
+    <!-- Flickity CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flickity/2.2.2/flickity.min.css"
+        integrity="sha512-B6+U8E1yN+Gg7Z4Z7yK7Yq0Rj2y8cT2KQ5lJ+zq5ZzvUeF+4vXQ0w6JQ8G6s8kS9K0hWzOeT2W7Vf2LQGk2wg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* -------------------------------------------------
+   基本全螢幕、字體與排版
+------------------------------------------------- */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            box-sizing: border-box;
+            font-size: 62.5%;
+            /* 1rem = 10px */
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: inherit;
+        }
+
+        body {
+            font-family: 'Mukta Malar', sans-serif;
+            font-size: 1.6rem;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            /* 讓頁面可以往下拉 */
+        }
+
+        /* -------------------------------------------------
+   左右兩欄（佔滿畫面上 100% 高）
+------------------------------------------------- */
+        .product {
+            flex: 1;
+            /* 讓它撐滿剩餘高度 */
+            display: flex;
+            width: 100%;
+        }
+
+        .left,
+        .right {
+            flex: 1;
+            position: relative;
+        }
+
+        .left {
+            background: #00ffff;
+        }
+
+        .right {
+            background: #fdffa4;
+        }
+
+        /* 左側背景圖 */
+        .left .backgroundPicture {
+            position: absolute;
+            inset: 0;
+            background: url('./img/backgroundPicture.png') no-repeat center/100% 100%;
+            margin: 8%;
+            /* 若想讓背景往下移可自行調整 */
+        }
+
+        /* Carousel (Bootstrap) */
+        #carouselExampleIndicators {
+            height: 100%;
+            /* 讓 carousel 撐滿左欄 */
+        }
+
+        .carousel-inner {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            /* 讓圖片垂直置中 */
+            overflow: hidden;
+        }
+
+        .carousel-item {
+            height: 100%;
+        }
+
+        .carousel-item img {
+            max-width: 80%;
+            max-height: 80%;
+            margin: auto;
+            display: block;
+            object-fit: contain;
+            transform: translateY(20%);
+            /* 如需微調可自行改成 0 */
+            overflow: hidden;
+        }
+
+        /* 兩側箭頭寬度 */
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 5%;
+        }
+
+        /* -------------------------------------------------
+   右側內容
+------------------------------------------------- */
+        .details {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        h3 {
+            margin: 0.8rem 0;
+            font-size: 1.6rem;
+        }
+
+        table {
+            width: 90%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 1.8rem;
+            line-height: 1.4;
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid #000;
+            padding: .5rem;
+        }
+
+        .right-line {
+            border-right: 1px solid #000;
+        }
+
+        /* 按鈕、下拉選單 */
+        .sodaType {
+            margin-top: 2vw;
+            width: 10vw;
+        }
+
+        .btn {
+            margin: 2vw;
+            background: #fbca1f;
+            padding: .6em 1.3em;
+            font-weight: 900;
+            font-size: 1.8rem;
+            border: 3px solid #000;
+            border-radius: .4em;
+            box-shadow: .1em .1em;
+            cursor: pointer;
+            transition: .15s;
+        }
+
+        .btn:hover {
+            transform: translate(-.05em, -.05em);
+            box-shadow: .15em .15em;
+        }
+
+        .btn:active {
+            transform: translate(.05em, .05em);
+            box-shadow: .05em .05em;
+        }
+
+        /* -------------------------------------------------
+   底部卡片區塊 + 側邊漸層
+------------------------------------------------- */
+        .card-section {
+            display: flex;
+            position: relative;
+            /* 與 .flickity-viewport 的高度相同 */
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(to right,
+                    rgba(255, 255, 255, 1) 1%,
+                    rgba(255, 255, 255, 0) 20%,
+                    rgba(255, 255, 255, 0) 80%,
+                    rgba(255, 255, 255, 1) 99%);
+            z-index: 100;
+        }
+
+        .card-wrap {
+            display: flex;
+            width: 100%;
+            margin: auto;
+            overflow: hidden;
+            /* 隱藏多餘的捲軸 */
+        }
+
+        .flickity-viewport {
+            height: 100%;
+            /* 讓卡片不被裁切 */
+        }
+
+        /* 卡片本身 */
+        :root {
+            --border-radius: .6rem;
+            --max-width: 190px;
+            --min-height: 240px;
+        }
+
+        .card {
+            display: block;
+            width: 100%;
+            max-width: var(--max-width);
+            min-width: var(--max-width);
+            min-height: var(--min-height);
+            margin: 1rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .1),
+                0 5px 15px rgba(0, 0, 0, .04);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: all .35s ease-out;
+        }
+
+        .card__overlay {
+            inset: 0;
+            position: absolute;
+            border-radius: var(--border-radius);
+            background: linear-gradient(to top,
+                    rgba(0, 0, 0, .8),
+                    rgba(0, 0, 0, 0),
+                    rgba(255, 255, 255, .3));
+            opacity: .7;
+            transition: all .35s ease-out;
+        }
+
+        .card__info {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 3px 5px rgba(0, 0, 0, .4);
+        }
+
+        .card__title {
+            margin-bottom: .5rem;
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        /* 卡片 hover 效果 */
+        .card:hover,
+        .card:focus {
+            transform: scale(1.1) translateY(8px);
+        }
+
+        .card:hover .card__overlay,
+        .card:focus .card__overlay {
+            opacity: 1;
+            top: -150px;
+        }
+
+        .card:hover {
+            cursor: -webkit-grab;
+        }
+
+        .card:focus {
+            cursor: -webkit-grabbing;
+        }
+
+        /* -------------------------------------------------
+   手機排版（寬度 < 768px 時改為上下堆疊）
+------------------------------------------------- */
+        @media (max-width:768px) {
+
+            /* 1️⃣ 左右區塊改成上下堆疊 */
+            .product {
+                flex-direction: column;
+            }
+
+            /* 2️⃣ 給卡片列一個實際高度，讓 Flickity 正常顯示 */
+            .card-section {
+                height: 260px;
+                /* 依需求可調整，建議 240~300px */
+            }
+
+            /* 3️⃣ 把卡片容器改成可以換行的彈性格局 */
+            .card-wrap {
+                flex-direction: row;
+                /* 水平排列 */
+                flex-wrap: wrap;
+                /* 換行 */
+                justify-content: center;
+                /* 置中 */
+            }
+
+            /* 4️⃣ 卡片寬度改為 48%（大約兩卡佔滿一行），取消原本的 max‑width */
+            .card {
+                flex: 0 0 48%;
+                /* 佔 48% + margin */
+                max-width: none;
+                /* 移除 190px 的上限 */
+                margin: 5%;
+                /* 補上一點間距讓卡片不會黏在一起 */
+            }
+
+            .card:hover {
+                z-index: 10;
+            }
+
+            .card:focus {
+                z-index: 10;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ---------- 上半部：左 / 右 ---------- -->
+    <div class="product">
+
+        <!-- 左側：Carousel -->
+        <div class="left">
+            <div class="backgroundPicture"></div>
+
+            <div id="carouselExampleIndicators" class="carousel slide">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0"
+                        class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                        aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+                        aria-label="Slide 3"></button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="./img/lemon-lime_mockup.png" alt="Lemon Lime">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./img/grape_mockup.png" alt="Grape">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="./img/strawberry-lemonade_mockup.png" alt="Strawberry Lemonade">
+                    </div>
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 右側：商品資訊 -->
+        <div class="right">
+            <div class="details">
+                <h2>Lemon</h2>
+                <h3><span>$599</span> Energizing infusion</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Content</th>
+                            <th colspan="2">Daily Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Calories</td>
+                            <td class="right-line">60</td>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr>
+                            <td>Carbohydrates</td>
+                            <td class="right-line">15g</td>
+                            <td colspan="2">14%</td>
+                        </tr>
+                        <tr>
+                            <td>Sugars</td>
+                            <td class="right-line">14g</td>
+                            <td colspan="2"></td>
+                        </tr>
+                        <tr>
+                            <td>Sodium</td>
+                            <td class="right-line">15mg</td>
+                            <td colspan="2">1%</td>
+                        </tr>
+                        <tr>
+                            <td>Potassium</td>
+                            <td class="right-line">10mg</td>
+                            <td colspan="2">1%</td>
+                        </tr>
+                        <tr>
+                            <td>Calcium</td>
+                            <td class="right-line">10mg</td>
+                            <td colspan="2">1%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div>
+                    <select id="sodaType" class="sodaType">
+                        <option value="12 x 355">12 x 355</option>
+                    </select>
+
+                    <button id="dec">-</button>
+                    <span id="num">0</span>
+                    <button id="inc">+</button>
+                </div>
+
+
+                <button class="btn">add to cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ---------- 底部：卡片列 + 側邊漸層 ---------- -->
+    <div class="card-section">
+        <div class="overlay"></div>
+
+        <div class="card-wrap">
+            <!-- ==== 依序產生所有卡片 ==== -->
+            <a class="card" href="#" style="background-image:url('./img/mockup1.png')">
+                <div class="card__overlay"></div>
+                <div class="card__info">
+                    <h3 class="card__title">Lemon</h3>
+                    <p class="card__text">$119</p>
+                </div>
+            </a>
+
+            <a class="card" href="#" style="background-image:url('./img/mockup2.png')">
+                <div class="card__overlay"></div>
+                <div class="card__info">
+                    <h3 class="card__title">grape</h3>
+                    <p class="card__text">$76</p>
+                </div>
+            </a>
+
+            <a class="card" href="#" style="background-image:url('./img/mockup3.png')">
+                <div class="card__overlay"></div>
+                <div class="card__info">
+                    <h3 class="card__title">strawberry</h3>
+                    <p class="card__text">$67</p>
+                </div>
+            </a>
+
+
+            <!-- （以下略）… 依序把剩下的城市寫在這裡即可 -->
+            <!-- 只保留示範，完整清單可自行粘貼上面提供的 17 個卡片 -->
+        </div>
+    </div>
+
+    <!-- -------------------------------------------------
+     JS：Bootstrap + Flickity + 數量加減
+------------------------------------------------- -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flickity/2.2.2/flickity.pkgd.min.js"
+        integrity="sha512-1lV2tJv+N/6hK8hB0nW1g4E4IhYc6j+H9YhV2F5fO+QeD5N3YH1Zbq1lMjwXkH9qR0XU0b9x6a3KZ5zYhVg5A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        /* ---------------- 數量加減 ---------------- */
+        const decBtn = document.getElementById('dec');
+        const incBtn = document.getElementById('inc');
+        const numEl = document.getElementById('num');
+        const MIN = 0, MAX = 9999;
+
+        function setNumber(v) {
+            const n = Math.min(Math.max(v, MIN), MAX);
+            numEl.textContent = n;
+        }
+        function increase() { setNumber(Number(numEl.textContent) + 1); }
+        function decrease() { setNumber(Number(numEl.textContent) - 1); }
+
+        decBtn.addEventListener('click', decrease);
+        incBtn.addEventListener('click', increase);
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowUp') increase();
+            if (e.key === 'ArrowDown') decrease();
+        });
+        setNumber(Number(numEl.textContent) || 0);
+
+        /* ---------------- 初始化 Flickity ---------------- */
+        new Flickity('.card-wrap', {
+            contain: true,
+            prevNextButtons: false,
+            pageDots: false,
+            wrapAround: true,
+            adaptiveHeight: true,
+            setGallerySize: false,
+            selectedAttraction: 0.05,
+            freeScrollFriction: .1
+        });
+    </script>
+</body>
+
+</html>
