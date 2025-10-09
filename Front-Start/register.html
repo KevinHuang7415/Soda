@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create an Account</title>
   <link rel="stylesheet" href="./css/main_setting.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <style>
     body {
       background-color: #fff7e6;
@@ -67,8 +68,8 @@
       <label for="FirstName">First name</label>
       <input type="text" id="FirstName" placeholder="First name">
 
-      <label for="LastName">Surname</label>
-      <input type="text" id="LastName" placeholder="Surname">
+      <label for="LastName">Lastname</label>
+      <input type="text" id="LastName" placeholder="Lastname">
 
       <label for="Email">E-mail</label>
       <input type="email" id="Email" placeholder="E-mail">
@@ -83,37 +84,34 @@
 </body>
 <script>
   document.getElementById("create_acc").addEventListener("submit", function (e) {
-    e.preventDefault();
+      e.preventDefault();
 
-    const data = {
-      firstName: document.getElementById("FirstName").value,
-      lastName: document.getElementById("LastName").value,
-      email: document.getElementById("Email").value,
-      password: document.getElementById("Password").value
-    };
+      const data = {
+        firstName: document.getElementById("FirstName").value,
+        lastName: document.getElementById("LastName").value,
+        email: document.getElementById("Email").value,
+        password: document.getElementById("Password").value
+      };
 
-    fetch("http://localhost:5206/api/Home/CreateAccount", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error("伺服器回應錯誤：" + response.status);
+      // 使用 Axios 發送 POST 請求
+      axios.post("http://localhost:5206/api/Home/CreateAccount", data, {
+        headers: {
+          "Content-Type": "application/json"
         }
-        return response.json();
       })
-      .then(result => {
-        alert("帳號建立成功！");
-        console.log(result);
-      })
-      .catch(err => {
-        console.error("發生錯誤：", err);
-        alert("建立失敗，請稍後再試！");
-      });
-  });
+        .then(response => {
+          alert("帳號建立成功！");
+          console.log("伺服器回應：", response.data);
+        })
+        .catch(error => {
+          console.error("發生錯誤：", error);
+          if (error.response) {
+            alert("建立失敗：" + error.response.status + " - " + error.response.data);
+          } else {
+            alert("建立失敗，請確認伺服器是否啟動！");
+          }
+        });
+    });
 </script>
 
 </html>
