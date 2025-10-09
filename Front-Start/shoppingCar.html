@@ -15,6 +15,14 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* shoppingCar CSS */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-y: auto;
+        }
+
         .shoppingCar {
             width: 100vw;
             height: 100vh;
@@ -33,12 +41,11 @@
             display: none;
         }
 
-        /* 白色固定在畫面右邊 */
+        /* 固定在畫面右邊 */
         .cart {
             position: fixed;
             top: 90px;
             right: 90px;
-            width: 500px;
             padding: 30px;
             background-color: white;
             border-radius: 30px;
@@ -64,17 +71,38 @@
             background-color: var(--light-orange);
             display: inline-block;
             border-radius: 50%;
-            height: 50px;
-            width: 50px;
-            line-height: 50px;
+            height: 30px;
+            width: 30px;
+            line-height: 30px;
             font-size: 20px;
             text-align: center;
         }
 
+        .item-close-btn {
+            box-shadow: none;
+            margin-top: 25px;
+            margin-left: 20px;
+            font-size: 16px;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            border: none;
+            background-color: white;
+            color: var(--main-black);
+        }
+
         .item-box {
             display: flex;
-            margin: 20px 0;
+            padding: 30px 0px;
+            border-bottom: 3px dotted var(--main-black);
         }
+
+        .cart-item-sel-box {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cart-item-form-box {}
 
         .cart-item-img {
             display: flex;
@@ -85,18 +113,17 @@
             background-color: var(--product-green-mid);
             font-size: 60px;
             color: white;
-            width: 200px;
-            height: 200px;
+            width: 150px;
+            height: 150px;
             text-align: center;
         }
 
         .cart-item-img img {
-            height: 90px;
-            margin-left: 10px;
+            height: 70px;
+            margin-left: 2px;
         }
 
         .cart-item-info {
-
             margin-left: 50px;
             line-height: 2rem;
             width: 50%;
@@ -138,7 +165,7 @@
         }
 
         .cart-item-cout {
-            margin-top: 70px;
+            margin-top: 50px;
             display: flex;
             justify-content: space-between;
         }
@@ -218,6 +245,7 @@
         }
 
         /* 平板以下（<= 768px）：底部抽屜 */
+
         @media (max-width: 768px) {
             .cart {
                 position: fixed;
@@ -241,6 +269,8 @@
                 width: 40px;
                 line-height: 40px;
             }
+
+
 
             .item-box {
                 flex-direction: column;
@@ -266,6 +296,7 @@
                 margin-bottom: 50px;
             }
 
+
             .cart-item-sel-box {
                 gap: 8px;
                 display: flex;
@@ -273,9 +304,6 @@
                 margin-bottom: 50px;
             }
 
-            .cart-item-size {
-                text-align: end;
-            }
 
             .cart-item-cout {
                 margin-top: 16px;
@@ -290,7 +318,6 @@
             }
 
             .subtotal {
-                border-top: 3px dotted #000;
                 line-height: 2.5;
                 float: none;
                 width: 80%;
@@ -321,28 +348,34 @@
         <div class="cart">
             <div class="cart-title-box">
                 <p class="cart-title">Cart</p>
-                <div class="btn close-btn" id="close-btn" name="close-btn"><i class="fa-solid fa-xmark"></i></div>
+                <div class="btn close-btn closeCart-btn" id="closeCart-btn" name="closeCart-btn"><i class="fa-solid fa-xmark"></i></div>
             </div>
-            <div class="item-box">
+            <!-- <div class="item-box">
                 <div class="cart-item-img" id="cart-item-img" name="cart-item-img">
                     <h2>12</h2>
                     <img src="./images/lemon-lime_mockup.png" alt="Lemon">
+
                 </div>
                 <div class="cart-item-info">
                     <div class="cart-item-sel-box">
-                        <form action="">
-                            <select class="sel-opt cart-item-name" id="cart-item-name" name="cart-item-name">
-                                <option value="Lemon">Lemon</option>
-                                <option value="Grape">Grape</option>
-                                <option value="Strawberry">Strawberry</option>
-                            </select>
-                        </form>
-                        <form action="">
-                            <select class="sel-opt cart-item-size" id="cart-item-size" name="cart-item-size">
-                                <option value="4">4 x 355ml</option>
-                                <option value="12">12 x 355ml</option>
-                            </select>
-                        </form>
+                        <div class="cart-item-form-box">
+                            <form action="">
+                                <select class="sel-opt cart-item-name" id="cart-item-name" name="cart-item-name">
+                                    <option value="Lemon">Lemon</option>
+                                    <option value="Grape">Grape</option>
+                                    <option value="Strawberry">Strawberry</option>
+                                </select>
+                            </form>
+                            <form action="">
+                                <select class="sel-opt cart-item-size" id="cart-item-size" name="cart-item-size">
+                                    <option value="4">4 x 355ml</option>
+                                    <option value="12">12 x 355ml</option>
+                                </select>
+                            </form>
+                        </div>
+                        <div class="btn close-btn item-close-btn" id="item-close-btn" name="item-close-btn">
+                            <i class="fa-solid fa-xmark"></i>
+                        </div>
                     </div>
                     <div class="cart-item-cout">
                         <ul>
@@ -351,22 +384,23 @@
                             </li>
                             <li>
                                 <input type="number" class="cart-item-nmb" id="cart-item-nmb" name="cart-item-nmb"
-                                    value="1" min="1">
+                                    value="1" min="0">
                             </li>
                             <li class="cout-btn Addition">
                                 <i class="fa-solid fa-plus"></i>
                             </li>
                         </ul>
-                        <div>
-                            <span class="cart-item-price" id="cart-item-price" name="cart-item-price">499</span>
-                            $ x
+                        <div class="cart-item-sum">
+                            $<span class="cart-item-price" id="cart-item-price" name="cart-item-price">499</span>
+                            x
                             <span class="cart-item-qty-display" id="cart-item-qty-display"
                                 name="cart-item-qty-display">1</span>
                         </div>
                     </div>
                 </div>
-
-            </div>
+            </div> -->
+            <!-- 空容器：動態插入 item-box -->
+            <div id="cart-items"></div>
             <div class="subtotal">
                 <p>Subtotal</p>
                 <div class="subtotal-sum" id="subtotal-sum" name="subtotal-sum">
@@ -377,166 +411,150 @@
             <div class="btn btn-l payment-btn">Payment</div>
         </div>
     </div>
-
     <script>
+        // 🔹 假資料 — 三筆商品
+        const fakeCartData = [
+            { name: 'Lemon', size: '12', qty: 1 },
+            { name: 'Grape', size: '4', qty: 2 },
+            { name: 'Strawberry', size: '12', qty: 1 }
+        ];
+
+        // 存進 sessionStorage
+        sessionStorage.setItem('cart', JSON.stringify(fakeCartData));
+
+        // 價格與圖片設定
+        const PRICE_MAP = { '4': 199, '12': 499 };
+        const VARIANT_MAP = {
+            Lemon: { bg: 'var(--product-green-mid)', img: './images/lemon-lime_mockup.png', alt: 'Lemon' },
+            Grape: { bg: 'var(--product-purple-mid)', img: './images/grape_mockup.png', alt: 'Grape' },
+            Strawberry: { bg: 'var(--product-pink-mid)', img: './images/strawberry-lemonade_mockup.png', alt: 'Strawberry' }
+        };
+
+        const cartContainer = document.getElementById('cart-items');
+        const subtotalEl = document.getElementById('subtotal-sum');
+
+        // 建立商品元素
+        function createItemBox({ name, size, qty }) {
+            const variant = VARIANT_MAP[name] || VARIANT_MAP.Lemon;
+            const price = PRICE_MAP[size] || 0;
+            const box = document.createElement('div');
+            box.className = 'item-box';
+            box.innerHTML = `
+        
+        <div class="cart-item-img" style="background-color:${variant.bg}">
+          <h2>${size}</h2>
+          <img src="${variant.img}" alt="${variant.alt}">
+        </div>
+        <div class="cart-item-info">
+                    <div class="cart-item-sel-box">
+                        <div class="cart-item-form-box">
+                            <select class="sel-opt cart-item-name">
+                                <option value="Lemon"${name === 'Lemon' ? ' selected' : ''}>Lemon</option>
+                                <option value="Grape"${name === 'Grape' ? ' selected' : ''}>Grape</option>
+                                <option value="Strawberry"${name === 'Strawberry' ? ' selected' : ''}>Strawberry</option>
+                            </select>
+                            <select class="sel-opt cart-item-size">
+                                <option value="4"${size === '4' ? ' selected' : ''}>4 x 355ml</option>
+                                <option value="12"${size === '12' ? ' selected' : ''}>12 x 355ml</option>
+                            </select>
+                            </div>
+
+                        <button class="btn close-btn item-close-btn"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+          <div class="cart-item-cout">
+            <ul>
+              <li class="cout-btn subtraction"><i class="fa-solid fa-minus"></i></li>
+              <li><input type="number" class="cart-item-nmb" value="${qty}" min="0"></li>
+              <li class="cout-btn Addition"><i class="fa-solid fa-plus"></i></li>
+            </ul>
+            <div class="cart-item-sum">$<span class="cart-item-price">${price}</span> × <span class="cart-item-qty-display">${qty}</span></div>
+          </div>
+        </div>
+      `;
+            return box;
+        }
+
+        // 更新小計
+        function updateSubtotal() {
+            let total = 0;
+            document.querySelectorAll('.item-box').forEach(box => {
+                const price = parseInt(box.querySelector('.cart-item-price').textContent);
+                const qty = parseInt(box.querySelector('.cart-item-nmb').value);
+                total += price * qty;
+            });
+            subtotalEl.textContent = `$${total}`;
+        }
+
+        // 更新單一商品
+        function renderItem(box) {
+            const name = box.querySelector('.cart-item-name').value;
+            const size = box.querySelector('.cart-item-size').value;
+            const qty = parseInt(box.querySelector('.cart-item-nmb').value);
+            const imgBox = box.querySelector('.cart-item-img');
+            const priceEl = box.querySelector('.cart-item-price');
+            const qtyDisplay = box.querySelector('.cart-item-qty-display');
+
+            const variant = VARIANT_MAP[name];
+            imgBox.style.backgroundColor = variant.bg;
+            imgBox.querySelector('img').src = variant.img;
+            imgBox.querySelector('img').alt = variant.alt;
+            imgBox.querySelector('h2').textContent = size;
+
+            priceEl.textContent = PRICE_MAP[size];
+            qtyDisplay.textContent = qty;
+
+            if (qty <= 0) box.remove();
+            updateSubtotal();
+        }
+
+        // 綁定按鈕事件
+        function bindItemEvents(box) {
+            const minus = box.querySelector('.subtraction');
+            const plus = box.querySelector('.Addition');
+            const qtyInput = box.querySelector('.cart-item-nmb');
+            const closeBtn = box.querySelector('.item-close-btn');
+            const nameSel = box.querySelector('.cart-item-name');
+            const sizeSel = box.querySelector('.cart-item-size');
+
+            minus.addEventListener('click', () => { qtyInput.value--; renderItem(box); });
+            plus.addEventListener('click', () => { qtyInput.value++; renderItem(box); });
+            qtyInput.addEventListener('input', () => renderItem(box));
+            closeBtn.addEventListener('click', () => { box.remove(); updateSubtotal(); });
+            nameSel.addEventListener('change', () => renderItem(box));
+            sizeSel.addEventListener('change', () => renderItem(box));
+        }
+
+
+        // ====== 事件：按下關閉按鈕 ======
+        // 共用的關閉流程
+        const shoppingCar = document.querySelector('.shoppingCar');
+        const cartPanel = document.querySelector('.cart');
+        const closeBtnCar = document.getElementById('closeCart-btn');
+        function closeCart() {
+            if (shoppingCar.classList.contains('is-hidden')) return; // 已關就不重複
+            shoppingCar.classList.add('is-closing');
+            cartPanel.addEventListener('transitionend', () => {
+                shoppingCar.classList.remove('is-closing');
+                shoppingCar.classList.add('is-hidden');
+                shoppingCar.setAttribute('aria-hidden', 'true');
+            }, { once: true });
+        }
+
+        // 1) 右上角關閉鈕
+        closeBtnCar.addEventListener('click', closeCart);
+
+
+
+        // 初始化
         document.addEventListener('DOMContentLoaded', () => {
-            // ====== 元件參照 ======
-            const nameSelect = document.getElementById('cart-item-name');   // Lemon/Grape/Strawberry
-            const sizeSelect = document.getElementById('cart-item-size');   // 4 / 12
-            const packBadgeH2 = document.querySelector('#cart-item-img h2');
-            const imgWrap = document.getElementById('cart-item-img');
-            const imgEl = document.querySelector('#cart-item-img img');
-            const unitPriceEl = document.getElementById('cart-item-price'); // 顯示單價（不含 $ 符號，因你的字面有 " $ x "）
-            const qtyInput = document.querySelector('input.cart-item-nmb'); // 可輸入的數量 input
-            const qtyDisplay = document.querySelector('.cart-item-qty-display'); // 右邊顯示數量
-            const minusBtn = document.querySelector('.subtraction');
-            const plusBtn = document.querySelector('.Addition');
-            const subtotalEl = document.getElementById('subtotal-sum');
-            const closeBtn = document.getElementById('close-btn');
-            const shoppingCar = document.querySelector('.shoppingCar');
-            const cartPanel = document.querySelector('.cart');
-
-            // ====== 價格表（依規格）======
-            const PRICE_MAP = {
-                '4': 199,
-                '12': 499
-            };
-
-            // ====== 口味 → 外觀設定 ======
-            const VARIANT_MAP = {
-                Lemon: {
-                    bg: 'var(--product-green-mid)',
-                    img: './images/lemon-lime_mockup.png',
-                    alt: 'Lemon'
-                },
-                Grape: {
-                    bg: 'var(--product-purple-mid)',
-                    img: './images/grape_mockup.png',
-                    alt: 'Grape'
-                },
-                Strawberry: {
-                    bg: 'var(--product-pink-mid)',
-                    img: './images/strawberry-lemonade_mockup.png',
-                    alt: 'Strawberry'
-                }
-            };
-
-            // ====== 狀態 ======
-            const state = {
-                name: nameSelect.value || 'Lemon',
-                size: sizeSelect.value || '12',
-                qty: clampInt(qtyInput?.value, 1, 9999)
-            };
-
-            // ====== 小工具 ======
-            function toInt(v, fallback = 0) {
-                const n = parseInt(String(v).replace(/[^\d]/g, ''), 10);
-                return Number.isFinite(n) ? n : fallback;
-            }
-            function clampInt(v, min, max) {
-                const n = toInt(v, min);
-                return Math.max(min, Math.min(max, n));
-            }
-            function money(n) {
-                return `$${n}`;
-            }
-
-            // ====== 套用口味外觀 ======
-            function applyVariant(name) {
-                const v = VARIANT_MAP[name] || VARIANT_MAP.Lemon;
-                imgWrap.style.backgroundColor = v.bg;
-                imgEl.src = v.img;
-                imgEl.alt = v.alt;
-            }
-
-            // ====== 渲染 ======
-            function render() {
-                // 圓形徽章顯示包數
-                packBadgeH2.textContent = state.size;
-
-                // 單價（保持你原本的字面 " $ x "，所以這裡只放數字）
-                const unitPrice = PRICE_MAP[state.size] ?? 0;
-                unitPriceEl.textContent = unitPrice;
-
-                // 數量（同步 input 與右側顯示）
-                qtyInput.value = state.qty;
-                if (qtyDisplay) qtyDisplay.textContent = state.qty;
-
-                // 小計（含 $ 符號）
-                subtotalEl.textContent = money(unitPrice * state.qty);
-
-                // 口味外觀
-                applyVariant(state.name);
-            }
-            // ====== 事件：按下關閉按鈕 ======
-            // 共用的關閉流程
-            function closeCart() {
-                if (shoppingCar.classList.contains('is-hidden')) return; // 已關就不重複
-                shoppingCar.classList.add('is-closing');
-                cartPanel.addEventListener('transitionend', () => {
-                    shoppingCar.classList.remove('is-closing');
-                    shoppingCar.classList.add('is-hidden');
-                    shoppingCar.setAttribute('aria-hidden', 'true');
-                }, { once: true });
-            }
-
-            // 1) 右上角關閉鈕
-            closeBtn.addEventListener('click', closeCart);
-
-            // 2) 點擊 cart 以外的區域（overlay 背景）也關閉
-            shoppingCar.addEventListener('click', (e) => {
-                // 只有點到 overlay 自己（不是 cart 或其子元素）才關
-                if (e.target === shoppingCar || !cartPanel.contains(e.target)) {
-                    closeCart();
-                }
+            const cartData = JSON.parse(sessionStorage.getItem('cart')) || [];
+            cartData.forEach(item => {
+                const box = createItemBox(item);
+                cartContainer.appendChild(box);
+                bindItemEvents(box);
             });
-
-            // 3) 鍵盤 Esc 也關閉
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') closeCart();
-            });
-
-            // ====== 事件：口味切換 ======
-            nameSelect.addEventListener('change', () => {
-                state.name = nameSelect.value;
-                render();
-            });
-
-            // ====== 事件：規格切換（影響單價與徽章）=====
-            sizeSelect.addEventListener('change', () => {
-                state.size = sizeSelect.value;
-                render();
-            });
-
-            // ====== 事件：加減數量 ======
-            minusBtn.addEventListener('click', () => {
-                state.qty = Math.max(1, state.qty - 1);
-                render();
-            });
-            plusBtn.addEventListener('click', () => {
-                state.qty = Math.min(9999, state.qty + 1);
-                render();
-            });
-
-            // 直接輸入數量（即時）
-            qtyInput.addEventListener('input', () => {
-                const n = clampInt(qtyInput.value, 1, 9999);
-                // 只在合法時更新 state（避免輸入空字串造成抖動）
-                if (String(n) === String(qtyInput.value).replace(/[^\d]/g, '') && n >= 1) {
-                    state.qty = n;
-                    render();
-                }
-            });
-            // 失焦時做最後保險修正
-            qtyInput.addEventListener('blur', () => {
-                state.qty = clampInt(qtyInput.value, 1, 9999);
-                render();
-            });
-
-            // ====== 初始化 ======
-            render();
+            updateSubtotal();
         });
-
     </script>
 </body>
 
