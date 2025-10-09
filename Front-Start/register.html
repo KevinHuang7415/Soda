@@ -1,64 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Create an Account</title>
-<link rel="stylesheet" href="./css/main_setting.css">
-<style>
-  body {
-    background-color: #fff7e6;
-    font-family: Arial, sans-serif;
-    width: 100%;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create an Account</title>
+  <link rel="stylesheet" href="./css/main_setting.css">
+  <style>
+    body {
+      background-color: #fff7e6;
+      font-family: Arial, sans-serif;
+      width: 100%;
+    }
 
-  .container {
-    width: 30%;
-    margin: auto;
-    margin-top: 180px;
+    .container {
+      width: 30%;
+      margin: auto;
+      margin-top: 180px;
 
-  }
-  .create_acc{
-    width: 100%;
-    margin-bottom: 50px;
-  }
+    }
 
-  h1 {
-    font-size: 4em;
-    font-weight: bold;
-    margin-bottom: 40px;
-    line-height: 1.1;
-  }
+    .create_acc {
+      width: 100%;
+      margin-bottom: 50px;
+    }
 
-  label {
-    display: block;
-    font-size: 24px;
-    margin-bottom: 6px;
-  }
+    h1 {
+      font-size: 4em;
+      font-weight: bold;
+      margin-bottom: 40px;
+      line-height: 1.1;
+    }
 
-  input {
-    width: 92%;
-    padding: 24px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    margin-bottom: 20px;
-    font-size: 16px;
-  }
-  ::-webkit-input-placeholder{
-    font-size: 25px;
-  }
+    label {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
 
-  button:hover {
-    background-color: #74b8f7;
-  }
-</style>
+    input {
+      width: 92%;
+      padding: 24px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    ::-webkit-input-placeholder {
+      font-size: 25px;
+    }
+
+    button:hover {
+      background-color: #74b8f7;
+    }
+  </style>
 </head>
+
 <body>
   <div class="container">
     <div class="create_acc">
-        <h1>CREATE AN ACCOUNT</h1>
+      <h1>CREATE AN ACCOUNT</h1>
     </div>
-    
+
     <form method="post" id="create_acc">
       <label for="FirstName">First name</label>
       <input type="text" id="FirstName" placeholder="First name">
@@ -72,28 +76,29 @@
       <label for="Password">Password</label>
       <input type="password" id="Password" placeholder="Password">
 
-      <button type="submit" class="btn btn-l" style="margin-left: 0px;width: 100%;background-color: #8cc9ff;">Create</button>
+      <button type="submit" class="btn btn-l"
+        style="margin-left: 0px;width: 100%;background-color: #8cc9ff;">Create</button>
     </form>
   </div>
 </body>
 <script>
- document.getElementById("create_acc").addEventListener("submit", function (e) {
-      e.preventDefault(); 
+  document.getElementById("create_acc").addEventListener("submit", function (e) {
+    e.preventDefault();
 
-      const data = {
-        firstName: document.getElementById("first").value,
-        surName: document.getElementById("sur").value,
-        email: document.getElementById("email").value,
-        password: document.getElementById("password").value
-      };
+    const data = {
+      firstName: document.getElementById("FirstName").value,
+      lastName: document.getElementById("LastName").value,
+      email: document.getElementById("Email").value,
+      password: document.getElementById("Password").value
+    };
 
-      fetch("http://localhost:5203/Home/CreateAccount", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      })
+    fetch("http://localhost:5206/api/Home/CreateAccount", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    })
       .then(response => {
         if (!response.ok) {
           throw new Error("伺服器回應錯誤：" + response.status);
@@ -108,6 +113,7 @@
         console.error("發生錯誤：", err);
         alert("建立失敗，請稍後再試！");
       });
-    });
-  </script>
+  });
+</script>
+
 </html>
