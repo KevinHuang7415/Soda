@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Soda.Models;
+using Soda.Models.Entities;
+using Soda.Models.Enums;
 
 namespace Soda.Data
 {
@@ -11,20 +12,41 @@ namespace Soda.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<RevokedToken> RevokedTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // 設定 User 實體的約束
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasIndex(e => e.Username).IsUnique();
-                entity.HasIndex(e => e.Email).IsUnique();
+            // 設定唯一索引
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
 
-                entity.Property(e => e.CreatedAt)
-                      .HasDefaultValueSql("GETUTCDATE()");
-            });
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            // 設定預設值
+            modelBuilder.Entity<User>()
+                .Property(u => u.CreatedAt)
+                .HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.IsActive)
+                .HasDefaultValue(true);
+
+            // 設定角色預設值
+            modelBuilder.Entity<User>()
+                .Property(u => u.Role)
+                .HasDefaultValue(UserRole.User);
+
+            // RevokedTokens 設定
+            modelBuilder.Entity<RevokedToken>()
+                .HasIndex(rt => rt.Token);
+
+            modelBuilder.Entity<RevokedToken>()
+                .HasIndex(rt => rt.ExpiresAt);
         }
     }
 }
