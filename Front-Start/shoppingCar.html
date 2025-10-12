@@ -79,8 +79,17 @@
             line-height: 50px;
             font-size: 20px;
             text-align: center;
+
         }
 
+        .close-btn img {
+            height: 30px;
+            width: 30px;
+            margin: 10px;
+
+        }
+
+        /* 訂單項目 */
         .item-close-btn {
             box-shadow: none;
             margin-left: 20px;
@@ -93,6 +102,11 @@
             color: var(--main-black);
         }
 
+        .item-close-btn img {
+            opacity: .7;
+            height: 16px;
+        }
+
         .item-box {
             display: flex;
             padding: 30px 0px;
@@ -100,6 +114,7 @@
 
         }
 
+        /* 項目圖片 */
         .cart-item-sel-box {
             display: flex;
             justify-content: space-between;
@@ -126,7 +141,7 @@
         }
 
         .cart-item-img img {
-            height: 70px;
+            height: 60px;
         }
 
         .cart-item-info {
@@ -135,6 +150,10 @@
             width: 50%;
         }
 
+        /* 項目名稱 產品項目 */
+        .cart-item-name {
+            font-size: 20px;
+        }
 
         /* 下拉式選單設定 */
         .sel-opt {
@@ -148,8 +167,7 @@
             outline: none;
 
             height: 36px;
-            width: 120px;
-            font-size: 16px;
+            width: 130px;
             font-weight: bold;
             padding: 5px 10px;
             background: none;
@@ -170,6 +188,7 @@
             background-color: var(--product-pink-cover);
         }
 
+        /* 產品項目數量計算欄位 */
         .cart-item-cout {
             margin-top: 30px;
             display: flex;
@@ -246,6 +265,11 @@
             background-color: var(--light-orange);
         }
 
+        .order-box span {
+            font-size: 12px;
+            font-weight: 200;
+        }
+
         /* 通用：避免超出螢幕 */
         .cart {
             max-width: calc(100vw - 2rem);
@@ -273,6 +297,11 @@
                 height: 40px;
                 width: 40px;
                 line-height: 40px;
+            }
+
+            .close-btn img {
+                height: 20px;
+                width: 20px;
             }
 
             .item-box {
@@ -342,24 +371,27 @@
             }
         }
     </style>
+
 </head>
 
 <body>
+
     <div class="shoppingCar">
         <div class="cart">
             <div class="cart-title-box">
-                <p class="cart-title">Cart</p>
-                <div class="btn close-btn closeCart-btn" id="closeCart-btn" name="closeCart-btn"><i
-                        class="fa-solid fa-xmark"></i></div>
+                <p class="cart-title">
+                    Cart
+                </p>
+                <div class="btn close-btn closeCart-btn" id="closeCart-btn" name="closeCart-btn">
+                    <img class="close-btn-img" src="./images/icon/211651_close_round_icon.svg" alt="">
+                </div>
             </div>
             <!-- 購物車項目卡 -->
             <!-- <div class="item-box">
-
                 <div class="cart-item-img" id="cart-item-img" name="cart-item-img">
                     <h2>12</h2>
-                    <img src="./images/lemon-lime_mockup.png" alt="Lemon">                  
+                    <img src="./images/lemon-lime_mockup.png" alt="Lemon">
                 </div>
-
                 <div class="cart-item-info">
                     <div class="cart-item-sel-box">
                         <div class="cart-item-form-box">
@@ -378,10 +410,24 @@
                             </form>
                         </div>
                         <div class="btn close-btn item-close-btn" id="item-close-btn" name="item-close-btn">
-                            <i class="fa-solid fa-xmark"></i>
+                            <img class="close-btn-img" src="./images/icon/211651_close_round_icon.svg" alt="項目關閉按鈕">
                         </div>
                     </div>
 
+                    <form action="#" method="get" class="order-box">
+                        <label for="singleOrder">
+                            <input type="radio" name="order" id="singleOrder" value="singleOrder" checked>
+                            <span>Single order</span>
+                        </label><br>
+                        <label for="weeksOrder">
+                            <input type="radio" name="order" id="weeksOrder" value="weeksOrder">
+                            <span>Delivery every 2 weeks (save 10%)</span>
+                        </label><br>
+                        <label for="mouthOrder">
+                            <input type="radio" name="order" id="mouthOrder" value="mouthOrder">
+                            <span>Delivery 1 time per month (save 10%)</span>
+                        </label>
+                    </form>
                     <div class="cart-item-cout">
                         <ul>
                             <li class="cout-btn subtraction">
@@ -406,6 +452,8 @@
             </div> -->
             <!-- 空容器：動態插入 item-box -->
             <div id="cart-items"></div>
+
+
             <div class="subtotal">
                 <p>Subtotal</p>
                 <div class="subtotal-sum" id="subtotal-sum" name="subtotal-sum">
@@ -499,7 +547,7 @@
                             </form>
                         </div>
                         <div class="btn close-btn item-close-btn" id="item-close-btn" name="item-close-btn">
-                            <i class="fa-solid fa-xmark"></i>
+                            <img class="close-btn-img" src="./images/icon/211651_close_round_icon.svg" alt="項目關閉按鈕">
                         </div>
                     </div>
                     
