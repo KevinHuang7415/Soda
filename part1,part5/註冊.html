@@ -1,15 +1,95 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>註冊(待修)</title>
     <link rel="stylesheet" href="./css/login.css">
-       
+    <style>
+        .container {
+            width: 100%;
+            height: 90vh;
+            display: flex;
+
+        }
+
+        .sign {
+            width: 100%;
+            line-height: 12px;
+            font-size: small;
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .leftSide {
+            display: flex;
+            width: 40%;
+        }
+
+        .leftSide img {
+            min-width: 500px;     
+            width: 100%;
+            object-fit: contain;
+            margin-top: 50px;
+        }
+
+        .card {
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .forgetPassword {
+            position: absolute;
+            right: 20px;
+        }
+
+        .apiAlign {
+            display: flex; 
+        }
+
+        .api {
+            border: 1px #000 solid;
+            margin:20px 0 0 20px;
+            border-radius: 8px;
+            background-color: #fe8e32;
+            width: 30%;
+            height: 50px;
+            text-align: center;
+            align-content: center;
+        }
+        .api a {
+            text-decoration: none;
+        }
+        @media (max-width:768px) {
+            .card {
+                width: 100%;
+            }
+            .leftSide {
+                display: none;
+            }
+            .apiAlign {
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+        }
+        .api {
+            margin-top: 5vw;
+            width: 60%;
+            height: 10vw;
+        }
+
+      }
+    </style>
+
 </head>
+
 <body>
     <div class="container">
-        <div class="main-content">
+        <div class="leftSide">
+            <img src="./img/drink.png" alt="">
+        </div>
             <!-- 註冊表單 -->
             <div class="card">
                 <h2>📝 會員註冊</h2>
@@ -37,10 +117,11 @@
                 <div id="registerResponse" class="response" style="display: none;"></div>
             </div>
         </div>
-    </div>
+
 
     <script src="./js/login.js"></script>
     <script>
     </script>
 </body>
+
 </html>

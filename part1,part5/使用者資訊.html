@@ -1,33 +1,35 @@
 ﻿<!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>會員系統測試頁面(待修)</title>
     <link rel="stylesheet" href="./css/login.css">
-       
+
 </head>
+
 <body>
     <div class="container">
 
-        <div class="main-content">
-            <!-- 使用者資訊 -->
-            <div class="card full-width">
-                <h2>👤 使用者資訊</h2>
-                <button class="btn btn-secondary" onclick="getCurrentUser()">取得當前使用者資訊</button>
-                <button class="btn btn-secondary" onclick="getAllUsers()">取得所有使用者</button>
-                <button class="btn btn-danger" onclick="logout()">登出</button>
-                <button class="btn btn-danger" onclick="logoutAll()">登出所有裝置</button>
-                <div id="userResponse" class="response" style="display: none;"></div>
-                <div class="token-display" style="display: none;" id="tokenDisplay">
-                    <strong>當前 Token:</strong><br>
-                    <span id="tokenText"></span>
-                </div>
+        <!-- 使用者資訊 -->
+        <div class="card full-width">
+            <h2>👤 使用者資訊</h2>
+            <button class="btn btn-secondary" onclick="getCurrentUser()">取得當前使用者資訊</button>
+            <button class="btn btn-secondary" onclick="getAllUsers()">取得所有使用者</button>
+            <button class="btn btn-danger" onclick="logout()">登出</button>
+            <button class="btn btn-danger" onclick="logoutAll()">登出所有裝置</button>
+            <div id="userResponse" class="response" style="display: none;"></div>
+            <div class="token-display" style="display: none;" id="tokenDisplay">
+                <strong>當前 Token:</strong><br>
+                <span id="tokenText"></span>
             </div>
+            <img src="./img/example01.png" alt="">
         </div>
     </div>
     <script src="./js/login.js"></script>
-    <script>    
+    <script>
     </script>
 </body>
+
 </html>
