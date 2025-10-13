@@ -44,6 +44,8 @@ namespace Soda.Services
 
             user.FirstName = userUpdate.FirstName;
             user.LastName = userUpdate.LastName;
+            user.Email = userUpdate.Email;
+            user.PhoneNumber = userUpdate.PhoneNumber;
             user.UpdatedAt = DateTime.UtcNow.ToTaipeiTimeString();
 
             await _context.SaveChangesAsync();
