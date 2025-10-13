@@ -144,9 +144,6 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseDefaultFiles();
-app.UseStaticFiles();
-
 app.UseCors("AllowAll");
 
 app.UseAuthentication();
