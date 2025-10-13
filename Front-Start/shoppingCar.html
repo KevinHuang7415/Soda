@@ -9,368 +9,13 @@
     <link rel="stylesheet" href="./css/Reset.css">
     <!-- main_setting -->
     <link rel="stylesheet" href="./css/main_setting.css">
+    <!-- style.css -->
+     <link rel="stylesheet" href="./css/style.css">
     <!-- 小iconCDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <style>
-        /* shoppingCar CSS */
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow-y: auto;
-        }
 
-        .shoppingCar {
-            width: 100vw;
-            height: 100vh;
-            background-color: var(--product-pink-cover);
-            font-weight: bold;
-        }
-
-        /* 關閉動畫：淡出、微上移 */
-        .shoppingCar.is-closing .cart {
-            opacity: 0;
-            transform: translateY(-8px);
-        }
-
-        /* 動畫結束後真正隱藏 */
-        .shoppingCar.is-hidden {
-            display: none;
-        }
-
-        /* 固定在畫面右邊 */
-        .cart {
-            position: fixed;
-            background-color: white;
-            border-radius: 30px;
-            /* 讓 cart 本體有過渡 */
-            transition: opacity .2s ease, transform .2s ease;
-            /* 內部捲動關鍵 */
-            scrollbar-width: none;
-            max-height: calc(100vh - 180px);
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .cart-title-box {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-        }
-
-        .cart-title {
-            font-size: 30px;
-            margin: 20px 0;
-        }
-
-        .close-btn {
-            border: 1px solid var(--main-black);
-            box-shadow: 0px 1px 2px var(--main-black);
-            color: black;
-            background-color: var(--light-orange);
-            display: inline-block;
-            border-radius: 50%;
-            height: 50px;
-            width: 50px;
-            line-height: 50px;
-            font-size: 20px;
-            text-align: center;
-
-        }
-
-        .close-btn img {
-            height: 30px;
-            width: 30px;
-            margin: 10px;
-
-        }
-
-        /* 訂單項目 */
-        .item-close-btn {
-            box-shadow: none;
-            margin-left: 20px;
-            font-size: 16px;
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
-            border: none;
-            background-color: white;
-            color: var(--main-black);
-        }
-
-        .item-close-btn img {
-            opacity: .7;
-            height: 16px;
-        }
-
-        .item-box {
-            display: flex;
-            padding: 30px 0px;
-            border-bottom: 2px dotted rgba(0, 0, 0, .5);
-
-        }
-
-        /* 項目圖片 */
-        .cart-item-sel-box {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .cart-item-img-box {
-            display: flex;
-            cursor: pointer;
-        }
-
-        .cart-item-img {
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            border-radius: 50%;
-            background-color: var(--product-green-mid);
-            font-size: 60px;
-            color: white;
-            width: 150px;
-            height: 150px;
-            text-align: center;
-        }
-
-        .cart-item-img img {
-            height: 60px;
-        }
-
-        .cart-item-info {
-            margin-left: 50px;
-            line-height: 2rem;
-            width: 50%;
-        }
-
-        /* 項目名稱 產品項目 */
-        .cart-item-name {
-            font-size: 20px;
-        }
-
-        /* 下拉式選單設定 */
-        .sel-opt {
-            /* 移除預設樣式 (Chrome / Safari / Edge) */
-            appearance: none;
-            /* Firefox */
-            -moz-appearance: none;
-            /* Safari / iOS */
-            -webkit-appearance: none;
-            /* 點擊時不出現外框 */
-            outline: none;
-
-            height: 36px;
-            width: 130px;
-            font-weight: bold;
-            padding: 5px 10px;
-            background: none;
-            border: none;
-            line-height: 1.2;
-            cursor: pointer;
-            border-radius: 6px;
-        }
-
-        /* 移除 focus 狀態的預設外框 */
-        .sel-opt:focus {
-            outline: none;
-            box-shadow: none;
-        }
-
-        /* 滑鼠移入 */
-        .sel-opt:hover {
-            background-color: var(--product-pink-cover);
-        }
-
-        /* 產品項目數量計算欄位 */
-        .cart-item-cout {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .cart-item-info ul {
-            width: 100px;
-            display: flex;
-            border: 1px solid #000;
-            border-radius: 5px;
-            justify-content: space-around;
-        }
-
-        .cart-item-info li {
-            text-align: center;
-            width: 100%;
-        }
-
-        .cart-item-nmb {
-            height: 90%;
-            width: 30px;
-            font-size: 16px;
-            color: black;
-            text-align: center;
-            border: none;
-        }
-
-        /* 隱藏數字輸入框右側的上下箭頭（Chrome、Edge、Safari 等） */
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        /* 隱藏 Firefox 的上下箭頭 */
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-
-        /* 移除點擊輸入時的預設藍色外框 */
-        input[type=number]:focus {
-            outline: none;
-            box-shadow: none;
-            border-color: inherit;
-            /* 可保持原本的邊框顏色 */
-        }
-
-        /* 如果你想讓滑鼠移入時邊框也不變色 */
-        input[type=number]:hover {
-            border-color: inherit;
-        }
-
-        .cout-btn {
-            cursor: pointer;
-        }
-
-        .cout-btn:hover {
-            background: var(--product-pink-cover);
-        }
-
-        .subtotal {
-            font-size: 20px;
-            display: flex;
-            justify-content: space-between;
-            float: right;
-            width: 50%;
-            margin: 50px 20px;
-        }
-
-        .payment-btn {
-            margin: 50px auto;
-            clear: both;
-            background-color: var(--light-orange);
-        }
-
-        .order-box span {
-            font-size: 12px;
-            font-weight: 200;
-        }
-
-        /* 通用：避免超出螢幕 */
-        .cart {
-            max-width: calc(100vw - 2rem);
-        }
-
-        /* 平板以下（<= 768px）：底部抽屜 */
-        @media (max-width: 768px) {
-            .cart {
-                position: fixed;
-                /* bottom:0 + 左右撐滿 */
-                inset: auto 0 0 0;
-                width: 100vw;
-                /* 取消桌機定位 */
-                right: auto;
-                margin: auto;
-                top: 90px;
-                padding: 20px;
-            }
-
-            .cart-title {
-                font-size: 22px;
-            }
-
-            .close-btn {
-                height: 40px;
-                width: 40px;
-                line-height: 40px;
-            }
-
-            .close-btn img {
-                height: 20px;
-                width: 20px;
-            }
-
-            .item-box {
-                flex-direction: column;
-                gap: 16px;
-                margin: 12px 0;
-                padding: 20px 0;
-            }
-
-            .cart-item-img {
-                width: 100px;
-                height: 100px;
-                margin: 0 auto;
-                font-size: 36px;
-            }
-
-            .cart-item-img img {
-                height: 40px;
-                margin-left: 0;
-            }
-
-            .cart-item-info {
-                margin: auto;
-            }
-
-
-            .cart-item-sel-box {
-                gap: 8px;
-                display: flex;
-                justify-content: space-between;
-            }
-
-
-            .cart-item-cout {
-                margin-top: 16px;
-                align-items: center;
-                gap: 12px;
-            }
-
-
-            .cart-item-nmb {
-                width: 44px;
-                font-size: 16px;
-            }
-
-            .subtotal {
-                line-height: 2.5;
-                float: none;
-                width: 80%;
-                margin: auto;
-            }
-
-            .payment-btn {
-                width: 90%;
-                text-align: center;
-                padding: 12px 0;
-            }
-        }
-
-        /* 桌機優化（>= 992px）：右側固定卡片 */
-        @media (min-width: 769px) {
-            .cart {
-                right: 90px;
-                top: 90px;
-                width: 500px;
-                padding: 30px;
-            }
-        }
-    </style>
 
 </head>
 
@@ -431,14 +76,14 @@
                     <div class="cart-item-cout">
                         <ul>
                             <li class="cout-btn subtraction">
-                                <i class="fa-solid fa-minus"></i>
+                                <img src="./images/icon/211863_minus_round_icon.svg" alt="minus">
                             </li>
                             <li>
                                 <input type="number" class="cart-item-nmb" id="cart-item-nmb" name="cart-item-nmb"
                                     value="1" min="0">
                             </li>
                             <li class="cout-btn Addition">
-                                <i class="fa-solid fa-plus"></i>
+                                <img src="./images/icon/211877_plus_round_icon.svg" alt="plus">
                             </li>
                         </ul>
                         <div class="cart-item-sum">
@@ -449,7 +94,7 @@
                         </div>
                     </div>
                 </div>
-            </div> -->
+            </div>  -->
             <!-- 空容器：動態插入 item-box -->
             <div id="cart-items"></div>
 
@@ -554,14 +199,14 @@
                     <div class="cart-item-cout">
                         <ul>
                             <li class="cout-btn subtraction">
-                                <i class="fa-solid fa-minus"></i>
+                                <img src="./images/icon/211863_minus_round_icon.svg" alt="minus">
                             </li>
                             <li>
                                 <input type="number" class="cart-item-nmb" id="cart-item-nmb" name="cart-item-nmb"
                                     value="${qty}" min="0">
                             </li>
                             <li class="cout-btn Addition">
-                                <i class="fa-solid fa-plus"></i>
+                                <img src="./images/icon/211877_plus_round_icon.svg" alt="plus">
                             </li>
                         </ul>
                         <div class="cart-item-sum">

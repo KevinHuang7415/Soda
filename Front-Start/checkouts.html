@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>checkouts</title>
+    <!-- Reset -->
+    <link rel="stylesheet" href="./css/Reset.css">
+    <!-- main_setting -->
     <link rel="stylesheet" href="./css/main_setting.css">
-
+    <!-- style.css -->
+    <link rel="stylesheet" href="./css/style.css">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
@@ -31,14 +35,189 @@
             color: var(--main-orange);
         }
 
-
         .checkouts-header a {
             color: var(--main-orange);
         }
 
         .logo {
             height: 50px;
-            padding-top: 20px;
+            padding-top: 0px;
+        }
+
+        .list-title-box {
+            position: relative; /* 讓它成為定位參考 */
+            overflow: hidden; /* 避免往上移時穿幫 */
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 20px 10px 20px;
+            background-color: var(--main-gray-light);
+            border: 1px solid var(--main-gray-drck);
+            cursor: pointer;
+        }
+
+        .list-title {
+            color: var(--main-orange);
+            font-size: 12px;
+        }
+
+        .list-title img {
+            margin-left: 10px;
+            height: 12px;
+        }
+
+        .list-title-sum {
+            font-weight: 600;
+        }
+
+        .order-list {
+            position: relative;
+            z-index: 1;
+            max-height: 1000px;
+            width: 100vw;
+            padding: 20px;
+            background: var(--light-yellow);
+            overflow: hidden;
+            opacity: 1;
+            /* 平滑動畫 */
+            transition: all 0.5s ease;
+            /* 預設不位移 */
+            transform: translateY(0);
+        }
+
+        /* 收起狀態 */
+        .order-list.hidden {
+            /* 由上往下收起 */
+            max-height: 0;
+            /* 慢慢變透明 */
+            opacity: 0;
+            /* 往上收起的錯覺 */
+            transform: translateY(-50px);            
+        }
+
+        /* 讓箭頭旋轉 */
+        .list-title img {
+            transition: transform 0.3s ease;
+        }
+
+        .list-title img.rotate {
+            transform: rotate(180deg);
+        }
+
+        /* 讓箭頭旋轉 End */
+
+        .order-item-box {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .order-item-info {
+            flex: 1;
+            margin-left: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .order-item-size p {
+            font-size: 10px;
+            margin-bottom: 2px;
+            color: var(--main-black);
+        }
+
+        .order-item-subtotal {}
+
+        .order-item-img {
+            width: 60px;
+            height: 60px;
+            background: var(--product-green-light);
+            border-radius: 10px;
+            border: 2px solid white;
+            box-shadow: 1px 1px 3px var(--main-black);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .order-item-img span {
+            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            line-height: 18px;
+            border-radius: 5px;
+            background: var(--main-black);
+            color: white;
+            border: 2px solid #ffffff;
+            text-align: center;
+            position: absolute;
+            top: -10px;
+            right: -10px;
+        }
+
+        .order-item-img h2 {
+            font-size: 24px;
+            color: white;
+            margin: 0px;
+        }
+
+        .order-item-img img {
+            height: 25px;
+        }
+
+        .gift-box {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .gift-text {
+            border: 1px solid var(--main-gray-drck);
+            border-radius: 5px;
+            width: 350px;
+            font-size: 16px;
+            line-height: 30px;
+            padding-left: 10px;
+        }
+
+        .gift-text:focus {
+            /* 改變邊框顏色 */
+            border-color: var(--main-orange);
+            /* 移除預設的藍色 outline */
+            outline: none;
+        }
+
+        .gift-btn {
+            border-radius: 5px;
+            font-size: 12px;
+            padding: 10px;
+            border: none;
+            color: white;
+            background: var(--main-orange);
+        }
+
+        .gift-btn:hover {
+            background: var(--drck-orange);
+
+        }
+
+        .discount-box {
+            margin: 20px auto;
+        }
+
+        .discount-box p {
+            margin: 0;
+        }
+
+        .discount-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 0 10px;
+        }
+
+        .total-box {
+            display: flex;
+            justify-content: space-between;
         }
 
         /* 
@@ -85,27 +264,7 @@
         <a href="prodoct.html"><img src="./images/icon/8666616_shopping_cart_icon.svg" alt="shoppingCar"
                 title="返回商品頁面"></a>
     </div>
-    <div class="accordion" id="accordionPanelsStayOpenExample">
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                    aria-controls="panelsStayOpen-collapseOne">
-                    Accordion Item #1
-                </button>
-            </h2>
-            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
-                aria-labelledby="panelsStayOpen-headingOne">
-                <div class="accordion-body">
-                    <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse
-                    plugin adds the appropriate classes that we use to style each element. These classes control the
-                    overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of
-                    this with custom CSS or overriding our default variables. It's also worth noting that just about any
-                    HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-                </div>
-            </div>
-        </div>
-    </div>
+
     <div class="shopping-list">
         <div class="list-title-box">
             <div class="list-title">
@@ -113,15 +272,84 @@
                 <img src="./images/icon/8674511_ic_fluent_chevron_up_regular_icon.svg" alt="">
             </div>
             <div class="list-title-sum">
-                <span>$6500</span>
+                <h5>$2,335</h5>
+            </div>
+        </div>
+        <div class="order-list">
+            <div class="order-item-box">
+                <div class="order-item-img" id="order-item-img" name="order-item-img">
+                    <span class="order-item-quantity">6</span>
+                    <h2>12</h2>
+                    <img src="./images/lemon-lime_mockup.png" alt="Lemon">
+                </div>
+                <div class="order-item-info">
+                    <div class="order-item-sel-box">
+                        <div class="order-item-name">
+                            Lemon
+                        </div>
+                        <div class="order-item-size">
+                            <p>
+                                12 x 355ml
+                            </p>
+                            <p>Delivery every 15 days</p>
+                        </div>
+                    </div>
+                    <div class="order-item-subtotal">$2,994</div>
+                </div>
             </div>
 
+            <form action="#" method="get" class="gift-box">
+                <input type="text" placeholder="Gift card or discount code" class="gift-text">
+                <button type="submit" class="gift-btn">Apply</button>
+            </form>
+            <div class="discount-box">
+                <p>Discount</p>
+                <div class="discount-item">
+                    <p>Subtotal · <span>6</span> items</p>
+                    <p>$2,994</p>
+                </div>
+                <div class="discount-item">
+                    <p>Christmas discounts 88%</p>
+                    <p>$2,635</p>
+                </div>
+                <div class="discount-item">
+                    <p>New friend discounts</p>
+                    <p>-$100</p>
+                </div>
+                <div class="discount-item">
+                    <p>Gift card：<span>SODA200</span></p>
+                    <p>-$200</p>
+                </div>
+            </div>
+            <div class="total-box">
+                <h4>Total</h4>
+                <h5>$2,335</h5>
+            </div>
         </div>
     </div>
     <div class="checkouts-main">
-
+        <div class="pay-way-box">
+            <img class="pay-way-btn" src="./images/icon/8666205_apple_pay_icon.svg" alt="applePay">
+            <img class="pay-way-btn" src="./images/icon/7123945_logo_pay_google_gpay_icon.svg" alt="googlePay">
+            <img class="pay-way-btn" src="./images/icon/8666126_amazon_pay_icon.svg" alt="amazonPay">
+        </div>
     </div>
 
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const titleBox = document.querySelector('.list-title-box');
+            const orderList = document.querySelector('.order-list');
+            const arrowIcon = document.querySelector('.list-title img');
+
+            titleBox.addEventListener('click', function () {
+                // 切換「active」class，控制顯示/隱藏
+                orderList.classList.toggle('hidden');
+                // 同時讓箭頭翻轉（上/下）
+                arrowIcon.classList.toggle('rotate');
+            });
+        });
+    </script>
 
 
 
