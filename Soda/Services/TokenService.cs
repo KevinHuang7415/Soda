@@ -64,7 +64,7 @@ namespace Soda.Services
                     .Where(rt => rt.ExpiresAt <= taipeiNow)
                     .ToListAsync();
 
-                if (expiredTokens.Any())
+                if (expiredTokens.Count != 0)
                 {
                     _context.RevokedTokens.RemoveRange(expiredTokens);
                     await _context.SaveChangesAsync();
