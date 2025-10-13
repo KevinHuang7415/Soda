@@ -679,7 +679,7 @@
                     <td>${p.id}</td>
                     <td>
                         <input type="text" value="${p.name}" id="name-${p.id}" 
-                               style="width:120px; padding:4px; border-radius:4px; border:1px solid #ccc;"
+                               style="width:120px; padding:4px;border:none"
                                onkeydown="if(event.key === 'Enter') updateProduct(${p.id})" title="按下enter更新">
                     </td>
                     <td>
@@ -689,7 +689,7 @@
                     </td>
                     <td>
                         <input type="number" min="0" value="${p.stock}" id="stock-${p.id}" 
-                               style="width:60px; padding:4px; border-radius:4px; border:1px solid #ccc;"
+                               style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;"
                                onkeydown="if(event.key === 'Enter') updateProduct(${p.id})" title="按下enter更新">
                     </td>
                     
