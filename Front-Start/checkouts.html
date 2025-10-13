@@ -45,8 +45,10 @@
         }
 
         .list-title-box {
-            position: relative; /* 讓它成為定位參考 */
-            overflow: hidden; /* 避免往上移時穿幫 */
+            position: relative;
+            /* 讓它成為定位參考 */
+            overflow: hidden;
+            /* 避免往上移時穿幫 */
             z-index: 10;
             display: flex;
             justify-content: space-between;
@@ -92,7 +94,7 @@
             /* 慢慢變透明 */
             opacity: 0;
             /* 往上收起的錯覺 */
-            transform: translateY(-50px);            
+            transform: translateY(-50px);
         }
 
         /* 讓箭頭旋轉 */
@@ -220,6 +222,37 @@
             justify-content: space-between;
         }
 
+.pay-way-box {
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+
+
+        .pay-way-btn {
+            background: var(--main-orange);
+            width: 150px;
+            height: 45px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 100ms ease;
+        }
+
+        .pay-way-btn:hover {
+            background: var(--main-color);
+            transform: translateY(3px);
+        }
+
+        /* .applePay {
+            background: var(--product-green-light);
+        }
+        .googlePay {
+            background: var(--product-pink-light);
+        }
+        .amazonPay {
+            background: var(--product-purple-light);
+        } */
+        
         /* 
         .checkouts-main {
             margin: auto;
@@ -329,9 +362,9 @@
     </div>
     <div class="checkouts-main">
         <div class="pay-way-box">
-            <img class="pay-way-btn" src="./images/icon/8666205_apple_pay_icon.svg" alt="applePay">
-            <img class="pay-way-btn" src="./images/icon/7123945_logo_pay_google_gpay_icon.svg" alt="googlePay">
-            <img class="pay-way-btn" src="./images/icon/8666126_amazon_pay_icon.svg" alt="amazonPay">
+            <img class="pay-way-btn applePay" src="./images/icon/8666205_apple_pay_icon.svg" alt="applePay">
+            <img class="pay-way-btn googlePay" src="./images/icon/8546747_google_pay_icon.svg" alt="googlePay">
+            <img class="pay-way-btn amazonPay" src="./images/icon/8666126_amazon_pay_icon.svg" alt="amazonPay">
         </div>
     </div>
 
