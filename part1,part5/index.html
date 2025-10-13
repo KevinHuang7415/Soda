@@ -8,11 +8,22 @@
   <!-- bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <!-- 登入/註冊 -->
+  <link rel="stylesheet" href="./css/login.css">
   <style>
+    /* ========全域樣式======= */
     body {
       margin: 0;
       font-family: "Poppins", sans-serif;
-      background-color: #ffe600;
+      background-color: #FEE832;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .show {
+      display: block;
     }
 
     /* ======== 第一部分 ======== */
@@ -21,7 +32,9 @@
       width: 100%;
       height: 56.25vw;
       /* 16:9 比例 */
-      background-color: #ffe600;
+      background-color: #FEE832;
+      display: flex;
+      min-height: none;
     }
 
     /* 導覽列 */
@@ -29,11 +42,10 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      background: linear-gradient(to bottom, #87f4fc, yellow);
+      background: linear-gradient(to bottom, #ffffff, rgba(245, 245, 2, 0.137));
       position: absolute;
       width: 100%;
-      height: 4vw;
-      z-index: 10;
+      z-index: 2;
     }
 
     .nav-item {
@@ -48,12 +60,12 @@
       background-color: #f0f0f0;
       border: 0.05vw solid #000;
       padding: 0.4vw 0.4vw 0 0.4vw;
-      border-radius: 50%;
+      border-radius: 20px;
     }
 
     .nav-item img {
-      min-width: 1.2vw;
-      min-height: 1.2vw;
+      min-width: 1.5vw;
+      min-height: 1.5vw;
       width: 2vw;
       height: 2vw;
     }
@@ -90,11 +102,162 @@
       background: #f0f0f0;
     }
 
+    .separateRight {
+      margin-right: 3vw;
+    }
+
+    .separateLeft {
+      padding-left: 3vw;
+    }
+
+    .navbar ul {
+      display: flex;
+      list-style: none;
+    }
+
+    .sign {
+      line-height: 12px;
+      font-size: small;
+      text-align: right;
+      margin-top: 10px;
+    }
+
+
+    /* ======768px以下導覽列下拉選單========  */
+    .container {
+      cursor: pointer;
+    }
+
+    .bar1,
+    .bar2,
+    .bar3 {
+      width: 20px;
+      height: 2px;
+      background-color: #333;
+      margin: 5px 10px 0 0;
+      transition: 0.4s;
+    }
+
+    .change .bar1 {
+      -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+      transform: rotate(-45deg) translate(-9px, 6px);
+    }
+
+    .change .bar2 {
+      opacity: 0;
+    }
+
+    .change .bar3 {
+      -webkit-transform: rotate(45deg) translate(-8px, -8px);
+      transform: rotate(45deg) translate(-8px, -8px);
+    }
+
+
+    .overlay {
+      height: 0%;
+      width: 100%;
+      position: fixed;
+      z-index: 10;
+      top: 0;
+      left: 0;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.9);
+      overflow-y: hidden;
+      transition: 0.5s;
+    }
+
+    .overlay-content {
+      position: relative;
+      top: 25%;
+      width: 100%;
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .overlay a {
+      padding: 8px;
+      text-decoration: none;
+      font-size: 36px;
+      color: #818181;
+      display: block;
+      transition: 0.3s;
+    }
+
+    .overlay a:hover,
+    .overlay a:focus {
+      color: #f1f1f1;
+    }
+
+    .overlay .closebtn {
+      position: absolute;
+      top: 20px;
+      right: 45px;
+      font-size: 60px;
+    }
+
+    @media screen and (max-height: 450px) {
+      .overlay {
+        overflow-y: auto;
+      }
+
+      .overlay a {
+        font-size: 20px
+      }
+
+      .overlay .closebtn {
+        font-size: 40px;
+        top: 15px;
+        right: 35px;
+      }
+    }
+
+    /* =======彈窗畫面======== */
+    /* 弹窗 (background) */
+    .modal {
+      display: none;
+      /* 默认隐藏 */
+      position: fixed;
+      /* 固定定位 */
+      z-index: 1;
+      /* 设置在顶层 */
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    /* 弹窗内容 */
+    .modal-content {
+      margin: 15% auto;
+      width: 60%;
+      position: relative;
+    }
+
+    /* 关闭按钮 */
+    .close {
+      position: absolute;
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      top: 10px;
+      right: 25px;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
     /* ======== 主視覺圖片 ======== */
     .soda-title-big {
       position: absolute;
       top: 8vw;
-      left: 34vw;
+      left: 33vw;
       width: 40vw;
     }
 
@@ -117,15 +280,6 @@
       top: 30vw;
       left: 50vw;
       width: 30vw;
-      z-index: 2;
-    }
-
-    .sajaboys-logo {
-      position: absolute;
-      top: 30vw;
-      right: 1vw;
-      width: 20vw;
-      z-index: 1;
     }
 
     /* ======== 星星動畫 ======== */
@@ -181,8 +335,8 @@
     }
 
     .star3 {
-      bottom: 10vw;
-      left: vw;
+      top: 45vw;
+      left: 5vw;
       width: vw;
     }
 
@@ -193,10 +347,9 @@
     }
 
     .star5 {
-      bottom: 2vw;
+      top: 40vw;
       right: 2vw;
       width: 8vw;
-      z-index: 2;
     }
 
     img {
@@ -204,18 +357,34 @@
       -webkit-user-drag: none;
     }
 
-    /* ======== 第五部分 ======== */
+
+    /* ======== 第四部分 ======== */
     .wrap {
       background-color: #f6f884;
+      display: flex;
+      /* height: 50vh; */
+      justify-content: center;
+      margin-top: 2vw;
     }
 
     .part4 {
+      width: 100%;
+      /* height: 80%; */
       display: flex;
       justify-content: center;
-      font-size: 20px;
       color: #fff;
       text-align: center;
       letter-spacing: 0.3em;
+      margin-top: 0;
+    }
+
+    .part4 .text-34 {
+      font-size: 34px;
+      letter-spacing: 0.02em
+    }
+
+    .part4 .text-14 {
+      font-size: 14px;
     }
 
     .text-shadow {
@@ -224,6 +393,7 @@
     }
 
     .discount {
+      width: 30%;
       background-color: #f5cb11;
       display: flex;
       flex-direction: column;
@@ -245,97 +415,317 @@
 
     .coupon {
       background-color: #fff;
+      max-width: 80%;
+      margin: 0 auto;
     }
+
+    .marginTop {
+      margin-top: 1vw;
+    }
+
+    .marginDown {
+      margin-top: 3vw;
+    }
+
+    footer {
+      padding: 1vw 0;
+      font-size: 2vw;
+    }
+
+    /* =======桌機畫面========  */
+    @media (max-width:1140px) {}
 
     /* ======== 手機畫面 ======== */
     @media (max-width:768px) {
       .part1 {
         width: 100%;
-        height: 36vw;
+        height: 42vw;
+        min-height: 360px;
       }
+
+
+      .show {
+        display: none;
+      }
+
+      .container {
+        display: inline-block;
+      }
+
+
+      .soda-title-big {
+        min-width: 180px;
+      }
+
+      .union {
+        min-width: 60px;
+      }
+
+      .saja {
+        min-width: 180px;
+      }
+
+      .boys {
+        min-width: 180px;
+      }
+
+      .container.hidden {
+        display: inline-block !important;
+      }
+
+      .dropdown-content {
+        position: absolute;
+        top: 60px;
+        /* 可依你的導覽列高度調整 */
+        right: 10px;
+        display: none;
+      }
+
+      .dropdown-content.show {
+        display: block;
+      }
+
 
       .part4 {
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin-top: 100px;
+      }
+
+      .discount {
+        margin: 2vw;
+      }
+
+      .part4 .text-34 {
+        font-size: 32px;
+      }
+
+      .part4 .text-14 {
+        font-size: 16px;
       }
 
       .discount {
         width: 50%;
+      }
+
+      .marginDown {
+        margin-top: 4vw;
       }
     }
   </style>
 </head>
 
 <body>
+
   <div class="part1">
     <!-- 導覽列 -->
-    <div class="navbar">
-      <img src="./img/soda_title.png" alt="SODA標題" style="height:2vw; margin-right:auto;">
-      <div class="nav-item nav-item-style" id="about">About</div>
-      <div class="nav-item nav-item-style" id="shop">Shop</div>
-      <div class="nav-item nav-item-style"><a href="#"><img src="./img/user.svg" alt=""></a></div>
-      <div class="nav-item nav-item-style"><a href="#"><img src="./img/shopping-cart.svg" alt=""></a><span
-          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-          4+
-          <span class="visually-hidden">unread messages</span>
-        </span></div>
+    <div class="navbar navbar-default mobile-nav-wrap">
+      <img class="separateLeft" src="./img/soda_title.png" alt="SODA標題" style="height:6vw; margin-right:auto;">
+      <ul>
+        <li>
+          <div class="nav-item nav-item-style" id="about">About</div>
+        </li>
+        <li>
+          <div class="nav-item nav-item-style" id="shop">Shop</div>
+        </li>
+        <li>
+          <div class="nav-item nav-item-style" id="userbtn"><a href="#"><img src="./img/user.svg" alt=""></a></div>
+        </li>
+        <li>
+          <div class="show">
+            <div class="nav-item nav-item-style separateRight"><a href="#"><img src="./img/shopping-cart.svg"
+                  alt=""></a>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                4+
+                <span class="visually-hidden">unread messages</span>
+              </span>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="container hidden dropbtn" onclick="openNav()">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+          </div>
+        </li>
+      </ul>
 
       <!-- 下拉選單 -->
+      <div id="myNav" class="overlay">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div class="overlay-content">
+          <a href="#">About</a>
+          <a href="#">Services</a>
+          <a href="./登入.html">登入</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+
+
+
+
+
       <div class="dropdown" id="aboutMenu">
         <div class="dropdown-item">Our Story</div>
         <div class="dropdown-item">Team</div>
         <div class="dropdown-item">Contact</div>
       </div>
     </div>
+    <!-- 彈窗畫面 -->
 
-    <!-- 主視覺圖片 -->
-    <img src="./img/soda_title_big.png" alt="SODA" class="soda-title-big">
-    <img src="./img/Union.png" alt="X" class="union">
-    <img src="./img/saja.png" alt="SAJA" class="saja">
-    <img src="./img/boys.png" alt="BOYS" class="boys">
-    <img src="./img/sajaboys_logo 1.png" alt="LOGO" class="sajaboys-logo">
+    <!-- 弹窗 -->
+    <div id="register" class="modal">
 
-    <!-- 星星動畫 -->
-    <img src="./img/Star 1.png" class="star star1" alt="">
-    <img src="./img/Star 2.png" class="star star2 reverse" alt="">
-    <img src="./img/Star 3.png" class="star star3" alt="">
-    <img src="./img/Star 4.png" class="star star4 reverse" alt="">
-    <img src="./img/Star 5.png" class="star star5" alt="">
+      <!-- 弹窗内容 -->
+      <div class="modal-content">
+        <!-- 註冊 -->
+        <div class="card">
+          <!-- 關閉按鈕 -->
+          <span class="close">&times;</span>
+          <h2>📝 會員註冊</h2>
+          <div class="form-group">
+            <label for="regUsername">使用者名稱</label>
+            <input type="text" id="regUsername" placeholder="請輸入使用者名稱">
+          </div>
+          <div class="form-group">
+            <label for="regEmail">電子郵件</label>
+            <input type="email" id="regEmail" placeholder="請輸入電子郵件">
+          </div>
+          <div class="form-group">
+            <label for="regPassword">密碼</label>
+            <input type="password" id="regPassword" placeholder="請輸入密碼（至少6個字元）">
+          </div>
+          <div class="form-group">
+            <label for="regFirstName">名字</label>
+            <input type="text" id="regFirstName" placeholder="請輸入名字（選填）">
+          </div>
+          <div class="form-group">
+            <label for="regLastName">姓氏</label>
+            <input type="text" id="regLastName" placeholder="請輸入姓氏（選填）">
+          </div>
+          <button class="btn btn-primary" onclick="register()">註冊</button>
+          <div id="registerResponse" class="response" style="display: none;"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 登入 -->
+    <div id="loginIn" class="modal">
+
+      <!-- 弹窗内容 -->
+      <div class="modal-content">
+
+        <div class="card">
+          <span class="close">&times;</span>
+          <h2>🔑 會員登入</h2>
+          <div class="form-group">
+            <label for="loginUsername">使用者名稱或電子郵件</label>
+            <input type="text" id="loginUsername" placeholder="請輸入使用者名稱或電子郵件">
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">密碼</label>
+            <input type="password" id="loginPassword" placeholder="請輸入密碼">
+          </div>
+          <button class="btn btn-primary" onclick="login(userInfo)">登入</button>
+          <div id="loginResponse" class="response" style="display: none;"></div>
+
+          <div class="sign" onclick="regeistBtn">
+            <div class="sign">
+              <a href="javascript:void(0)" id="regeistBtn">未註冊？點擊註冊</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- 使用者資訊 -->
+
+    <div id="userInfo" class="modal">
+
+      <!-- 弹窗内容 -->
+      <div class="modal-content">
+        <div class="card full-width">
+          <span class="close">&times;</span>
+          <h2>👤 使用者資訊</h2>
+          <button class="btn btn-secondary" onclick="getCurrentUser()">取得當前使用者資訊</button>
+          <button class="btn btn-secondary" onclick="getAllUsers()">取得所有使用者</button>
+          <button class="btn btn-danger" onclick="logout()">登出</button>
+          <button class="btn btn-danger" onclick="logoutAll()">登出所有裝置</button>
+          <div id="userResponse" class="response" style="display: none;"></div>
+          <div class="token-display" style="display: none;" id="tokenDisplay">
+            <strong>當前 Token:</strong><br>
+            <span id="tokenText"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- 第五部分 -->
+
+
+
+
+
+
+
+
+
+
+  <!-- 主視覺圖片 -->
+  <img src="./img/soda_title_big.png" alt="SODA" class="soda-title-big">
+  <img src="./img/Union.png" alt="X" class="union">
+  <img src="./img/saja.png" alt="SAJA" class="saja">
+  <img src="./img/boys.png" alt="BOYS" class="boys">
+
+  <!-- 星星動畫 -->
+  <img src="./img/Star 1.png" class="star star1" alt="">
+  <img src="./img/Star 2.png" class="star star2 reverse" alt="">
+  <img src="./img/Star 3.png" class="star star3" alt="">
+  <img src="./img/Star 4.png" class="star star4 reverse" alt="">
+  <img src="./img/Star 5.png" class="star star5" alt="">
+  </div>
+
+  <!-- 第四部分 -->
 
   <div class="wrap">
-
     <div class="part4">
       <div class="discount text-shadow">
-        <h2 id="bent1">歡慶聖誕節</h2>
-        <h3 id="bent2" style="letter-spacing: 0.1em;">即日起-12/31</h3>
-        <b style="color: red ;font-size: 24px; margin-top: 10px;">全面<span style="font-size:64px;">88</span>折</b>
+        <h2 id="bent1" class="text-34">歡慶聖誕節</h2>
+        <h3 class="text-34" id="bent2" style="letter-spacing: 0.05em;">即日起-12/31</h3>
+        <b style="color: red; font-size: 24px; margin-top: 5%;">
+          全面<span style="font-size: 64px;">88</span>折
+        </b>
       </div>
 
       <div class="discount text-shadow">
-        <h2>新朋友限定</h2>
-        <img src="./img/discount.png" alt="">
+        <h2 class="text-34 marginTop">新朋友限定</h2>
+        <img class="marginDown" src="./img/discount.png" alt="discount">
       </div>
 
-      <div class="discount">
-        <h2 class="text-shadow">全館滿額再折</h2>
-        <div class="coupon">
-          <p style="color: black;font-weight: bold;">滿2500元<span style="color: red;">在折200元</span></p>
-          <div class="coupon-input">
-            <p style="color: black;font-weight: bold; font-size: 14px;">請輸入折扣碼:SODA200</p>
+      <div class="discount text-shadow">
+        <h2 class="text-34 marginTop">全館滿額再折</h2>
+        <div class="coupon marginDown">
+          <p class="text-14" style="color: black; font-weight: bold;">
+            滿2500元<span style="color: red;">再折200元</span>
+          </p>
+          <div class="coupon-input" style="margin-top: 3vw;">
+            <p class="text-14" style="color:black; font-weight: bold;">
+              請輸入折扣碼：SODA200
+            </p>
           </div>
         </div>
       </div>
     </div>
   </div>
-<div>
+
   <footer>
     Copyright &copy;<ins>第五組</ins> All Rights Reserved.
   </footer>
+  <!-- 登入/註冊 -->
+  <script src="./js/login.js"></script>
   <!-- 引入 Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
@@ -370,6 +760,60 @@
     $(function () {
       $('#bent1, #bent2').arctext({ radius: 200 });
     });
+    //768px以下導覽列下拉選單
+
+    function openNav() {
+      document.getElementById("myNav").style.height = "100%";
+    }
+
+    function closeNav() {
+      document.getElementById("myNav").style.height = "0%";
+    }
+
+    // 彈窗畫面
+    var loginModal = document.getElementById('loginIn');
+    var userBtn = document.getElementById("userbtn");
+    var registerModal = document.getElementById('register');
+    var registerBtn = document.getElementById("regeistBtn");
+
+    // ✅ 通用開啟函式
+    function openModal(id) {
+      // 先關閉所有 modal
+      document.querySelectorAll(".modal").forEach(m => m.style.display = "none");
+      // 再開啟指定的
+      document.getElementById(id).style.display = "block";
+    }
+
+    // ✅ 點擊使用者按鈕 => 開啟登入 modal
+    if (userBtn) {
+      userBtn.onclick = function () {
+        openModal('loginIn');  // ✅ 改成使用 openModal()
+      };
+    }
+
+    // ✅ 點擊註冊按鈕 => 開啟註冊 modal
+    if (registerBtn) {
+      registerBtn.onclick = function () {
+        openModal('register');  // ✅ 改成使用 openModal()
+      };
+    }
+
+    // ✅ 通用關閉邏輯
+    document.querySelectorAll(".close").forEach(btn => {
+      btn.onclick = function () {
+        btn.closest(".modal").style.display = "none";
+      };
+    });
+
+    // ✅ 點擊背景關閉
+    window.addEventListener("click", event => {
+      if (event.target.classList.contains("modal")) {
+        event.target.style.display = "none";
+      }
+    });
+
+
+
   </script>
 </body>
 

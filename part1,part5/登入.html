@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登入(待修)</title>
+    <link rel="stylesheet" href="./css/login.css">
+    <style>
+        .container{
+            width: 1200px;
+            display: flex;
+
+        }
+        .sign {
+      line-height: 12px;
+      font-size: small;
+      text-align: right;
+      margin-top: 10px;
+    }
+    .leftSide{
+        width: 50%;
+    }
+    .leftSide img{
+        min-width: 600px;
+        width: 100%;
+        object-fit: contain;
+    }
+    .card{
+        width: 50%;
+    }
+    </style>
+       
+</head>
+<body>
+    <div class="container">
+                <div class="leftSide">
+                    <img src="./img/drink.png" alt="">
+                    </div>
+            <!-- 登入表單 -->
+            <div class="card">
+                <h2>🔑 會員登入</h2>
+                <div class="form-group">
+                    <label for="loginUsername">使用者名稱或電子郵件</label>
+                    <input type="text" id="loginUsername" placeholder="請輸入使用者名稱或電子郵件">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">密碼</label>
+                    <input type="password" id="loginPassword" placeholder="請輸入密碼">
+                </div>
+                <button class="btn btn-primary" onclick="login()">登入</button>
+                <div id="loginResponse" class="response" style="display: none;"></div>
+                <div class="sign">
+              <a href="javascript:void(0)" id="regeistBtn">未註冊？點擊註冊</a>
+            </div>
+            </div>
+
+        </div>
+        
+    </div>
+
+    <script src="./js/login.js"></script>
+    <script>
+    </script>
+</body>
+</html>

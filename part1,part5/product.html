@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Product – Fullscreen layout</title>
+    <title>Product</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap 5 -->
@@ -27,8 +27,7 @@
             height: 100%;
             margin: 0;
             box-sizing: border-box;
-            font-size: 62.5%;
-            /* 1rem = 10px */
+            font-size: 16px;
         }
 
         *,
@@ -39,11 +38,16 @@
 
         body {
             font-family: 'Mukta Malar', sans-serif;
-            font-size: 1.6rem;
+
+
             display: flex;
             flex-direction: column;
             overflow-y: auto;
             /* 讓頁面可以往下拉 */
+        }
+        .fontB{
+            font-size: 28px;
+            font-weight: bold;
         }
 
         /* -------------------------------------------------
@@ -63,16 +67,18 @@
         }
 
         .left {
-            background: #00ffff;
+            background: #B1F3F7;
         }
 
         .right {
-            background: #fdffa4;
+            background: #fffcdc;
         }
 
         /* 左側背景圖 */
         .left .backgroundPicture {
             position: absolute;
+            width: 84%;
+            height: 84%;
             inset: 0;
             background: url('./img/backgroundPicture.png') no-repeat center/100% 100%;
             margin: 8%;
@@ -86,7 +92,9 @@
         }
 
         .carousel-inner {
+            width: 100%;
             height: 100%;
+            margin: auto;
             display: flex;
             align-items: center;
             /* 讓圖片垂直置中 */
@@ -183,114 +191,7 @@
             box-shadow: .05em .05em;
         }
 
-        /* -------------------------------------------------
-   底部卡片區塊 + 側邊漸層
-------------------------------------------------- */
-        .card-section {
-            display: flex;
-            position: relative;
-            /* 與 .flickity-viewport 的高度相同 */
-        }
-
-        .overlay {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            background: linear-gradient(to right,
-                    rgba(255, 255, 255, 1) 1%,
-                    rgba(255, 255, 255, 0) 20%,
-                    rgba(255, 255, 255, 0) 80%,
-                    rgba(255, 255, 255, 1) 99%);
-            z-index: 100;
-        }
-
-        .card-wrap {
-            display: flex;
-            width: 100%;
-            margin: auto;
-            overflow: hidden;
-            /* 隱藏多餘的捲軸 */
-        }
-
-        .flickity-viewport {
-            height: 100%;
-            /* 讓卡片不被裁切 */
-        }
-
-        /* 卡片本身 */
-        :root {
-            --border-radius: .6rem;
-            --max-width: 190px;
-            --min-height: 240px;
-        }
-
-        .card {
-            display: block;
-            width: 100%;
-            max-width: var(--max-width);
-            min-width: var(--max-width);
-            min-height: var(--min-height);
-            margin: 1rem;
-            border-radius: var(--border-radius);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, .1),
-                0 5px 15px rgba(0, 0, 0, .04);
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-            color: inherit;
-            transition: all .35s ease-out;
-        }
-
-        .card__overlay {
-            inset: 0;
-            position: absolute;
-            border-radius: var(--border-radius);
-            background: linear-gradient(to top,
-                    rgba(0, 0, 0, .8),
-                    rgba(0, 0, 0, 0),
-                    rgba(255, 255, 255, .3));
-            opacity: .7;
-            transition: all .35s ease-out;
-        }
-
-        .card__info {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            padding: 3rem 1.5rem;
-            text-align: center;
-            color: #fff;
-            text-shadow: 0 3px 5px rgba(0, 0, 0, .4);
-        }
-
-        .card__title {
-            margin-bottom: .5rem;
-            font-size: 1.8rem;
-            font-weight: 800;
-        }
-
-        /* 卡片 hover 效果 */
-        .card:hover,
-        .card:focus {
-            transform: scale(1.1) translateY(8px);
-        }
-
-        .card:hover .card__overlay,
-        .card:focus .card__overlay {
-            opacity: 1;
-            top: -150px;
-        }
-
-        .card:hover {
-            cursor: -webkit-grab;
-        }
-
-        .card:focus {
-            cursor: -webkit-grabbing;
-        }
+       
 
         /* -------------------------------------------------
    手機排版（寬度 < 768px 時改為上下堆疊）
@@ -336,6 +237,8 @@
                 z-index: 10;
             }
         }
+
+
     </style>
 </head>
 
@@ -385,8 +288,8 @@
         <!-- 右側：商品資訊 -->
         <div class="right">
             <div class="details">
-                <h2>Lemon</h2>
-                <h3><span>$599</span> Energizing infusion</h3>
+                <h2 class="fontB">Lemon</h2>
+                <h3 class="fontB"><span>$599</span> Energizing infusion</h3>
 
                 <table>
                     <thead>
@@ -444,41 +347,7 @@
         </div>
     </div>
 
-    <!-- ---------- 底部：卡片列 + 側邊漸層 ---------- -->
-    <div class="card-section">
-        <div class="overlay"></div>
 
-        <div class="card-wrap">
-            <!-- ==== 依序產生所有卡片 ==== -->
-            <a class="card" href="#" style="background-image:url('./img/mockup1.png')">
-                <div class="card__overlay"></div>
-                <div class="card__info">
-                    <h3 class="card__title">Lemon</h3>
-                    <p class="card__text">$119</p>
-                </div>
-            </a>
-
-            <a class="card" href="#" style="background-image:url('./img/mockup2.png')">
-                <div class="card__overlay"></div>
-                <div class="card__info">
-                    <h3 class="card__title">grape</h3>
-                    <p class="card__text">$76</p>
-                </div>
-            </a>
-
-            <a class="card" href="#" style="background-image:url('./img/mockup3.png')">
-                <div class="card__overlay"></div>
-                <div class="card__info">
-                    <h3 class="card__title">strawberry</h3>
-                    <p class="card__text">$67</p>
-                </div>
-            </a>
-
-
-            <!-- （以下略）… 依序把剩下的城市寫在這裡即可 -->
-            <!-- 只保留示範，完整清單可自行粘貼上面提供的 17 個卡片 -->
-        </div>
-    </div>
 
     <!-- -------------------------------------------------
      JS：Bootstrap + Flickity + 數量加減
