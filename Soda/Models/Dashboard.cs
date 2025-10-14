@@ -71,7 +71,6 @@ namespace WebApplication1.Models
         [MaxLength(10)]
         public string Status { get; set; } = "active";
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedAt { get; set; }
+        
     }
 }
