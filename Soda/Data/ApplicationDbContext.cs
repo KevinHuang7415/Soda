@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Soda.Models.Entities;
 using Soda.Models.Enums;
+using WebApplication1.Models;
 
 namespace Soda.Data
 {
@@ -14,6 +15,9 @@ namespace Soda.Data
         public DbSet<User> Users { get; set; }
         public DbSet<RevokedToken> RevokedTokens { get; set; }
 
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Coupon> Coupons { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

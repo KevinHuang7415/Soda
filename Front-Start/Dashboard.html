@@ -498,7 +498,6 @@
                     <table id="productTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>名稱</th>
                                 <th>價格</th>
                                 <th>庫存</th>
@@ -506,7 +505,6 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>1</td>
                                 <td>紅茶</td>
                                 <td><span class="price">$30</span></td>
                                 <td>5</td>
@@ -532,11 +530,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>#001</td>
-                                <td>1</td>
-                                <td>紅茶、綠茶</td>
-                                <td><span class="price">$60</span></td>
-                                <td><span class="status-badge status-active">已完成</span></td>
+
                             </tr>
                         </tbody>
                     </table>
@@ -669,14 +663,13 @@
 
         // 商品管理 API 
         function loadProducts() {
-            axios.get('http://localhost:5090/api/products')
+            axios.get('https://localhost:7085/api/products')
                 .then(res => {
                     const tbody = document.querySelector('#productTable tbody');
                     tbody.innerHTML = '';
                     res.data.forEach(p => {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                    <td>${p.id}</td>
                     <td>
                         <input type="text" value="${p.name}" id="name-${p.id}" 
                                style="width:120px; padding:4px;border:none"
@@ -720,7 +713,7 @@
                 return;
             }
 
-            axios.put(`http://localhost:5090/api/products/${id}`, {
+            axios.put(`https://localhost:7085/api/products/${id}`, {
                 name: newName,
                 price: newPrice,
                 stock: newStock
@@ -738,32 +731,50 @@
 
         // 訂單管理 API 
         function loadOrders() {
-            axios.get('http://localhost:5090/api/orders')
+            axios.get('https://localhost:7085/api/orders')
                 .then(res => {
                     const tbody = document.querySelector('#orderTable tbody');
                     tbody.innerHTML = '';
+
                     res.data.forEach(o => {
+                        let items = [];
+                        try {
+                            // 將字串轉回陣列
+                            items = JSON.parse(o.productList);
+                        } catch (err) {
+                            console.error('商品列表 JSON 解析錯誤:', err);
+                        }
+
+                        // 取出商品名稱
+                        const productNames = items.map(i => `${i.ProductName}x${i.Quantity}`).join(', ');
+
+                        // 狀態轉中文
+                        const statusClass = o.status === 'Paid' ? 'status-active' : 'status-pending';
+                        const statusText = o.status === 'Paid' ? '已完成' : '處理中';
+
+                        // 建立表格列
                         const tr = document.createElement('tr');
-                        const statusClass = o.status === 'completed' ? 'status-active' : 'status-pending';
-                        const statusText = o.status === 'completed' ? '已完成' : '處理中';
                         tr.innerHTML = `
-                            <td>#${String(o.id).padStart(3, '0')}</td>
-                            <td>${o.userId}</td>
-                            <td>${o.items.map(i => i.name).join(', ')}</td>
-                            <td><span class="price">$${o.total}</span></td>
-                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                        `;
+                    <td>#${String(o.orderID).padStart(3, '0')}</td>
+                    <td>${o.userID}</td>
+                    <td>${productNames}</td>
+                    <td><span class="price">$${o.totalAmount.toFixed(2)}</span></td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                `;
                         tbody.appendChild(tr);
                     });
                 })
                 .catch(err => {
+                    console.error(err);
                     showMessage('載入訂單資料時發生錯誤', 'error');
                 });
         }
 
+
+
         // 用戶管理 API 
         function loadUsers() {
-            axios.get('http://localhost:5090/api/users')
+            axios.get('https://localhost:7085/api/users')
                 .then(res => {
                     const tbody = document.querySelector('#userTable tbody');
                     tbody.innerHTML = '';
@@ -787,7 +798,7 @@
 
         // 優惠管理 API
         function loadCoupons() {
-            axios.get('http://localhost:5090/api/coupons')
+            axios.get('https://localhost:7085/api/coupons')
                 .then(res => {
                     const tbody = document.querySelector('#couponTable tbody');
                     tbody.innerHTML = '';
@@ -826,7 +837,7 @@
                 return;
             }
 
-            axios.post('http://localhost:5090/api/coupons', { code, discount })
+            axios.post('https://localhost:7085/api/coupons', { code, discount })
                 .then(() => {
                     showMessage('優惠券新增成功！', 'success');
                     document.getElementById('couponCode').value = '';
@@ -840,7 +851,7 @@
 
         function deleteCoupon(id) {
             if (confirm('確定要刪除這個優惠券嗎？')) {
-                axios.delete(`http://localhost:5090/api/coupons/${id}`)
+                axios.delete(`https://localhost:7085/api/coupons/${id}`)
                     .then(() => {
                         showMessage('優惠券刪除成功！', 'success');
                         loadCoupons();
