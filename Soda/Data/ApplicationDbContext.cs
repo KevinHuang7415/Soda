@@ -20,6 +20,7 @@ namespace Soda.Data
         public DbSet<Coupon> Coupons { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.HasDefaultSchema("dbo");
             base.OnModelCreating(modelBuilder);
 
             // 設定唯一索引
