@@ -17,6 +17,7 @@ namespace Soda.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("dbo")
                 .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -54,7 +55,7 @@ namespace Soda.Migrations
 
                     b.HasIndex("Token");
 
-                    b.ToTable("RevokedTokens");
+                    b.ToTable("RevokedTokens", "dbo");
                 });
 
             modelBuilder.Entity("Soda.Models.Entities.User", b =>
@@ -121,7 +122,7 @@ namespace Soda.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", "dbo");
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Coupon", b =>
@@ -147,7 +148,7 @@ namespace Soda.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Coupons");
+                    b.ToTable("Coupons", "dbo");
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Order", b =>
@@ -218,7 +219,7 @@ namespace Soda.Migrations
 
                     b.HasKey("OrderID");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", "dbo");
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Product", b =>
@@ -242,7 +243,7 @@ namespace Soda.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", "dbo");
                 });
 #pragma warning restore 612, 618
         }
