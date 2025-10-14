@@ -8,6 +8,14 @@ body {
 }
 
 .shoppingCar {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: flex-end;
+    transition: opacity 0.3s ease;
+    opacity: 1;
+    z-index: 999;
     width: 100vw;
     height: 100vh;
     background-color: var(--product-pink-cover);
@@ -22,7 +30,8 @@ body {
 
 /* 動畫結束後真正隱藏 */
 .shoppingCar.is-hidden {
-    display: none;
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* 固定在畫面右邊 */
