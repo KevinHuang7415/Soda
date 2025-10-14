@@ -30,25 +30,48 @@ namespace WebApplication1.Models
     public class Order
     {
         [Key]
-        public int OrderID { get; set; }
+        public int OrderID { get; set; }             
 
         [Required]
-        public int UserID { get; set; }
+        public int UserID { get; set; }             
 
         [Required]
         public string ProductList { get; set; } = string.Empty;  
 
         [Required]
         [Column(TypeName = "decimal(10,2)")]
-        public decimal TotalAmount { get; set; }
+        public decimal TotalAmount { get; set; }    
 
         [Required]
         [MaxLength(20)]
-        public string Status { get; set; } = "Pending";
+        public string Status { get; set; } = "Pending"; 
 
-        public DateTime OrderDate { get; set; } = DateTime.UtcNow;
+        public DateTime OrderDate { get; set; } = DateTime.UtcNow; 
 
-        
+        [MaxLength(50)]
+        public string PaymentMethod { get; set; } = string.Empty; 
+
+        [MaxLength(20)]
+        public string PaymentStatus { get; set; } = "Unpaid"; 
+
+        [MaxLength(200)]
+        public string ShippingAddress { get; set; } = string.Empty; 
+
+        [MaxLength(50)]
+        public string ShippingMethod { get; set; } = string.Empty; 
+
+        [MaxLength(20)]
+        public string ShippingStatus { get; set; } = "Pending"; 
+
+        [MaxLength(50)]
+        public string ReceiverName { get; set; } = string.Empty; 
+
+        [MaxLength(200)]
+        public string OrderItems { get; set; } = string.Empty; 
+
+        [MaxLength(500)]
+        public string Notes { get; set; } = string.Empty; 
+
     }
 
     

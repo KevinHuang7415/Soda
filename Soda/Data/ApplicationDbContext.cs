@@ -51,6 +51,7 @@ namespace Soda.Data
 
             modelBuilder.Entity<RevokedToken>()
                 .HasIndex(rt => rt.ExpiresAt);
+
         }
     }
 }
