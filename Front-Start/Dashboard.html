@@ -526,6 +526,7 @@
                                 <th>商品列表</th>
                                 <th>總金額</th>
                                 <th>狀態</th>
+                                <th>詳細資料</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -536,6 +537,22 @@
                     </table>
                 </div>
             </div>
+            <!-- 訂單詳細資料彈窗 -->
+            <div id="orderDetailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:999;">
+                <div
+                    style="background:white; padding:20px; border-radius:10px; width:500px; max-height:80vh; overflow-y:auto;">
+                    <h3 style="text-align:center;">訂單詳細資料</h3>
+                    <div id="orderDetailContent" style="margin-top:10px; line-height:1.6;"></div>
+                    <div style="text-align:center; margin-top:20px;">
+                        <button onclick="closeOrderDetail()"
+                            style="background:#666; color:white; border:none; padding:6px 12px; border-radius:5px; cursor:pointer;">
+                            關閉
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- 用戶管理 -->
             <div id="users" class="tabContent" style="display:none;">
                 <h2>用戶管理</h2>
@@ -739,20 +756,20 @@
                     res.data.forEach(o => {
                         let items = [];
                         try {
-                            // 將字串轉回陣列
+
                             items = JSON.parse(o.productList);
                         } catch (err) {
                             console.error('商品列表 JSON 解析錯誤:', err);
                         }
 
-                        // 取出商品名稱
+
                         const productNames = items.map(i => `${i.ProductName}x${i.Quantity}`).join(', ');
 
-                        // 狀態轉中文
+
                         const statusClass = o.status === 'Paid' ? 'status-active' : 'status-pending';
                         const statusText = o.status === 'Paid' ? '已完成' : '處理中';
 
-                        // 建立表格列
+
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                     <td>#${String(o.orderID).padStart(3, '0')}</td>
@@ -760,6 +777,7 @@
                     <td>${productNames}</td>
                     <td><span class="price">$${o.totalAmount.toFixed(2)}</span></td>
                     <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td><button onclick="orderInfo(${o.orderID})" style="border:none;cursor:pointer;">詳細資料</button></td>
                 `;
                         tbody.appendChild(tr);
                     });
@@ -768,6 +786,63 @@
                     console.error(err);
                     showMessage('載入訂單資料時發生錯誤', 'error');
                 });
+        }
+        // 顯示單筆訂單詳細資料
+        function orderInfo(orderID) {
+            axios.get(`https://localhost:7085/api/orders/${orderID}`)
+                .then(res => {
+                    const o = res.data;
+
+
+                    const orderDate = new Date(o.orderDate).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' });
+
+
+                    let products = [];
+                    let itemsHTML = '';
+                    try {
+                        products = JSON.parse(o.productList || "[]");
+                        if (Array.isArray(products) && products.length > 0) {
+                            itemsHTML = '<ul>' + products.map(p =>
+                                `<li>${p.ProductName} × ${p.Quantity} — $${p.Price?.toFixed(2) ?? ''}</li>`
+                            ).join('') + '</ul>';
+                        } else {
+                            itemsHTML = '<p>無商品資料</p>';
+                        }
+                    } catch {
+                        itemsHTML = '<p>商品列表格式錯誤</p>';
+                    }
+
+
+                    const html = `
+                <p><strong>訂單編號：</strong>#${String(o.orderID).padStart(3, '0')}</p>
+                <p><strong>會員ID：</strong>${o.userID}</p>
+                <p><strong>總金額：</strong>$${o.totalAmount.toFixed(2)}</p>
+                <p><strong>訂單狀態：</strong>${o.status}</p>
+                <p><strong>訂單日期：</strong>${orderDate}</p>
+                <p><strong>付款方式：</strong>${o.paymentMethod || '————'}</p>
+                <p><strong>付款狀態：</strong>${o.paymentStatus || '————'}</p>
+                <p><strong>收件地址：</strong>${o.shippingAddress || '————'}</p>
+                <p><strong>運送方式：</strong>${o.shippingMethod || '————'}</p>
+                <p><strong>運送狀態：</strong>${o.shippingStatus || '————'}</p>
+                <p><strong>收件人姓名：</strong>${o.receiverName || '————'}</p>
+                <p><strong>訂單明細：</strong></p>
+                ${itemsHTML}
+                <p><strong>備註：</strong>${o.notes || '————'}</p>
+            `;
+
+
+                    document.getElementById('orderDetailContent').innerHTML = html;
+                    document.getElementById('orderDetailModal').style.display = 'flex';
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('載入訂單詳細資料時發生錯誤');
+                });
+        }
+
+
+        function closeOrderDetail() {
+            document.getElementById('orderDetailModal').style.display = 'none';
         }
 
 
