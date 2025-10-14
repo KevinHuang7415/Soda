@@ -20,7 +20,7 @@ namespace SodaBackend.Controllers
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                string sql = "SELECT Id, Name, Price, Stock FROM Products";
+                string sql = "SELECT Id, Name, Price, Stock, ImageUrl, Size FROM Products";
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
@@ -31,7 +31,9 @@ namespace SodaBackend.Controllers
                             Id = reader.GetInt32(0),
                             Name = reader.GetString(1),
                             Price = reader.GetDecimal(2),
-                            Stock = reader.GetInt32(3)
+                            Stock = reader.GetInt32(3),
+                            ImageUrl = reader.GetString(4),
+                            Size = reader.GetString(5)
                         });
                     }
                 }
@@ -63,16 +65,27 @@ namespace SodaBackend.Controllers
             {
                 return BadRequest(new { message = "庫存不能小於0" });
             }
+            if (updatedProduct.ImageUrl == null)
+            {
+                return BadRequest(new { message = "無效的連結" });
+            }
+            if (updatedProduct.Size == null)
+            {
+                return BadRequest(new { message = "無效的規格" });
+            }
+
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                string sql = "UPDATE Products SET Name = @Name, Price = @Price, Stock = @Stock WHERE Id = @Id";
+                string sql = "UPDATE Products SET Name = @Name, Price = @Price, Stock = @Stock, ImageUrl= @ImageUrl, Size = @Size WHERE Id = @Id";
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@Name", updatedProduct.Name);
                     cmd.Parameters.AddWithValue("@Price", updatedProduct.Price);
                     cmd.Parameters.AddWithValue("@Stock", updatedProduct.Stock);
+                    cmd.Parameters.AddWithValue("@ImageUrl", updatedProduct.ImageUrl);
+                    cmd.Parameters.AddWithValue("@Size", updatedProduct.Size);
                     cmd.Parameters.AddWithValue("@Id", id);
 
                     int rows = cmd.ExecuteNonQuery();

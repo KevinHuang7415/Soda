@@ -499,8 +499,10 @@
                         <thead>
                             <tr>
                                 <th>名稱</th>
+                                <th>規格</th>
                                 <th>價格</th>
                                 <th>庫存</th>
+                                <th>圖片連結</th>                                
                             </tr>
                         </thead>
                         <tbody>
@@ -684,30 +686,21 @@
                 .then(res => {
                     const tbody = document.querySelector('#productTable tbody');
                     tbody.innerHTML = '';
+
                     res.data.forEach(p => {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                    <td>
-                        <input type="text" value="${p.name}" id="name-${p.id}" 
-                               style="width:120px; padding:4px;border:none"
-                               onkeydown="if(event.key === 'Enter') updateProduct(${p.id})" title="按下enter更新">
-                    </td>
-                    <td>
-                        <input type="number" min="0"  value="${p.price}" id="price-${p.id}" 
-                               style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;"
-                               onkeydown="if(event.key === 'Enter') updateProduct(${p.id})" title="按下enter更新">
-                    </td>
-                    <td>
-                        <input type="number" min="0" value="${p.stock}" id="stock-${p.id}" 
-                               style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;"
-                               onkeydown="if(event.key === 'Enter') updateProduct(${p.id})" title="按下enter更新">
-                    </td>
+                    <td><input type="text" value="${p.name}" id="name-${p.id}" style="width:120px; padding:4px;border:none" onkeydown="if(event.key === 'Enter') updateProduct(${p.id})"></td>
+                    <td><input type="text" value="${p.size || ''}" id="size-${p.id}" style="width:120px; padding:4px;border:none" onkeydown="if(event.key === 'Enter') updateProduct(${p.id})"></td>
+                    <td><input type="number" min="0" value="${p.price}" id="price-${p.id}" style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;" onkeydown="if(event.key === 'Enter') updateProduct(${p.id})"></td>
+                    <td><input type="number" min="0" value="${p.stock}" id="stock-${p.id}" style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;" onkeydown="if(event.key === 'Enter') updateProduct(${p.id})"></td>
+                    <td><input type="text" value="${p.imageUrl || ''}" id="imageurl-${p.id}" style="width:120px; padding:4px;border:none" onkeydown="if(event.key === 'Enter') updateProduct(${p.id})"></td>
                     
                 `;
                         tbody.appendChild(tr);
                     });
                 })
-                .catch(err => {
+                .catch(() => {
                     showMessage('載入商品資料時發生錯誤', 'error');
                 });
         }
@@ -716,33 +709,25 @@
             const newName = document.getElementById(`name-${id}`).value.trim();
             const newPrice = parseFloat(document.getElementById(`price-${id}`).value);
             const newStock = parseInt(document.getElementById(`stock-${id}`).value);
-
-            if (!newName) {
-                showMessage('名稱不能為空', 'error');
-                return;
-            }
-            if (isNaN(newPrice) || newPrice < 0) {
-                showMessage('價格必須大於等於0', 'error');
-                return;
-            }
-            if (isNaN(newStock) || newStock < 0) {
-                showMessage('庫存不能小於0', 'error');
-                return;
-            }
+            const newImageUrl = document.getElementById(`imageurl-${id}`).value.trim();
+            const newSize = document.getElementById(`size-${id}`).value.trim();
 
             axios.put(`https://localhost:7085/api/products/${id}`, {
                 name: newName,
                 price: newPrice,
-                stock: newStock
+                stock: newStock,
+                imageUrl: newImageUrl,
+                size: newSize
             })
                 .then(() => {
                     showMessage('商品更新成功！', 'success');
-                    loadProducts(); // 重新載入商品資料
+                    loadProducts();
                 })
-                .catch(err => {
+                .catch(() => {
                     showMessage('更新商品時發生錯誤', 'error');
                 });
         }
+
 
 
 
@@ -802,7 +787,7 @@
                     try {
                         products = JSON.parse(o.productList || "[]");
                         if (Array.isArray(products) && products.length > 0) {
-                            itemsHTML = '<ul>' + products.map(p =>
+                            itemsHTML = '<ul style="list-style:none;">' + products.map(p =>
                                 `<li>${p.ProductName} × ${p.Quantity} — $${p.Price?.toFixed(2) ?? ''}</li>`
                             ).join('') + '</ul>';
                         } else {
