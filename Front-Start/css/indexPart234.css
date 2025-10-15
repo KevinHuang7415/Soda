@@ -134,57 +134,22 @@ p {
 
 nav.downbtn {
     width: 1920px;
-    text-align: center;
-    justify-content: center;
     display: flex;
-    position: absolute;
-    top: 820px;
-}
-
-nav a {
-    display: inline-block;
-    text-decoration: none;
-}
-
-.circle {
-    background-color: aliceblue;
-    border: 5px rgb(0, 0, 0) solid;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    font-size: 60px;
-    align-items: center;
     justify-content: center;
-}
-
-.circle:hover {
-    cursor: pointer;
-    transform: translateY(3px);
-    box-shadow: 0px 0px 0px #ffffff00;
-}
-
-/* 按鈕樣式及動畫設定 */
-.btn {
-    box-shadow: 0px 3px 0px var(--main-black);
-    transition: all 100ms ease;
+    align-content: center;
+    position: absolute;
+    top: 790px;
 }
 
 .btn-l {
-    width: 400px;
-    color: #333;
-    margin: 30px;
-    padding: 10px 0;
-    text-align: center;
-    border-radius: 50px;
-    font-size: 36px;
-    font-weight: 400;
-    border: 1px solid var(--main-black);
+    background: var(--light-green-mid);
 }
 
-.btn:hover {
-    cursor: pointer;
-    transform: translateY(3px);
-    box-shadow: 0px 0px 0px #ffffff00;
+
+nav a {
+    margin: 10px;
+    display: inline-block;
+    text-decoration: none;
 }
 
 .boxBody1,
@@ -499,47 +464,20 @@ nav a {
 
     nav.downbtn {
         width: 320px;
-        top: 460px;
-        align-items: center;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-    .circle {
-        border: 2px rgb(0, 0, 0) solid;
-        width: 50px;
-        height: 50px;
-        font-size: 20px;
-    }
-
-    .circle:hover {
-        cursor: pointer;
-        transform: translateY(3px);
-        box-shadow: 0px 0px 0px #ffffff00;
-    }
-
-    /* 按鈕樣式及動畫設定 */
-    .btn {
-        box-shadow: 0px 3px 0px var(--main-black);
-        transition: all 100ms ease;
+        top: 440px;
     }
 
     .btn-l {
-        width: 170px;
-        color: #333;
-        margin: 10px;
-        padding: 10px 0;
-        text-align: center;
-        border-radius: 50px;
-        font-size: 36px;
-        font-weight: 100;
-        border: 1px solid var(--main-black);
+        font-size: 18px;
+        width: 100px;
+        line-height: 40px;
+        height: 40px;
+
     }
 
-    .btn:hover {
-        cursor: pointer;
-        transform: translateY(3px);
-        box-shadow: 0px 0px 0px #ffffff00;
+    .btn-s {
+        width: 60px;
+        height: 60px;
     }
 
     .boxBody1,

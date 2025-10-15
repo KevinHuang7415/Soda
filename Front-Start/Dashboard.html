@@ -464,6 +464,64 @@
             visibility: visible;
             opacity: 1;
         }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .delete-btn:active {
+            transform: scale(0.95);
+        }
+
+        .coupon-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .coupon-input,
+        .coupon-select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .coupon-btn {
+            background-color: #2d5ee6;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .coupon-btn:hover {
+            background-color: #6d11e6;
+            transform: scale(1.05);
+        }
+
+        .coupon-btn:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 
@@ -507,9 +565,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>紅茶</td>
-                                <td><span class="price">$30</span></td>
-                                <td>5</td>
+                                
                             </tr>
                         </tbody>
                     </table>
@@ -574,10 +630,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>1</td>
-                                <td>testUser</td>
-                                <td>test@email.com</td>
-                                <td><span class="status-badge status-active">活躍</span></td>
+                                
                             </tr>
                         </tbody>
                     </table>
@@ -587,15 +640,16 @@
             <!-- 優惠管理 -->
             <div id="coupons" class="tabContent" style="display:none;">
                 <h2>優惠管理</h2>
-                <div class="form-inline">
-                    <input type="text" id="couponCode" placeholder="優惠代碼">
-                    <input type="number" id="couponDiscount" placeholder="折扣數值">
-                    <select id="couponDiscountType">
+                <div class="coupon-form">
+                    <input type="text" id="couponCode" class="coupon-input" placeholder="優惠代碼">
+                    <input type="number" id="couponDiscount" class="coupon-input" placeholder="折扣數值">
+                    <select id="couponDiscountType" class="coupon-select">
                         <option value="P">百分比</option>
                         <option value="A">金額</option>
                     </select>
-                    <button onclick="addCoupon()">新增優惠</button>
+                    <button class="coupon-btn" onclick="addCoupon()">新增優惠</button>
                 </div>
+
 
                 <div class="data-table">
                     <table id="couponTable">
@@ -603,6 +657,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>代碼</th>
+                                <th>折扣方法</th>
                                 <th>折扣</th>
                                 <th>狀態</th>
                                 <th>操作</th>
@@ -610,13 +665,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>1</td>
-                                <td><code
-                                        style="background: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-family: monospace;">test1coupon123</code>
-                                </td>
-                                <td><span class="price">50%</span></td>
-                                <td><span class="status-badge status-active">有效</span></td>
-                                <td><button class="action-btn">刪除</button></td>
+                               
                             </tr>
                         </tbody>
                     </table>
@@ -886,6 +935,14 @@
                                onkeydown="if(event.key === 'Enter') updateCoupon(${c.id})">
                     </td>
                     <td>
+                        <select id="discountType-${c.id}" style="padding:4px; border-radius:4px; border:1px solid #ccc;"
+                                onchange="updateCoupon(${c.id})">
+                            <option value="A" ${c.discountType === "A" ? 'selected' : ''}>金額</option>
+                            <option value="P" ${c.discountType === "P" ? 'selected' : ''}>百分比</option>
+                        </select>
+                        
+                    </td>
+                    <td>
                         <input type="number" min="0" value="${c.discount}" id="discount-${c.id}" style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;"
                                onkeydown="if(event.key === 'Enter') updateCoupon(${c.id})">
                     </td>
@@ -896,13 +953,14 @@
                             <option value="inactive" ${c.status.toLowerCase() !== 'active' ? 'selected' : ''}>非活躍</option>
                         </select>
                     </td>
-                    <td>
-                        <select id="discountType-${c.id}" style="padding:4px; border-radius:4px; border:1px solid #ccc;"
-                                onchange="updateCoupon(${c.id})">
-                            <option value="A" ${c.discountType === "A" ? 'selected' : ''}>金額</option>
-                            <option value="P" ${c.discountType === "P" ? 'selected' : ''}>百分比</option>
-                        </select>
+                    
+                    
+                    <td>                        
+                        <button class="delete-btn" onclick="deleteCoupon(${c.id})">刪除</button>
                     </td>
+                      
+
+
                 `;
                         tbody.appendChild(tr);
                     });
@@ -975,17 +1033,19 @@
 
 
         function deleteCoupon(id) {
-            if (confirm('確定要刪除這個優惠券嗎？')) {
-                axios.delete(`https://localhost:7085/api/coupons/${id}`)
-                    .then(() => {
-                        showMessage('優惠券刪除成功！', 'success');
-                        loadCoupons();
-                    })
-                    .catch(err => {
-                        showMessage('刪除優惠券時發生錯誤', 'error');
-                    });
-            }
+            if (!confirm("確定要刪除此優惠券嗎？")) return;
+
+            axios.delete(`https://localhost:7085/api/coupons/${id}`)
+                .then(() => {
+                    showMessage('優惠券刪除成功！', 'success');
+                    loadCoupons(); // 重新載入優惠券列表
+                })
+                .catch(err => {
+                    console.error(err);
+                    showMessage('刪除優惠券時發生錯誤', 'error');
+                });
         }
+
 
 
         showTab('products');

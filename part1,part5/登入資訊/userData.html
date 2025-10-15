@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>填寫個人資料</title>
+  <!-- Reset -->
+  <link rel="stylesheet" href="../css/Reset.css">
+  <!-- main_setting -->
+  <link rel="stylesheet" href="../css/main_setting.css">
+  <!-- style.css -->
+  <link rel="stylesheet" href="../css/shoppingCart_style.css">
+  <!-- axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <style>
+    /* register CSS */
+    body {
+      background: var(--light-yellow);
+    }
+
+    .containerAcc {
+      margin: auto;
+      width: calc(300px + (300) * ((100vw - 480px) / (1200 - 480)));
+      /* 在 480px 寬螢幕時寬度約為 300px
+         在 1200px 寬螢幕時寬度約為 800px
+         之間會平滑變化 */
+    }
+
+    .titleAcc {
+      width: 100%
+    }
+
+    .containerAcc h1 {
+      font-size: 4em;
+      font-weight: bold;
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+
+    .containerAcc label {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .containerAcc input {
+      width: 92%;
+      padding: 24px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .formAcc button {
+      display: block;
+    }
+
+    .alc {
+      text-align: center;
+    }
+
+    .mgt {
+      margin-top: 40px;
+    }
+
+    .size-12 {
+      font-size: 12px;
+    }
+
+    .in {
+      display: flex;
+      justify-content: start;
+      gap:15%;
+    }
+
+    .side {
+      width: 40%;
+    }
+
+    @font-face {
+      font-family: "FakePearl-regular";
+      /* 自訂名稱 */
+      src: url("../fonts/FakePearl-regular.ttf") format("truetype");
+      /* 字體檔路徑 */
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* 套用字體 */
+    body {
+      font-family: "FakePearl-regular", sans-serif;
+    }
+
+    @media (max-width: 768px) {
+      .containerAcc h1 {
+        font-size: 2em;
+      }
+
+      .containerAcc label {
+        font-size: 16px;
+      }
+
+      .containerAcc input {
+        font-size: 16px;
+        padding: 20px;
+      }
+
+    }
+
+    /* register CSS end */
+  </style>
+</head>
+
+<body>
+  <div class="containerAcc">
+    <div class="titleAcc">
+      <h1 class="alc mgt">填寫個人資料</h1>
+    </div>
+    <form method="post" class="formAcc" id="formAcc">
+      <label for="Email">電子郵箱</label>
+      <input type="email" id="Email" placeholder="abc123@gmail.com">
+      <label for="Password">密碼</label>
+      <input type="password" id="Password" placeholder="XXXX - XXXX">
+      <div class="in">
+        <div class="side">
+          <label for="FirstName">姓氏</label>
+          <input type="text" id="FirstName" placeholder="王">
+        </div>
+        <div class="side">
+          <label for="LastName">名子</label>
+          <input type="text" id="LastName" placeholder="小明">
+        </div>
+      </div>
+
+      <label for="phone">手機號碼</label>
+      <input type="number" id="phone" placeholder="0912345678">
+      <label for="address">地址</label>
+      <input type="text" id="address" placeholder="桃園市中壢區健行路229號">
+
+      <button type="submit" class="btn btn-l alc">註冊</button>
+    </form>
+  </div>
+</body>
+
+</html>
