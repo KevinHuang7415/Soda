@@ -493,7 +493,7 @@
             <!-- 商品管理 -->
             <div id="products" class="tabContent">
                 <h2>商品管理</h2>
-                
+
                 <div class="data-table">
                     <table id="productTable">
                         <thead>
@@ -589,9 +589,14 @@
                 <h2>優惠管理</h2>
                 <div class="form-inline">
                     <input type="text" id="couponCode" placeholder="優惠代碼">
-                    <input type="number" id="couponDiscount" placeholder="折扣百分比">
+                    <input type="number" id="couponDiscount" placeholder="折扣數值">
+                    <select id="couponDiscountType">
+                        <option value="P">百分比</option>
+                        <option value="A">金額</option>
+                    </select>
                     <button onclick="addCoupon()">新增優惠</button>
                 </div>
+
                 <div class="data-table">
                     <table id="couponTable">
                         <thead>
@@ -934,30 +939,40 @@
 
 
         function addCoupon() {
-            const code = document.getElementById('couponCode').value;
-            const discount = Number(document.getElementById('couponDiscount').value);
+            const code = document.getElementById('couponCode').value.trim();
+            const discount = parseFloat(document.getElementById('couponDiscount').value);
+            const discountType = document.getElementById('couponDiscountType').value;
 
-            if (!code || !discount) {
-                showMessage('請填寫完整資訊', 'error');
+            if (!code) {
+                showMessage('請輸入優惠代碼', 'error');
+                return;
+            }
+            if (isNaN(discount) || discount < 0) {
+                showMessage('折扣必須為正數', 'error');
                 return;
             }
 
-            if (discount < 1 || discount > 100) {
-                showMessage('折扣百分比必須在1-100之間', 'error');
-                return;
-            }
-
-            axios.post('https://localhost:7085/api/coupons', { code, discount })
+            axios.post('https://localhost:7085/api/coupons', {
+                code: code,
+                discount: discount,
+                discountType: discountType, // 'P' 或 'A'
+                status: 'active' // 預設活躍
+            })
                 .then(() => {
                     showMessage('優惠券新增成功！', 'success');
+                    // 清空輸入框
                     document.getElementById('couponCode').value = '';
                     document.getElementById('couponDiscount').value = '';
+                    document.getElementById('couponDiscountType').value = 'P';
+                    // 重新載入表格
                     loadCoupons();
                 })
                 .catch(err => {
+                    console.error(err);
                     showMessage('新增優惠券時發生錯誤', 'error');
                 });
         }
+
 
         function deleteCoupon(id) {
             if (confirm('確定要刪除這個優惠券嗎？')) {

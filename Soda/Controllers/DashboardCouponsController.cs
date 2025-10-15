@@ -66,6 +66,34 @@ namespace SodaBackend.Controllers
                 }
             }
         }
+        [HttpPost]
+        public IActionResult AddCoupon([FromBody] Coupon newCoupon)
+        {
+            if (string.IsNullOrWhiteSpace(newCoupon.Code))
+                return BadRequest(new { message = "優惠代碼不可為空" });
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                string sql = @"
+                    INSERT INTO Coupons (Code, Discount, DiscountType, Status)
+                    VALUES (@Code, @Discount, @DiscountType, @Status)";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Code", newCoupon.Code);
+                    cmd.Parameters.AddWithValue("@Discount", newCoupon.Discount);
+                    cmd.Parameters.AddWithValue("@DiscountType", newCoupon.DiscountType);
+                    cmd.Parameters.AddWithValue("@Status", newCoupon.Status);
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    if (rowsAffected > 0)
+                        return Ok(new { message = "新增成功" });
+                    else
+                        return BadRequest(new { message = "新增失敗" });
+                }
+            }
+        }
     }
 
 }
