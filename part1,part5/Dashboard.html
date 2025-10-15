@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商家後台管理</title>
+    <link rel="stylesheet" href="./css/normalize.css">
+    <link rel="stylesheet" href="./css/main_setting.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .wrap {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .logo img {
+            height: 50px;
+            filter: brightness(1.2);
+            transition: transform 0.3s ease;
+        }
+
+        .logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-icon:hover::before {
+            left: 100%;
+        }
+
+        .nav-icon:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-icon img {
+            width: 24px;
+            height: 24px;
+            filter: brightness(1.5);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-icon:hover img {
+            transform: scale(1.1);
+        }
+
+        .main {
+            flex: 1;
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .tabContent {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tabContent h2 {
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .tabContent h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .data-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        th {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 18px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+            position: relative;
+        }
+
+        th:first-child {
+            border-top-left-radius: 15px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 15px;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f3f4;
+            transition: background-color 0.2s ease;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9ff;
+            transform: scale(1.01);
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.1);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .price {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-icons {
+                gap: 10px;
+            }
+
+            .nav-icon {
+                width: 45px;
+                height: 45px;
+            }
+
+            .main {
+                padding: 20px;
+            }
+
+            .tabContent {
+                padding: 20px;
+            }
+
+            .form-inline {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .form-inline input {
+                min-width: auto;
+            }
+
+            .data-table {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 600px;
+            }
+        }
+
+        /* 載入動畫 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 成功/錯誤訊息 */
+        .message {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+        .tabContent {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tabContent::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+
+            0%,
+            100% {
+                background-position: 200% 0;
+            }
+
+            50% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* 表格行懸停時的額外效果 */
+        tbody tr:hover td {
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+
+        /* 按鈕點擊效果 */
+        .form-inline button:active,
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 輸入框佔位符樣式 */
+        .form-inline input::placeholder {
+            color: #6c757d;
+            opacity: 0.8;
+        }
+
+        /* 滾動條樣式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6a4190);
+        }
+
+        /* 載入狀態 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+
+        /* 工具提示 */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #2c3e50;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="header">
+            <div class="logo">
+                <img src="./images/logo.png" alt="Logo">
+            </div>
+            <div class="nav-icons">
+                <div class="nav-icon" title="商品管理" onclick="showTab('products')">
+                    <img src="./images/dashboard/soft-drinks.svg" alt="商品管理">
+                </div>
+                <div class="nav-icon" title="訂單管理" onclick="showTab('orders')">
+                    <img src="./images/dashboard/ui-note.svg" alt="訂單管理">
+                </div>
+                <div class="nav-icon" title="用戶管理" onclick="showTab('users')">
+                    <img src="./images/dashboard/manage-user.svg" alt="用戶管理">
+                </div>
+                <div class="nav-icon" title="優惠管理" onclick="showTab('coupons')">
+                    <img src="./images/dashboard/ticket-simple-solid-full.svg" alt="優惠管理">
+                </div>
+            </div>
+        </div>
+
+        <div class="main">
+            <!-- 商品管理 -->
+            <div id="products" class="tabContent">
+                <h2>商品管理</h2>
+
+                <div class="data-table">
+                    <table id="productTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>名稱</th>
+                                <th>價格</th>
+                                <th>庫存</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>紅茶</td>
+                                <td><span class="price">$30</span></td>
+                                <td>5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 訂單管理 -->
+            <div id="orders" class="tabContent" style="display:none;">
+                <h2>訂單管理</h2>
+                <div class="data-table">
+                    <table id="orderTable">
+                        <thead>
+                            <tr>
+                                <th>訂單ID</th>
+                                <th>用戶ID</th>
+                                <th>商品列表</th>
+                                <th>總金額</th>
+                                <th>狀態</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#001</td>
+                                <td>1</td>
+                                <td>紅茶、綠茶</td>
+                                <td><span class="price">$60</span></td>
+                                <td><span class="status-badge status-active">已完成</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- 用戶管理 -->
+            <div id="users" class="tabContent" style="display:none;">
+                <h2>用戶管理</h2>
+                <div class="data-table">
+                    <table id="userTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>名稱</th>
+                                <th>Email</th>
+                                <th>狀態</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>testUser</td>
+                                <td>test@email.com</td>
+                                <td><span class="status-badge status-active">活躍</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 優惠管理 -->
+            <div id="coupons" class="tabContent" style="display:none;">
+                <h2>優惠管理</h2>
+                <div class="form-inline">
+                    <input type="text" id="couponCode" placeholder="優惠代碼">
+                    <input type="number" id="couponDiscount" placeholder="折扣百分比">
+                    <button onclick="addCoupon()">新增優惠</button>
+                </div>
+                <div class="data-table">
+                    <table id="couponTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>代碼</th>
+                                <th>折扣%</th>
+                                <th>狀態</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><code
+                                        style="background: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-family: monospace;">test1coupon123</code>
+                                </td>
+                                <td><span class="price">50%</span></td>
+                                <td><span class="status-badge status-active">有效</span></td>
+                                <td><button class="action-btn">刪除</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        function showTab(tabId) {
+
+            document.querySelectorAll('.tabContent').forEach(t => {
+                t.style.display = 'none';
+                t.style.opacity = '0';
+            });
+
+
+            const targetTab = document.getElementById(tabId);
+            targetTab.style.display = 'block';
+
+
+            setTimeout(() => {
+                targetTab.style.opacity = '1';
+            }, 10);
+
+
+            document.querySelectorAll('.nav-icon').forEach(icon => {
+                icon.style.background = 'rgba(255,255,255,0.1)';
+            });
+
+
+            const tabMap = {
+                'products': 0,
+                'orders': 1,
+                'users': 2,
+                'coupons': 3
+            };
+
+            const navIcons = document.querySelectorAll('.nav-icon');
+            if (navIcons[tabMap[tabId]]) {
+                navIcons[tabMap[tabId]].style.background = 'rgba(255,255,255,0.3)';
+            }
+        }
+
+
+        function showMessage(message, type = 'success') {
+
+            const existingMessage = document.querySelector('.message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+
+
+            const activeTab = document.querySelector('.tabContent[style*="block"]') || document.querySelector('.tabContent:not([style*="none"])');
+            if (activeTab) {
+                activeTab.insertBefore(messageDiv, activeTab.firstChild);
+
+
+                setTimeout(() => {
+                    if (messageDiv.parentNode) {
+                        messageDiv.remove();
+                    }
+                }, 3000);
+            }
+        }
+
+        // 商品管理 API 
+        function loadProducts() {
+            axios.get('http://localhost:5090/api/products')
+                .then(res => {
+                    const tbody = document.querySelector('#productTable tbody');
+                    tbody.innerHTML = '';
+                    res.data.forEach(p => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                    <td>${p.id}</td>
+                    <td>
+                        <input type="text" value="${p.name}" id="name-${p.id}" 
+                               style="width:120px; padding:4px;border:none"
+                               onkeydown="if(event.key === 'Enter') updateProduct(${p.id})" title="按下enter更新">
+                    </td>
+                    <td>
+                        <input type="number" min="0" step="0.01" value="${p.price}" id="price-${p.id}" 
+                               style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;"
+                               onkeydown="if(event.key === 'Enter') updateProduct(${p.id})" title="按下enter更新">
+                    </td>
+                    <td>
+                        <input type="number" min="0" value="${p.stock}" id="stock-${p.id}" 
+                               style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;"
+                               onkeydown="if(event.key === 'Enter') updateProduct(${p.id})" title="按下enter更新">
+                    </td>
+                    
+                `;
+                        tbody.appendChild(tr);
+                    });
+                })
+                .catch(err => {
+                    showMessage('載入商品資料時發生錯誤', 'error');
+                });
+        }
+
+        function updateProduct(id) {
+            const newName = document.getElementById(`name-${id}`).value.trim();
+            const newPrice = parseFloat(document.getElementById(`price-${id}`).value);
+            const newStock = parseInt(document.getElementById(`stock-${id}`).value);
+
+            if (!newName) {
+                showMessage('名稱不能為空', 'error');
+                return;
+            }
+            if (isNaN(newPrice) || newPrice < 0) {
+                showMessage('價格必須大於等於0', 'error');
+                return;
+            }
+            if (isNaN(newStock) || newStock < 0) {
+                showMessage('庫存不能小於0', 'error');
+                return;
+            }
+
+            axios.put(`http://localhost:5090/api/products/${id}`, {
+                name: newName,
+                price: newPrice,
+                stock: newStock
+            })
+                .then(() => {
+                    showMessage('商品更新成功！', 'success');
+                    loadProducts(); // 重新載入商品資料
+                })
+                .catch(err => {
+                    showMessage('更新商品時發生錯誤', 'error');
+                });
+        }
+
+
+
+        // 訂單管理 API 
+        function loadOrders() {
+            axios.get('http://localhost:5090/api/orders')
+                .then(res => {
+                    const tbody = document.querySelector('#orderTable tbody');
+                    tbody.innerHTML = '';
+                    res.data.forEach(o => {
+                        const tr = document.createElement('tr');
+                        const statusClass = o.status === 'completed' ? 'status-active' : 'status-pending';
+                        const statusText = o.status === 'completed' ? '已完成' : '處理中';
+                        tr.innerHTML = `
+                            <td>#${String(o.id).padStart(3, '0')}</td>
+                            <td>${o.userId}</td>
+                            <td>${o.items.map(i => i.name).join(', ')}</td>
+                            <td><span class="price">$${o.total}</span></td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                })
+                .catch(err => {
+                    showMessage('載入訂單資料時發生錯誤', 'error');
+                });
+        }
+
+        // 用戶管理 API 
+        function loadUsers() {
+            axios.get('http://localhost:5090/api/users')
+                .then(res => {
+                    const tbody = document.querySelector('#userTable tbody');
+                    tbody.innerHTML = '';
+                    res.data.forEach(u => {
+                        const tr = document.createElement('tr');
+                        const statusClass = u.status === 'active' ? 'status-active' : 'status-pending';
+                        const statusText = u.status === 'active' ? '活躍' : '非活躍';
+                        tr.innerHTML = `
+                            <td>${u.id}</td>
+                            <td>${u.name}</td>
+                            <td>${u.email}</td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                })
+                .catch(err => {
+                    showMessage('載入用戶資料時發生錯誤', 'error');
+                });
+        }
+
+        // 優惠管理 API
+        function loadCoupons() {
+            axios.get('http://localhost:5090/api/coupons')
+                .then(res => {
+                    const tbody = document.querySelector('#couponTable tbody');
+                    tbody.innerHTML = '';
+                    res.data.forEach(c => {
+                        const tr = document.createElement('tr');
+                        const statusClass = c.status === 'active' ? 'status-active' : 'status-pending';
+                        const statusText = c.status === 'active' ? '有效' : '無效';
+                        tr.innerHTML = `
+                            <td>${c.id}</td>
+                            <td><code style="background: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-family: monospace;">${c.code}</code></td>
+                            <td><span class="price">${c.discount}%</span></td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td>
+                                <button class="action-btn" onclick="deleteCoupon(${c.id})">刪除</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                })
+                .catch(err => {
+                    showMessage('載入優惠資料時發生錯誤', 'error');
+                });
+        }
+
+        function addCoupon() {
+            const code = document.getElementById('couponCode').value;
+            const discount = Number(document.getElementById('couponDiscount').value);
+
+            if (!code || !discount) {
+                showMessage('請填寫完整資訊', 'error');
+                return;
+            }
+
+            if (discount < 1 || discount > 100) {
+                showMessage('折扣百分比必須在1-100之間', 'error');
+                return;
+            }
+
+            axios.post('http://localhost:5090/api/coupons', { code, discount })
+                .then(() => {
+                    showMessage('優惠券新增成功！', 'success');
+                    document.getElementById('couponCode').value = '';
+                    document.getElementById('couponDiscount').value = '';
+                    loadCoupons();
+                })
+                .catch(err => {
+                    showMessage('新增優惠券時發生錯誤', 'error');
+                });
+        }
+
+        function deleteCoupon(id) {
+            if (confirm('確定要刪除這個優惠券嗎？')) {
+                axios.delete(`http://localhost:5090/api/coupons/${id}`)
+                    .then(() => {
+                        showMessage('優惠券刪除成功！', 'success');
+                        loadCoupons();
+                    })
+                    .catch(err => {
+                        showMessage('刪除優惠券時發生錯誤', 'error');
+                    });
+            }
+        }
+
+
+        showTab('products');
+        loadProducts();
+        loadOrders();
+        loadUsers();
+        loadCoupons();
+
+    </script>
+</body>
+
+</html>

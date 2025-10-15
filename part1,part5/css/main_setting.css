@@ -33,7 +33,12 @@
 
     --product-pink-cover: #ff8bbb30;
 
-
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Zalando+Sans+SemiExpanded:ital,wght@0,200..900;1,200..900&display=swap');
+    font-family: "Zalando Sans SemiExpanded", sans-serif;
+    vertical-align: top;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
 }
 
 /* 按鈕樣式及動畫設定 */

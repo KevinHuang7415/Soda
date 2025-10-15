@@ -10,509 +10,12 @@
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <!-- 登入/註冊 -->
   <link rel="stylesheet" href="./css/login.css">
+  <link rel="stylesheet" href="./css/shoppingCar.css">
+  <link rel="stylesheet" href="./css/style.css">
+  
   <style>
-    /* ========全域樣式======= */
-    body {
-      margin: 0;
-      font-family: "Poppins", sans-serif;
-      background-color: #FEE832;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .show {
-      display: block;
-    }
-
-    /* ======== 第一部分 ======== */
-    .part1 {
-      position: relative;
-      width: 100%;
-      height: 56.25vw;
-      /* 16:9 比例 */
-      background-color: #FEE832;
-      display: flex;
-      min-height: none;
-    }
-
-    /* 導覽列 */
-    .navbar {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      background: linear-gradient(to bottom, #ffffff, rgba(245, 245, 2, 0.137));
-      position: absolute;
-      width: 100%;
-      z-index: 2;
-    }
-
-    .nav-item {
-      margin-right: 1vw;
-      position: relative;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 1.6vw;
-    }
-
-    .nav-item-style {
-      background-color: #f0f0f0;
-      border: 0.05vw solid #000;
-      padding: 0.4vw 0.4vw 0 0.4vw;
-      border-radius: 20px;
-    }
-
-    .nav-item img {
-      min-width: 1.5vw;
-      min-height: 1.5vw;
-      width: 2vw;
-      height: 2vw;
-    }
-
-    /* 下拉 DIV */
-    .dropdown {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      background: white;
-      border-radius: 0.5vw;
-      box-shadow: 0 0.3vw 1vw rgba(0, 0, 0, 0.15);
-      overflow: hidden;
-      transform: translateY(-1vw);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s ease;
-      z-index: 11;
-    }
-
-    .dropdown.active {
-      transform: translateY(0);
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .dropdown-item {
-      padding: 0.8vw 1.2vw;
-      font-size: 0.9vw;
-      transition: background 0.2s;
-    }
-
-    .dropdown-item:hover {
-      background: #f0f0f0;
-    }
-
-    .separateRight {
-      margin-right: 3vw;
-    }
-
-    .separateLeft {
-      padding-left: 3vw;
-    }
-
-    .navbar ul {
-      display: flex;
-      list-style: none;
-    }
-
-    .sign {
-      line-height: 12px;
-      font-size: small;
-      text-align: right;
-      margin-top: 10px;
-    }
-
-
-    /* ======768px以下導覽列下拉選單========  */
-    .container {
-      cursor: pointer;
-    }
-
-    .bar1,
-    .bar2,
-    .bar3 {
-      width: 20px;
-      height: 2px;
-      background-color: #333;
-      margin: 5px 10px 0 0;
-      transition: 0.4s;
-    }
-
-    .change .bar1 {
-      -webkit-transform: rotate(-45deg) translate(-9px, 6px);
-      transform: rotate(-45deg) translate(-9px, 6px);
-    }
-
-    .change .bar2 {
-      opacity: 0;
-    }
-
-    .change .bar3 {
-      -webkit-transform: rotate(45deg) translate(-8px, -8px);
-      transform: rotate(45deg) translate(-8px, -8px);
-    }
-
-
-    .overlay {
-      height: 0%;
-      width: 100%;
-      position: fixed;
-      z-index: 10;
-      top: 0;
-      left: 0;
-      background-color: rgb(0, 0, 0);
-      background-color: rgba(0, 0, 0, 0.9);
-      overflow-y: hidden;
-      transition: 0.5s;
-    }
-
-    .overlay-content {
-      position: relative;
-      top: 25%;
-      width: 100%;
-      text-align: center;
-      margin-top: 30px;
-    }
-
-    .overlay a {
-      padding: 8px;
-      text-decoration: none;
-      font-size: 36px;
-      color: #818181;
-      display: block;
-      transition: 0.3s;
-    }
-
-    .overlay a:hover,
-    .overlay a:focus {
-      color: #f1f1f1;
-    }
-
-    .overlay .closebtn {
-      position: absolute;
-      top: 20px;
-      right: 45px;
-      font-size: 60px;
-    }
-
-    @media screen and (max-height: 450px) {
-      .overlay {
-        overflow-y: auto;
-      }
-
-      .overlay a {
-        font-size: 20px
-      }
-
-      .overlay .closebtn {
-        font-size: 40px;
-        top: 15px;
-        right: 35px;
-      }
-    }
-
-    /* =======彈窗畫面======== */
-    /* 弹窗 (background) */
-    .modal {
-      display: none;
-      /* 默认隐藏 */
-      position: fixed;
-      /* 固定定位 */
-      z-index: 1;
-      /* 设置在顶层 */
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgb(0, 0, 0);
-      background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    /* 弹窗内容 */
-    .modal-content {
-      margin: 15% auto;
-      width: 60%;
-      position: relative;
-    }
-
-    /* 关闭按钮 */
-    .close {
-      position: absolute;
-      color: #aaa;
-      font-size: 28px;
-      font-weight: bold;
-      top: 10px;
-      right: 25px;
-    }
-
-    .close:hover,
-    .close:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    /* ======== 主視覺圖片 ======== */
-    .soda-title-big {
-      position: absolute;
-      top: 8vw;
-      left: 33vw;
-      width: 40vw;
-    }
-
-    .union {
-      position: absolute;
-      top: 20vw;
-      left: 48vw;
-      width: 10vw;
-    }
-
-    .saja {
-      position: absolute;
-      top: 28vw;
-      left: 18vw;
-      width: 30vw;
-    }
-
-    .boys {
-      position: absolute;
-      top: 30vw;
-      left: 50vw;
-      width: 30vw;
-    }
-
-    /* ======== 星星動畫 ======== */
-    @keyframes floatStar {
-      0% {
-        transform: translateY(0) rotate(0deg);
-      }
-
-      50% {
-        transform: translateY(-1vw) rotate(10deg);
-      }
-
-      100% {
-        transform: translateY(0) rotate(0deg);
-      }
-    }
-
-    @keyframes floatStarReverse {
-      0% {
-        transform: translateY(0) rotate(0deg);
-      }
-
-      50% {
-        transform: translateY(1vw) rotate(-10deg);
-      }
-
-      100% {
-        transform: translateY(0) rotate(0deg);
-      }
-    }
-
-    .star {
-      position: absolute;
-      width: 8vw;
-      animation: floatStar 4s ease-in-out infinite;
-    }
-
-    .star.reverse {
-      animation: floatStarReverse 5s ease-in-out infinite;
-    }
-
-    /* 星星分布位置 */
-    .star1 {
-      top: 12vw;
-      left: 8vw;
-      width: 8vw;
-    }
-
-    .star2 {
-      top: 11vw;
-      right: 10vw;
-      width: 8vw;
-    }
-
-    .star3 {
-      top: 45vw;
-      left: 5vw;
-      width: vw;
-    }
-
-    .star4 {
-      top: 20vw;
-      left: 27vw;
-      width: 8vw;
-    }
-
-    .star5 {
-      top: 40vw;
-      right: 2vw;
-      width: 8vw;
-    }
-
-    img {
-      user-select: none;
-      -webkit-user-drag: none;
-    }
-
-
-    /* ======== 第四部分 ======== */
-    .wrap {
-      background-color: #f6f884;
-      display: flex;
-      /* height: 50vh; */
-      justify-content: center;
-      margin-top: 2vw;
-    }
-
-    .part4 {
-      width: 100%;
-      /* height: 80%; */
-      display: flex;
-      justify-content: center;
-      color: #fff;
-      text-align: center;
-      letter-spacing: 0.3em;
-      margin-top: 0;
-    }
-
-    .part4 .text-34 {
-      font-size: 34px;
-      letter-spacing: 0.02em
-    }
-
-    .part4 .text-14 {
-      font-size: 14px;
-    }
-
-    .text-shadow {
-      text-shadow: 1px 1px #000, 1px -1px #000,
-        -1px 1px #000, -1px -1px #000;
-    }
-
-    .discount {
-      width: 30%;
-      background-color: #f5cb11;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 2vw;
-      padding: 2vw;
-      border-radius: 20px;
-    }
-
-    .discount img {
-      width: 200px;
-      object-fit: contain;
-    }
-
-    footer {
-      background-color: #aeacfc;
-      text-align: center;
-    }
-
-    .coupon {
-      background-color: #fff;
-      max-width: 80%;
-      margin: 0 auto;
-    }
-
-    .marginTop {
-      margin-top: 1vw;
-    }
-
-    .marginDown {
-      margin-top: 3vw;
-    }
-
-    footer {
-      padding: 1vw 0;
-      font-size: 2vw;
-    }
-
-    /* =======桌機畫面========  */
-    @media (max-width:1140px) {}
-
-    /* ======== 手機畫面 ======== */
-    @media (max-width:768px) {
-      .part1 {
-        width: 100%;
-        height: 42vw;
-        min-height: 360px;
-      }
-
-
-      .show {
-        display: none;
-      }
-
-      .container {
-        display: inline-block;
-      }
-
-
-      .soda-title-big {
-        min-width: 180px;
-      }
-
-      .union {
-        min-width: 60px;
-      }
-
-      .saja {
-        min-width: 180px;
-      }
-
-      .boys {
-        min-width: 180px;
-      }
-
-      .container.hidden {
-        display: inline-block !important;
-      }
-
-      .dropdown-content {
-        position: absolute;
-        top: 60px;
-        /* 可依你的導覽列高度調整 */
-        right: 10px;
-        display: none;
-      }
-
-      .dropdown-content.show {
-        display: block;
-      }
-
-
-      .part4 {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .discount {
-        margin: 2vw;
-      }
-
-      .part4 .text-34 {
-        font-size: 32px;
-      }
-
-      .part4 .text-14 {
-        font-size: 16px;
-      }
-
-      .discount {
-        width: 50%;
-      }
-
-      .marginDown {
-        margin-top: 4vw;
-      }
-    }
   </style>
+
 </head>
 
 <body>
@@ -533,8 +36,8 @@
         </li>
         <li>
           <div class="show">
-            <div class="nav-item nav-item-style separateRight"><a href="#"><img src="./img/shopping-cart.svg"
-                  alt=""></a>
+            <div class="nav-item nav-item-style separateRight" id="shoppingCarBtn">
+              <a href="#"><img src="./img/shopping-cart.svg" alt=""></a>
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 4+
                 <span class="visually-hidden">unread messages</span>
@@ -664,15 +167,37 @@
 
   </div>
 
+  <!-- shoppingCar-->
+  <div id="shoppingCar" class="modal">
+
+    <!-- 弹窗内容 -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+
+          <div class="cart-title-box">
+            <p class="cart-title">
+              Cart
+            </p>
+            <div class="btn  closeCart-btn" id="closeCart-btn" name="closeCart-btn">
+              
+            </div>
+          </div>
+        
+          <div id="cart-items"></div>
 
 
+          <div class="subtotal">
+            <p>Subtotal</p>
+            <div class="subtotal-sum" id="subtotal-sum" name="subtotal-sum">
+              $499
+            </div>
+          </div>
+
+          <div class="btn btn-l payment-btn">Payment</div>
+        </div>
 
 
-
-
-
-
-
+  </div>
 
   <!-- 主視覺圖片 -->
   <img src="./img/soda_title_big.png" alt="SODA" class="soda-title-big">
@@ -688,10 +213,10 @@
   <img src="./img/Star 5.png" class="star star5" alt="">
   </div>
 
-  <!-- 第四部分 -->
+  <!-- 第五部分 -->
 
   <div class="wrap">
-    <div class="part4">
+    <div class="part5">
       <div class="discount text-shadow">
         <h2 id="bent1" class="text-34">歡慶聖誕節</h2>
         <h3 class="text-34" id="bent2" style="letter-spacing: 0.05em;">即日起-12/31</h3>
@@ -726,6 +251,8 @@
   </footer>
   <!-- 登入/註冊 -->
   <script src="./js/login.js"></script>
+  <!-- 購物車 -->
+  <script src="./js/shoppingCar.js"></script>
   <!-- 引入 Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
@@ -733,87 +260,8 @@
   <!-- 引入 jQuery -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="./js/jquery.arctext.js"></script>
+  <script src="./js/part1_5.js"></script>
   <script>
-    const about = document.getElementById("about");
-    const menu = document.getElementById("aboutMenu");
-
-    // 顯示選單
-    about.addEventListener("mouseenter", () => {
-      menu.classList.add("active");
-      const rect = about.getBoundingClientRect();
-      menu.style.left = rect.left + "px";
-    });
-
-    // 隱藏選單
-    about.addEventListener("mouseleave", () => {
-      setTimeout(() => {
-        if (!menu.matches(":hover")) {
-          menu.classList.remove("active");
-        }
-      }, 100);
-    });
-
-    menu.addEventListener("mouseleave", () => {
-      menu.classList.remove("active");
-    });
-    //彎曲字體
-    $(function () {
-      $('#bent1, #bent2').arctext({ radius: 200 });
-    });
-    //768px以下導覽列下拉選單
-
-    function openNav() {
-      document.getElementById("myNav").style.height = "100%";
-    }
-
-    function closeNav() {
-      document.getElementById("myNav").style.height = "0%";
-    }
-
-    // 彈窗畫面
-    var loginModal = document.getElementById('loginIn');
-    var userBtn = document.getElementById("userbtn");
-    var registerModal = document.getElementById('register');
-    var registerBtn = document.getElementById("regeistBtn");
-
-    // ✅ 通用開啟函式
-    function openModal(id) {
-      // 先關閉所有 modal
-      document.querySelectorAll(".modal").forEach(m => m.style.display = "none");
-      // 再開啟指定的
-      document.getElementById(id).style.display = "block";
-    }
-
-    // ✅ 點擊使用者按鈕 => 開啟登入 modal
-    if (userBtn) {
-      userBtn.onclick = function () {
-        openModal('loginIn');  // ✅ 改成使用 openModal()
-      };
-    }
-
-    // ✅ 點擊註冊按鈕 => 開啟註冊 modal
-    if (registerBtn) {
-      registerBtn.onclick = function () {
-        openModal('register');  // ✅ 改成使用 openModal()
-      };
-    }
-
-    // ✅ 通用關閉邏輯
-    document.querySelectorAll(".close").forEach(btn => {
-      btn.onclick = function () {
-        btn.closest(".modal").style.display = "none";
-      };
-    });
-
-    // ✅ 點擊背景關閉
-    window.addEventListener("click", event => {
-      if (event.target.classList.contains("modal")) {
-        event.target.style.display = "none";
-      }
-    });
-
-
-
   </script>
 </body>
 

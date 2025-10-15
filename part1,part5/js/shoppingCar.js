@@ -1,0 +1,204 @@
+ // 假資料 — 三筆商品
+        const fakeCartData = [
+            { name: 'Lemon', size: '12', qty: 3 },
+            { name: 'Grape', size: '4', qty: 2 },
+            { name: 'Strawberry', size: '12', qty: 1 }
+        ];
+
+        // 存進 sessionStorage
+        sessionStorage.setItem('cart', JSON.stringify(fakeCartData));
+
+        // 產品對應網址
+        const PRODUCT_URLS = {
+            Lemon: '/products/lemon',
+            Grape: '/products/grape',
+            Strawberry: '/products/strawberry'
+        }
+
+        // @* 在 Razor 產生對應 URL *@
+        // @{
+        //   var urls = new Dictionary<string,string> {
+        //     ["Lemon"] = Url.Action("Detail","Products", new { slug = "lemon" }),
+        //     ["Grape"] = Url.Action("Detail","Products", new { slug = "grape" }),
+        //     ["Strawberry"] = Url.Action("Detail","Products", new { slug = "strawberry" })
+        //   };
+        // }
+        // <script>
+        //   // 把後端產生的 URL 帶到前端
+        //   const PRODUCT_URLS = {
+        //     Lemon: '@urls["Lemon"]',
+        //     Grape: '@urls["Grape"]',
+        //     Strawberry: '@urls["Strawberry"]'
+        //   };
+        // <script>
+
+        // 價格與圖片設定
+        const PRICE_MAP = { '4': 199, '12': 499 };
+        const VARIANT_MAP = {
+            Lemon: { bg: 'var(--product-green-light)', img: './images/lemon-lime_mockup.png', alt: 'Lemon' },
+            Grape: { bg: 'var(--product-purple-mid)', img: './images/grape_mockup.png', alt: 'Grape' },
+            Strawberry: { bg: 'var(--product-pink-light)', img: './images/strawberry-lemonade_mockup.png', alt: 'Strawberry' }
+        };
+
+        const cartContainer = document.getElementById('cart-items');
+        const subtotalEl = document.getElementById('subtotal-sum');
+
+        // 建立商品元素
+        function createItemBox({ name, size, qty }) {
+            const variant = VARIANT_MAP[name] || VARIANT_MAP.Lemon;
+            const price = PRICE_MAP[size] || 0;
+            const box = document.createElement('div');
+            const href = PRODUCT_URLS[name] || '/products';
+            box.className = 'item-box';
+            box.innerHTML = `
+                <div class="cart-item-img" id="cart-item-img" name="cart-item-img" style="background-color:${variant.bg}">
+                    <h2>${size}</h2>
+                    <a class="cart-item-img-box" href="${href}" target="_blank">
+                        <img src="${variant.img}" alt="${variant.alt}">     
+                        <img src="${variant.img}" alt="${variant.alt}">      
+                        <img src="${variant.img}" alt="${variant.alt}">     
+                        <img src="${variant.img}" alt="${variant.alt}">     
+                        <img src="${variant.img}" alt="${variant.alt}">     
+                    </a>             
+                </div>
+
+                <div class="cart-item-info">
+                    <div class="cart-item-sel-box">
+                        <div class="cart-item-form-box">
+                            <form action="">
+                                <select class="sel-opt cart-item-name" id="cart-item-name" name="cart-item-name">
+                                    <option value="Lemon"${name === 'Lemon' ? ' selected' : ''}>Lemon</option>
+                                    <option value="Grape"${name === 'Grape' ? ' selected' : ''}>Grape</option>
+                                    <option value="Strawberry"${name === 'Strawberry' ? ' selected' : ''}>Strawberry</option>
+                                </select>
+                            </form>
+                            <form action="">
+                                <select class="sel-opt cart-item-size" id="cart-item-size" name="cart-item-size">
+                                    <option value="4"${size === '4' ? ' selected' : ''}>4 x 355ml</option>
+                                    <option value="12"${size === '12' ? ' selected' : ''}>12 x 355ml</option>
+                                </select>
+                            </form>
+                        </div>
+                        <div class="btn close-btn item-close-btn" id="item-close-btn" name="item-close-btn">
+                            <img class="close-btn-img" src="./images/icon/211651_close_round_icon.svg" alt="項目關閉按鈕">
+                        </div>
+                    </div>
+                    
+                    <div class="cart-item-cout">
+                        <ul>
+                            <li class="cout-btn subtraction">
+                                <i class="fa-solid fa-minus"></i>
+                            </li>
+                            <li>
+                                <input type="number" class="cart-item-nmb" id="cart-item-nmb" name="cart-item-nmb"
+                                    value="${qty}" min="0">
+                            </li>
+                            <li class="cout-btn Addition">
+                                <i class="fa-solid fa-plus"></i>
+                            </li>
+                        </ul>
+                        <div class="cart-item-sum">
+                            $<span class="cart-item-price" id="cart-item-price" name="cart-item-price">${price}</span>
+                            x
+                            <span class="cart-item-qty-display" id="cart-item-qty-display"
+                                name="cart-item-qty-display">${qty}</span>
+                        </div>
+                    </div>
+                </div>
+      `;
+            return box;
+        }
+
+        // 更新小計
+        function updateSubtotal() {
+            let total = 0;
+            document.querySelectorAll('.item-box').forEach(box => {
+                const price = parseInt(box.querySelector('.cart-item-price').textContent);
+                const qty = parseInt(box.querySelector('.cart-item-nmb').value);
+                total += price * qty;
+            });
+            subtotalEl.textContent = `$${total}`;
+        }
+
+        // 更新單一商品
+        function renderItem(box) {
+            const name = box.querySelector('.cart-item-name').value;
+            const size = box.querySelector('.cart-item-size').value;
+            const qty = parseInt(box.querySelector('.cart-item-nmb').value);
+
+            const imgWrap = box.querySelector('.cart-item-img');
+            const imgs = box.querySelectorAll('.cart-item-img-box img'); // ← 全部圖片
+
+            const priceEl = box.querySelector('.cart-item-price');
+            const qtyDisplay = box.querySelector('.cart-item-qty-display');
+
+            const variant = VARIANT_MAP[name];
+
+            // 背景與徽章
+            imgWrap.style.backgroundColor = variant.bg;
+            imgWrap.querySelector('h2').textContent = size;
+
+            // ✅ 一次更新所有圖
+            imgs.forEach(img => {
+                img.src = variant.img;
+                img.alt = variant.alt;
+            });
+
+            // 價格與數量
+            priceEl.textContent = PRICE_MAP[size];
+            qtyDisplay.textContent = qty;
+
+            // 0 以內刪除
+            if (qty <= 0) box.remove();
+            updateSubtotal();
+        }
+
+        // 綁定按鈕事件
+        function bindItemEvents(box) {
+            const minus = box.querySelector('.subtraction');
+            const plus = box.querySelector('.Addition');
+            const qtyInput = box.querySelector('.cart-item-nmb');
+            const closeBtn = box.querySelector('.item-close-btn');
+            const nameSel = box.querySelector('.cart-item-name');
+            const sizeSel = box.querySelector('.cart-item-size');
+
+            minus.addEventListener('click', () => { qtyInput.value--; renderItem(box); });
+            plus.addEventListener('click', () => { qtyInput.value++; renderItem(box); });
+            qtyInput.addEventListener('input', () => renderItem(box));
+            closeBtn.addEventListener('click', () => { box.remove(); updateSubtotal(); });
+            nameSel.addEventListener('change', () => renderItem(box));
+            sizeSel.addEventListener('change', () => renderItem(box));
+        }
+
+
+
+        // ====== 事件：按下關閉按鈕 ======
+        // 共用的關閉流程
+        const shoppingCar = document.querySelector('.shoppingCar');
+        const cartPanel = document.querySelector('.cart');
+        const closeBtnCar = document.getElementById('closeCart-btn');
+        function closeCart() {
+            if (shoppingCar.classList.contains('is-hidden')) return; // 已關就不重複
+            shoppingCar.classList.add('is-closing');
+            cartPanel.addEventListener('transitionend', () => {
+                shoppingCar.classList.remove('is-closing');
+                shoppingCar.classList.add('is-hidden');
+                shoppingCar.setAttribute('aria-hidden', 'true');
+            }, { once: true });
+        }
+
+        // 1) 右上角關閉鈕
+        closeBtnCar.addEventListener('click', closeCart);
+
+
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartData = JSON.parse(sessionStorage.getItem('cart')) || [];
+            cartData.forEach(item => {
+                const box = createItemBox(item);
+                cartContainer.appendChild(box);
+                bindItemEvents(box);
+            });
+            updateSubtotal();
+        });
