@@ -10,6 +10,8 @@
 body {
     width: 1920px;
     height: 3240px;
+    margin: auto;
+    box-sizing: border-box;
 }
 
 .wrap {
@@ -27,7 +29,7 @@ p {
 }
 
 #group {
-    width: 6000px;
+    width: 5760px;
     scroll-behavior: smooth;
     overflow-x: hidden;
 }
@@ -61,7 +63,7 @@ p {
     width: 1920px;
     height: 1080px;
     position: relative;
-
+    box-sizing: border-box;
 }
 
 .box1 h2,
@@ -110,22 +112,24 @@ p {
 
 .lomen2 {
     position: absolute;
-    right: 50px;
-    bottom: 90px;
+    left: 1700px;
+    bottom: 100px;
 }
 
 .can1 {
     position: absolute;
     right: 740px;
-    bottom: 225px;
+    bottom: 240px;
     z-index: 99999;
 }
 
 .downBg {
     position: absolute;
     width: 1920px;
-    height: 300px;
-    bottom: 0;
+    height: 350px;
+    top: 770px;
+    box-sizing: border-box;
+
 }
 
 nav.downbtn {
@@ -134,7 +138,7 @@ nav.downbtn {
     justify-content: center;
     display: flex;
     position: absolute;
-    top: 900px;
+    top: 820px;
 }
 
 nav a {
@@ -218,7 +222,7 @@ nav a {
 .contentBg {
     width: 1920px;
     height: 956px;
-    background: url(./imge/contentbg.png);
+    background: url(../images/contentbg.png);
     position: absolute;
     bottom: 0;
 }
@@ -280,26 +284,20 @@ nav a {
     font-size: 32px;
     font-family: Noto Sans TC;
     text-align: left;
-
 }
 
 .product {
     width: 1920px;
     height: 1080px;
-    position: fixed;
-    bottom: 0;
     display: flex;
-    position: relative;
-    z-index: 999;
 }
-
-/* border: 5px rgb(247, 0, 255) solid;*/
-
 
 .soda1,
 .soda2,
 .soda3 {
     width: 640px;
+    height: 1080px;
+    position: relative;
 }
 
 .soda1 {
@@ -326,22 +324,35 @@ nav a {
     box-sizing: border-box;
 }
 
-#sodaPhoto1 {
+#sodaPhoto1,
+#sodaPhoto2,
+#sodaPhoto3,
+#sodaPhoto4,
+#sodaPhoto5,
+#sodaPhoto6,
+#sodaPhoto7,
+#sodaPhoto8,
+#sodaPhoto9 {
     position: absolute;
+}
+
+#sodaPhoto1 {
     top: 100px;
     left: 0px;
 }
 
-#sodaPhoto2 {
-    position: absolute;
-    bottom: 50px;
-    left: 165px;
+#sodaPhoto2,
+#sodaPhoto5,
+#sodaPhoto8 {
+    bottom: 40px;
+    left: 180px;
 }
 
-#sodaPhoto3 {
-    position: absolute;
-    bottom: 40px;
-    left: 400px;
+#sodaPhoto3,
+#sodaPhoto6,
+#sodaPhoto9 {
+    bottom: 30px;
+    right: 20px;
 }
 
 .soda2 {
@@ -349,21 +360,8 @@ nav a {
 }
 
 #sodaPhoto4 {
-    position: absolute;
-    top: 160px;
-    left: 560px;
-}
-
-#sodaPhoto5 {
-    position: absolute;
-    bottom: 50px;
-    right: 770px;
-}
-
-#sodaPhoto6 {
-    position: absolute;
-    bottom: 40px;
-    right: 680px;
+    top: 180px;
+    left: -60px;
 }
 
 .soda3 {
@@ -371,35 +369,22 @@ nav a {
 }
 
 #sodaPhoto7 {
-    position: absolute;
-    top: 200px;
+    top: 220px;
     right: 180px;
 }
 
-#sodaPhoto8 {
-    position: absolute;
-    bottom: 50px;
-    right: 120px;
-}
-
-#sodaPhoto9 {
-    position: absolute;
-    bottom: 50px;
-    right: 20px;
-}
-
-nav.show {
+.soda1 .show,
+.soda2 .show,
+.soda3 .show {
     width: 640px;
     text-align: center;
     justify-content: center;
-    display: flex;
     position: absolute;
-    top: 440px;
+    top: 460px;
     display: none;
 }
 
 .show a {
-    display: inline-block;
     text-decoration: none;
 }
 
@@ -415,8 +400,9 @@ nav.show {
 @media (max-width: 640px) {
     body {
         width: 320px;
-    height: 1707px;
-}
+        height: 1707px;
+    }
+
     .wrap {
         width: 320px;
         height: 1138px;
@@ -425,7 +411,7 @@ nav.show {
 
     #group {
         width: 960px;
-        display: block;   
+        display: block;
     }
 
     #group1,
@@ -619,7 +605,6 @@ nav.show {
         flex-direction: column;
     }
 
-
     .soda1,
     .soda2,
     .soda3 {
@@ -644,7 +629,6 @@ nav.show {
     #sodaPhoto4,
     #sodaPhoto7 {
         width: 250px;
-        position: absolute;
     }
 
     #sodaPhoto1 {
@@ -656,10 +640,6 @@ nav.show {
     #sodaPhoto5,
     #sodaPhoto8 {
         width: 170px;
-        position: absolute;
-    }
-
-    #sodaPhoto2 {
         top: 280px;
         left: 85px;
     }
@@ -668,47 +648,25 @@ nav.show {
     #sodaPhoto6,
     #sodaPhoto9 {
         width: 90px;
-        position: absolute;
-    }
-
-    #sodaPhoto3 {
-        top: 460px;
-        left: 220px;
+        bottom: 15px;
+        right: 5px;
     }
 
     #sodaPhoto4 {
-        top: 680px;
-        left: -20px;
-    }
-
-    #sodaPhoto5 {
-        top: 840px;
-        left: 85px;
-    }
-
-    #sodaPhoto6 {
-        top: 1030px;
-        left: 220px;
-    }
-
-    #sodaPhoto7 {
-        top: 1270px;
+        top: 110px;
         left: -30px;
     }
 
-    #sodaPhoto8 {
-        bottom: 5px;
-        left: 85px;
+    #sodaPhoto7 {
+        top: 130px;
+        left: -25px;
     }
 
-    #sodaPhoto9 {
-        bottom: 15px;
-        left: 220px;
-    }
-
-    nav.show {
+    .soda1 .show,
+    .soda2 .show,
+    .soda3 .show {
         width: 320px;
-        top: 250px;
+        top: 250px
     }
 
     .show img {
