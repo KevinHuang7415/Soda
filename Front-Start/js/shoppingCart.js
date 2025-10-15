@@ -3,9 +3,9 @@
 // ================================
 
 // --- 動態插入購物車 HTML 結構 ---
-function injectShoppingCartHTML() {
+function injectshoppingCartHTML() {
     const html = `
-    <div class="shoppingCar is-hidden" id="shoppingCar">
+    <div class="shoppingCart is-hidden" id="shoppingCart">
         <div class="cart">
             <div class="cart-title-box">
                 <p class="cart-title">Cart</p>
@@ -22,8 +22,13 @@ function injectShoppingCartHTML() {
         </div>
     </div>
     `;
-    document.body.insertAdjacentHTML("beforeend", html);
+    // 購物車會插在 <body> 的最前面（避免被其他內容影響排版）
+    document.body.insertAdjacentHTML("afterbegin", html);
+
 }
+// ==============================
+// JS 功能邏輯
+// ==============================
 
 // --- 初始假資料 ---
 const fakeCartData = [
@@ -57,7 +62,7 @@ function createItemBox({ name, size, qty }) {
         <div class="cart-item-img" style="background-color:${variant.bg}">
             <h2>${size}</h2>
             <a href="${href}" target="_blank">
-                <img src="${variant.img}" alt="${variant.alt}">
+                        <img src="${variant.img}" alt="${variant.alt}">     
             </a>
         </div>
         <div class="cart-item-info">
@@ -115,7 +120,7 @@ function bindItemEvents(box) {
 
     minus.addEventListener('click', () => { qtyInput.value--; renderItem(box); });
     plus.addEventListener('click', () => { qtyInput.value++; renderItem(box); });
-    qtyInput.addEventListener('input', () => renderItem(box));
+    qtyInput.addEventListener('change', () => renderItem(box));
     closeBtn.addEventListener('click', () => { box.remove(); updateSubtotal(); });
     nameSel.addEventListener('change', () => renderItem(box));
     sizeSel.addEventListener('change', () => renderItem(box));
@@ -125,7 +130,7 @@ function bindItemEvents(box) {
 function renderItem(box) {
     const name = box.querySelector('.cart-item-name').value;
     const size = box.querySelector('.cart-item-size').value;
-    const qty = parseInt(box.querySelector('.cart-item-nmb').value);
+    const qty = parseInt(box.querySelector('.cart-item-nmb').value) || 0;
     const variant = VARIANT_MAP[name];
     const priceEl = box.querySelector('.cart-item-price');
     const qtyDisplay = box.querySelector('.cart-item-qty-display');
@@ -143,13 +148,13 @@ function renderItem(box) {
 
 // --- 開關購物車 (toggle) ---
 function toggleCart() {
-    const shoppingCar = document.getElementById('shoppingCar');
-    shoppingCar.classList.toggle('is-hidden');
+    const shoppingCart = document.getElementById('shoppingCart');
+    shoppingCart.classList.toggle('is-hidden');
 }
 
 // --- 初始化 ---
 document.addEventListener('DOMContentLoaded', () => {
-    injectShoppingCartHTML();
+    injectshoppingCartHTML();
     const cartData = JSON.parse(sessionStorage.getItem('cart')) || [];
     const cartContainer = document.getElementById('cart-items');
     cartData.forEach(item => {

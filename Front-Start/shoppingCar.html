@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShoppingCar</title>
+    <title>shoppingCart</title>
     <!-- Reset -->
     <link rel="stylesheet" href="./css/Reset.css">
     <!-- main_setting -->
     <link rel="stylesheet" href="./css/main_setting.css">
     <!-- style.css -->
-     <link rel="stylesheet" href="./css/style.css">
+     <link rel="stylesheet" href="./css/shoppingCart_style.css">
     <!-- 小iconCDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
@@ -20,8 +20,7 @@
 </head>
 
 <body>
-
-    <div class="shoppingCar">
+    <div class="shoppingCart">
         <div class="cart">
             <div class="cart-title-box">
                 <p class="cart-title">
@@ -97,8 +96,6 @@
             </div>  -->
             <!-- 空容器：動態插入 item-box -->
             <div id="cart-items"></div>
-
-
             <div class="subtotal">
                 <p>Subtotal</p>
                 <div class="subtotal-sum" id="subtotal-sum" name="subtotal-sum">
@@ -120,29 +117,12 @@
         // 存進 sessionStorage
         sessionStorage.setItem('cart', JSON.stringify(fakeCartData));
 
-        // 產品對應的商品網址網址
+        // 點產品圖會連結到的商品網址 *產品頁面做好的話可以替換
         const PRODUCT_URLS = {
             Lemon: '/products/lemon',
             Grape: '/products/grape',
             Strawberry: '/products/strawberry'
         }
-
-        // @* 在 Razor 產生對應 URL *@
-        // @{
-        //   var urls = new Dictionary<string,string> {
-        //     ["Lemon"] = Url.Action("Detail","Products", new { slug = "lemon" }),
-        //     ["Grape"] = Url.Action("Detail","Products", new { slug = "grape" }),
-        //     ["Strawberry"] = Url.Action("Detail","Products", new { slug = "strawberry" })
-        //   };
-        // }
-        // <script>
-        //   // 把後端產生的 URL 帶到前端
-        //   const PRODUCT_URLS = {
-        //     Lemon: '@urls["Lemon"]',
-        //     Grape: '@urls["Grape"]',
-        //     Strawberry: '@urls["Strawberry"]'
-        //   };
-        // <script>
 
         // 價格與圖片設定
         const PRICE_MAP = { '4': 199, '12': 499 };
@@ -226,7 +206,7 @@
             let total = 0;
             document.querySelectorAll('.item-box').forEach(box => {
                 const price = parseInt(box.querySelector('.cart-item-price').textContent);
-                const qty = parseInt(box.querySelector('.cart-item-nmb').value);
+                const qty = parseInt(box.querySelector('.cart-item-nmb').value) || 0;
                 total += price * qty;
             });
             subtotalEl.textContent = `$${total}`;
@@ -276,7 +256,7 @@
 
             minus.addEventListener('click', () => { qtyInput.value--; renderItem(box); });
             plus.addEventListener('click', () => { qtyInput.value++; renderItem(box); });
-            qtyInput.addEventListener('input', () => renderItem(box));
+            qtyInput.addEventListener('change', () => renderItem(box));
             closeBtn.addEventListener('click', () => { box.remove(); updateSubtotal(); });
             nameSel.addEventListener('change', () => renderItem(box));
             sizeSel.addEventListener('change', () => renderItem(box));
@@ -286,16 +266,16 @@
 
         // ====== 事件：按下關閉按鈕 ======
         // 共用的關閉流程
-        const shoppingCar = document.querySelector('.shoppingCar');
+        const shoppingCart = document.querySelector('.shoppingCart');
         const cartPanel = document.querySelector('.cart');
         const closeBtnCar = document.getElementById('closeCart-btn');
         function closeCart() {
-            if (shoppingCar.classList.contains('is-hidden')) return; // 已關就不重複
-            shoppingCar.classList.add('is-closing');
+            if (shoppingCart.classList.contains('is-hidden')) return; // 已關就不重複
+            shoppingCart.classList.add('is-closing');
             cartPanel.addEventListener('transitionend', () => {
-                shoppingCar.classList.remove('is-closing');
-                shoppingCar.classList.add('is-hidden');
-                shoppingCar.setAttribute('aria-hidden', 'true');
+                shoppingCart.classList.remove('is-closing');
+                shoppingCart.classList.add('is-hidden');
+                shoppingCart.setAttribute('aria-hidden', 'true');
             }, { once: true });
         }
 
