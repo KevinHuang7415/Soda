@@ -17,13 +17,19 @@ namespace WebApplication1.Models
         public string Name { get; set; } = string.Empty;
 
         [Required]
+        [MaxLength(50)]
+        public string Size { get; set; } = string.Empty;
+
+        [Required]
         [Column(TypeName = "decimal(10,2)")]
         public decimal Price { get; set; }
 
         [Required]
         public int Stock { get; set; }
 
-        
+        [MaxLength(255)]
+        public string? ImageUrl { get; set; }
+
     }
 
     [Table("Orders")]
