@@ -9,16 +9,14 @@
     <link rel="stylesheet" href="./css/Reset.css">
     <!-- main_setting -->
     <link rel="stylesheet" href="./css/main_setting.css">
-    <!-- style.css -->
-    <link rel="stylesheet" href="./css/style.css">
 
 
     <style>
         .checkouts-container {}
 
         .checkouts-header {
-            width: 90%;
-            max-width: 1200px;
+            border-bottom: 1px solid var(--main-gray-drck);
+            padding: 0 200px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -35,16 +33,16 @@
 
         .logo {
             height: 50px;
-            padding-top: 0px;
+            margin-top: 20px;
         }
 
         .list-title-box {
+            display: none;
             position: relative;
             /* 讓它成為定位參考 */
             overflow: hidden;
             /* 避免往上移時穿幫 */
             z-index: 10;
-            display: flex;
             justify-content: space-between;
             padding: 20px 20px 10px 20px;
             background-color: var(--main-gray-light);
@@ -54,7 +52,9 @@
 
         .list-title {
             color: var(--main-orange);
-            font-size: 12px;
+            font-size: 16px;
+            height: 26px;
+            line-height: 20px;
         }
 
         .list-title img {
@@ -64,13 +64,15 @@
 
         .list-title-sum {
             font-weight: 600;
+            font-size: 24px;
         }
 
         .order-list {
+            padding: 20px 200px 20px 20px;
             width: 50vw;
+            height: 100vh;
             position: relative;
             z-index: 1;
-            padding: 30px;
             background: var(--light-yellow);
             overflow: hidden;
             opacity: 1;
@@ -82,6 +84,7 @@
 
         /* 收起狀態 */
         .order-list.hidden {
+            display: none;
             /* 由上往下收起 */
             max-height: 0;
             /* 慢慢變透明 */
@@ -96,13 +99,13 @@
         }
 
         .list-title img.rotate {
-            transform: rotate(180deg);
+            transform: rotate(-180deg);
         }
 
         /* 讓箭頭旋轉 End */
         .order-item-box {
             display: flex;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .order-item-info {
@@ -113,8 +116,8 @@
         }
 
         .order-item-size p {
-            font-size: 10px;
-            margin-bottom: 2px;
+            font-size: 12px;
+            margin: 10px 0;
             color: var(--main-black);
         }
 
@@ -198,39 +201,46 @@
             margin: 20px auto;
         }
 
-        .discount-box p {
-            margin: 0;
-        }
-
         .discount-item {
             display: flex;
             justify-content: space-between;
             font-size: 12px;
-            padding: 0 10px;
+            padding: 3px 10px;
         }
 
         .total-box {
+            font-size: 24px;
             display: flex;
             justify-content: space-between;
         }
 
         .checkouts-main {
             width: 100vw;
-            border: 1px solid #000;
             display: flex;
             flex-direction: row-reverse;
         }
 
 
 
-        .pay-way-box {
+        .pay-container {
             width: 50vw;
-            padding: 20px;
+            padding: 20px 20px 20px 200px;
+
+        }
+
+        .pay-way-box {
             display: flex;
-            justify-content: space-around;
+            flex-wrap: wrap;
+            justify-content: space-between;
+
+        }
+
+        .pay-way-box img {
+            object-fit: contain;
         }
 
         .pay-way-btn {
+            margin-bottom: 20px;
             background: var(--main-orange);
             width: 150px;
             height: 45px;
@@ -256,20 +266,122 @@
             background: var(--product-purple-light);
         }
 
-        /* 響應式 */
+        /* or分隔線 */
+        .or-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            /* 字與線的間距 */
+            margin: 16px 0;
+            /* 與上下內容距離 */
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: "";
+            flex: 1;
+            /* 兩邊線自動填滿剩餘寬度 */
+            border-top: 1px solid rgba(0, 0, 0, .2);
+            /* 線條樣式 */
+        }
+
+        .or-divider span {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            /* 可換成 var(--main-gray) 等 */
+            white-space: nowrap;
+            /* 避免換行 */
+        }
+
+        /* 1) 全站改為 border-box，避免 padding/border 把寬度撐爆 */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        /* 2) 讓頁面不會因 1~2px 計算誤差出現水平捲軸（保險）*/
+        html,
+        body {
+            overflow-x: hidden;
+        }
+
+        /* 3) RWD 區塊寬度用 % 取代 vw（讓它吃父層可用寬度）*/
         @media (max-width: 1140px) {
+            .checkouts-header {
+                padding: 0 20px;
+                border-bottom: none;
+            }
+
+            .list-title-box {
+                display: flex;
+            }
+
             .checkouts-main {
-                flex-direction: column;
+                display: block;
+                /* 不要用 100vw，交給父層寬度，自然就是滿版 */
+                width: 100%;
+                /* 可選：移除這裡的邊框，或保留都行 */
+                /* border: none; */
+            }
+
+            .order-list,
+            .pay-container {
+                height: 100%;
+                padding: 20px;
+                width: 100%;
+
+                /* 取代 100vw */
+                /* 已用 border-box，不會再被 padding 撐爆 */
+            }
+
+            .pay-container {
                 display: block;
             }
 
-            .order-list {
-                width: 100vw;
+            /* 4) 避免固定 350px 撐爆小螢幕 */
+            .gift-box {
+                gap: 10px;
+                /* 讓按鈕和輸入框不用硬貼 */
+                flex-wrap: wrap;
+                /* 小螢幕可換行 */
+            }
+
+
+            /* 圖片與內容也保險加上不超出容器 */
+            img {
+                max-width: 100%;
+                height: auto;
             }
 
             .pay-way-box {
-                width: 100vw;
-                border: 1px dotted #000;
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .applePay {
+                width: 100%;
+            }
+
+            .googlePay {
+                width: 45%;
+            }
+
+            .amazonPay {
+                width: 45%;
+            }
+        }
+
+        @media (max-width: 768px) {}
+
+        @media (max-width: 300px) {
+            .googlePay {
+                width: 100%;
+            }
+
+            .amazonPay {
+                width: 100%;
             }
         }
     </style>
@@ -281,18 +393,19 @@
         <a href="prodoct.html"><img src="./images/icon/8666616_shopping_cart_icon.svg" alt="shoppingCar"
                 title="返回商品頁面"></a>
     </div>
+
     <div class="shopping-list">
         <div class="list-title-box">
             <div class="list-title">
                 Order summary
-                <img src="./images/icon/8674511_ic_fluent_chevron_up_regular_icon.svg" alt="">
+                <img src="./images/icon/8674526_ic_fluent_chevron_down_regular_icon.svg" alt="">
             </div>
             <div class="list-title-sum">
                 <h5>$2,335</h5>
             </div>
         </div>
         <div class="checkouts-main">
-            <div class="order-list">
+            <div class="order-list ">
                 <div class="order-item-box">
                     <div class="order-item-img" id="order-item-img" name="order-item-img">
                         <span class="order-item-quantity">6</span>
@@ -308,7 +421,6 @@
                                 <p>
                                     12 x 355ml
                                 </p>
-                                <p>Delivery every 15 days</p>
                             </div>
                         </div>
                         <div class="order-item-subtotal">$2,994</div>
@@ -343,11 +455,17 @@
                 </div>
             </div>
             <div class="pay-container">
+
                 <div class="pay-way-box">
-                    <img class="pay-way-btn applePay" src="./images/icon/8666205_apple_pay_icon.svg" alt="applePay">
-                    <img class="pay-way-btn googlePay" src="./images/icon/8546747_google_pay_icon.svg" alt="googlePay">
-                    <img class="pay-way-btn amazonPay" src="./images/icon/8666126_amazon_pay_icon.svg" alt="amazonPay">
+                    <img class="pay-way-btn applePay" src="./images/icon/8666205_apple_pay_icon_white.png"
+                        alt="applePay">
+                    <img class="pay-way-btn googlePay" src="./images/icon/8546747_google_pay_icon_white.png"
+                        alt="googlePay">
+                    <img class="pay-way-btn amazonPay" src="./images/icon/8666126_amazon_pay_icon_white.png"
+                        alt="amazonPay">
                 </div>
+
+                <div class="or-divider"><span>OR</span></div>
             </div>
 
         </div>
@@ -360,13 +478,38 @@
             const orderList = document.querySelector('.order-list');
             const arrowIcon = document.querySelector('.list-title img');
 
+            // 既有：點擊切換
             titleBox.addEventListener('click', function () {
-                // 切換「active」class，控制顯示/隱藏
                 orderList.classList.toggle('hidden');
-                // 同時讓箭頭翻轉（上/下）
                 arrowIcon.classList.toggle('rotate');
             });
+
+            // 斷點：1140px 以下 = 中尺寸；以上 = 全螢幕（桌機）
+            const mq = window.matchMedia('(max-width: 1140px)');
+
+            function syncPanel(e) {
+                if (e.matches) {
+                    // 進入中尺寸：預設收起（也可改成保留使用者上次狀態）
+                    orderList.classList.add('hidden');
+                    arrowIcon.classList.remove('rotate'); // 讓箭頭朝下顯示可展開
+                } else {
+                    // 回到全螢幕：一定展開
+                    orderList.classList.remove('hidden');
+                    // 清掉可能殘留的 inline 樣式（若你有做動畫）
+                    orderList.style.removeProperty('display');
+                    orderList.style.removeProperty('height');
+                    orderList.style.removeProperty('opacity');
+                    orderList.style.removeProperty('transition');
+                    arrowIcon.classList.remove('rotate'); // 桌機不需要旋轉狀態
+                }
+            }
+
+            // 初次載入就同步一次（避免一開頁就錯誤狀態）
+            syncPanel(mq);
+            // 視窗大小改變時同步
+            mq.addEventListener('change', syncPanel);
         });
+
     </script>
 
 
