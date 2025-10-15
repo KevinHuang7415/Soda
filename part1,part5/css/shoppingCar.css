@@ -1,0 +1,159 @@
+/* ========== 🛒 購物車彈窗樣式 ========== */
+
+.cart-title-box {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-title {
+  font-size: 30px;
+  margin: 20px 0;
+}
+
+/* 關閉按鈕 */
+.closeCart-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #333;
+  cursor: pointer;
+}
+.closeCart-btn:hover {
+  color: #000;
+}
+
+/* 單項商品容器 */
+.item-box {
+  display: flex;
+  align-items: center;
+  padding: 30px 0;
+  border-bottom: 2px dotted rgba(0, 0, 0, 0.3);
+}
+
+/* 商品圖片 */
+.cart-item-img-box {
+  display: flex;
+  align-items: center;
+}
+
+.cart-item-img {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--product-green-mid, #a8e6cf);
+  width: 150px;
+  height: 150px;
+}
+
+.cart-item-img img {
+  height: 60px;
+}
+
+/* 商品資訊 */
+.cart-item-info {
+  margin-left: 40px;
+  line-height: 1.8rem;
+  width: 60%;
+}
+
+.cart-item-name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* 數量調整區 */
+.cart-item-cout {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-item-info ul {
+  width: 100px;
+  display: flex;
+  border: 1px solid #000;
+  border-radius: 5px;
+  justify-content: space-around;
+  padding: 0;
+  margin: 0;
+}
+
+.cart-item-info li {
+  list-style: none;
+  text-align: center;
+  width: 100%;
+}
+
+.cart-item-nmb {
+  width: 30px;
+  text-align: center;
+  border: none;
+  color: #000;
+}
+
+/* 移除輸入框箭頭 */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+input[type=number]:focus {
+  outline: none;
+}
+
+/* 數量按鈕 */
+.cout-btn {
+  cursor: pointer;
+  user-select: none;
+}
+.cout-btn:hover {
+  background-color: var(--product-pink-cover, #ffb6b9);
+}
+
+/* 刪除按鈕 */
+.item-close-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.item-close-btn img {
+  height: 16px;
+  opacity: 0.6;
+}
+
+/* 小計 */
+.subtotal {
+  font-size: 20px;
+  display: flex;
+  justify-content: space-between;
+  width: 50%;
+  margin: 50px auto 20px auto;
+}
+
+/* 結帳按鈕 */
+.payment-btn {
+  display: block;
+  margin: 40px auto;
+  background-color: var(--light-orange, #ffd93d);
+  border: none;
+  padding: 10px 30px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 10px;
+}
+.payment-btn:hover {
+  background-color: #ffca28;
+}
+
+/* 限制彈窗寬度避免超出螢幕 */
+.cart {
+  max-width: calc(100vw - 2rem);
+}
