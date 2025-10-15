@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>會員系統</title>
+  <!-- Reset -->
+  <link rel="stylesheet" href="../css/Reset.css">
+  <!-- main_setting -->
+  <link rel="stylesheet" href="../css/main_setting.css">
+  <!-- style.css -->
+  <link rel="stylesheet" href="../css/shoppingCart_style.css">
+  <!-- axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <style>
+    /* register CSS */
+    body {
+      background: var(--light-yellow);
+    }
+
+    .containerAcc {
+      margin: auto;
+      width: calc(300px + (300) * ((100vw - 480px) / (1200 - 480)));
+      /* 在 480px 寬螢幕時寬度約為 300px
+         在 1200px 寬螢幕時寬度約為 800px
+         之間會平滑變化 */
+    }
+
+    .titleAcc {
+      width: 100%
+    }
+
+    .containerAcc h1 {
+      font-size: 4em;
+      font-weight: bold;
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+
+    .containerAcc label {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .containerAcc input {
+      width: 92%;
+      padding: 24px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .formAcc button {
+      display: block;
+    }
+
+    .alc {
+      text-align: center;
+    }
+
+    .mgt {
+      margin-top: 40px;
+    }
+
+    .size-12 {
+      font-size: 12px;
+    }
+
+    .in {
+      display: flex;
+      justify-content: start;
+      gap: 15%;
+    }
+
+    .side {
+      width: 40%;
+    }
+    .side2 {
+      width: 200px;
+    }
+    .bdr {
+      border-right: #ccc solid 2px;
+    }
+    .wrap{
+      font-size: 30px;
+      min-width: 600px;
+      display: flex;
+      border-radius: 40px;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--main-orange);
+    }
+    .btn-2 {
+    width: 50%;
+    color: #333;
+    margin: 50px ;
+    padding: 10px 0;
+    text-align: center;
+    border-radius: 50px;
+    font-weight: 400;
+    border: 1px solid var(--main-black);
+}
+
+    @font-face {
+      font-family: "FakePearl-regular";
+      /* 自訂名稱 */
+      src: url("../fonts/FakePearl-regular.ttf") format("truetype");
+      /* 字體檔路徑 */
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* 套用字體 */
+    body {
+      font-family: "FakePearl-regular", sans-serif;
+    }
+
+    @media (max-width: 768px) {
+      .containerAcc h1 {
+        font-size: 2em;
+      }
+
+      .containerAcc label {
+        font-size: 16px;
+      }
+
+      .containerAcc input {
+        font-size: 16px;
+        padding: 20px;
+      }
+
+    }
+
+    /* register CSS end */
+  </style>
+</head>
+
+<body>
+  <div class="containerAcc">
+    <div class="titleAcc">
+      <h1 class="alc mgt">會員系統</h1>
+      <p class="alc">歡迎會員   <span>user_name</span> !!</p>
+    </div>
+    <div class="wrap mgt">
+    <div  class="side2 bdr">
+      <h3 class="mgt alc">會員資訊</h3>
+      <button type="submit" class="btn btn-2">前往</button>
+    </div>
+     <div class="side2 bdr">
+      <h3 class="mgt alc">會員資訊</h3>
+      <button type="submit" class="btn btn-2">前往</button>
+    </div>
+     <div class="side2">
+      <h3 class="mgt alc">會員資訊</h3>
+      <button type="submit" class="btn btn-2">前往</button>
+    </div>
+  </div>
+</div>
+  </div>
+</body>
+
+</html>
