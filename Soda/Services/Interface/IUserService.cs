@@ -8,5 +8,6 @@ namespace Soda.Services.Interface
         Task<List<UserResponse>> GetAllUsersAsync();
         Task<bool> UpdateUserAsync(int userId, UserResponse userUpdate);
         Task<bool> DeleteUserAsync(int userId);
+        Task<ChangePasswordResponse> ChangePasswordAsync(int userId, ChangePasswordRequest request);
     }
 }

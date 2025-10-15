@@ -10,10 +10,12 @@ namespace Soda.Services
     public class UserService : IUserService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(ApplicationDbContext context)
+        public UserService(ApplicationDbContext context, ILogger<UserService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<UserResponse?> GetUserByIdAsync(int userId)
@@ -66,6 +68,66 @@ namespace Soda.Services
             return true;
         }
 
+        public async Task<ChangePasswordResponse> ChangePasswordAsync(int userId, ChangePasswordRequest request)
+        {
+            try
+            {
+                var user = await _context.Users.FindAsync(userId);
+
+                if (user == null)
+                {
+                    return new ChangePasswordResponse
+                    {
+                        Success = false,
+                        Message = "找不到使用者"
+                    };
+                }
+
+                // 驗證舊密碼
+                if (!PasswordHasher.VerifyPassword(request.OldPassword, user.PasswordHash))
+                {
+                    _logger.LogWarning($"使用者 {userId} 嘗試變更密碼但舊密碼錯誤");
+                    return new ChangePasswordResponse
+                    {
+                        Success = false,
+                        Message = "舊密碼錯誤"
+                    };
+                }
+
+                // 檢查新密碼是否與舊密碼相同
+                if (PasswordHasher.VerifyPassword(request.NewPassword, user.PasswordHash))
+                {
+                    return new ChangePasswordResponse
+                    {
+                        Success = false,
+                        Message = "新密碼不能與舊密碼相同"
+                    };
+                }
+
+                // 更新密碼
+                user.PasswordHash = PasswordHasher.HashPassword(request.NewPassword);
+                user.UpdatedAt = DateTime.UtcNow.ToTaipeiTimeString();
+
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation($"使用者 {userId} 成功變更密碼");
+
+                return new ChangePasswordResponse
+                {
+                    Success = true,
+                    Message = "密碼變更成功"
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"使用者 {userId} 變更密碼時發生錯誤");
+                return new ChangePasswordResponse
+                {
+                    Success = false,
+                    Message = "密碼變更失敗，請稍後再試"
+                };
+            }
+        }
         private static UserResponse MapToUserResponse(User user)
         {
             return new UserResponse

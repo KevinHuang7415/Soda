@@ -46,7 +46,7 @@ namespace Soda.Controllers
         }
 
         // 只有管理員可以查看所有使用者
-        [HttpGet]
+        [HttpGet("Users")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<UserResponse>>> GetAllUsers()
         {
@@ -92,6 +92,29 @@ namespace Soda.Controllers
                 return NotFound();
 
             return NoContent();
+        }
+
+        [HttpPost("change-password")]
+        public async Task<ActionResult<ChangePasswordResponse>> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                return Unauthorized(new ChangePasswordResponse
+                {
+                    Success = false,
+                    Message = "無效的使用者"
+                });
+
+            var response = await _userService.ChangePasswordAsync(userId, request);
+
+            if (!response.Success)
+                return BadRequest(response);
+
+            return Ok(response);
         }
     }
 }
