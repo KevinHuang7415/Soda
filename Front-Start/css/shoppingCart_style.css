@@ -354,7 +354,7 @@ input[type=number]:hover {
 
 }
 
-/* 桌機優化（>= 992px）：右側固定卡片 */
+/* 桌機優化（>= 1140px）：右側固定卡片 */
 @media (min-width: 769px) {
     .cart {
         right: 90px;

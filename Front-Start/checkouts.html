@@ -17,8 +17,9 @@
         .checkouts-container {}
 
         .checkouts-header {
-            margin: auto;
-            width: 1200px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             font-size: 30px;
@@ -66,9 +67,10 @@
         }
 
         .order-list {
+            width: 50vw;
             position: relative;
             z-index: 1;
-            padding: 20px;
+            padding: 30px;
             background: var(--light-yellow);
             overflow: hidden;
             opacity: 1;
@@ -98,7 +100,6 @@
         }
 
         /* 讓箭頭旋轉 End */
-
         .order-item-box {
             display: flex;
             margin-bottom: 20px;
@@ -213,7 +214,17 @@
             justify-content: space-between;
         }
 
+        .checkouts-main {
+            width: 100vw;
+            border: 1px solid #000;
+            display: flex;
+            flex-direction: row-reverse;
+        }
+
+
+
         .pay-way-box {
+            width: 50vw;
             padding: 20px;
             display: flex;
             justify-content: space-around;
@@ -232,54 +243,35 @@
             background: var(--main-color);
             transform: translateY(3px);
         }
-        .pay-container{
-            width: 50%;
-        }
+
         .applePay {
             background: var(--product-green-light);
         }
+
         .googlePay {
             background: var(--product-pink-light);
         }
+
         .amazonPay {
             background: var(--product-purple-light);
         }
 
-        /* 
-        .checkouts-main {
-            margin: auto;
-            width: 1200px;
-        }
-        .pay-btn-box {
-            text-align: center;
-        }
+        /* 響應式 */
+        @media (max-width: 1140px) {
+            .checkouts-main {
+                flex-direction: column;
+                display: block;
+            }
 
-        .pay-btn {
-            font-size: 50px;
-            display: flex;
-        }
+            .order-list {
+                width: 100vw;
+            }
 
-        .pay-btn li {
-            border: 1px solid #000;
-            border-radius: 5px;
-            width: 150px;
+            .pay-way-box {
+                width: 100vw;
+                border: 1px dotted #000;
+            }
         }
-
-        .checkouts-main {
-            display: flex;
-        }
-
-        .checkouts-info {
-            width: 50%;
-            height: 100vh;
-            background-color: #9e9e9e6c;
-        }
-
-        .shopping-list {
-            width: 50%;
-            height: 100vh;
-            background-color: var(--light-yellow);
-        } */
     </style>
 </head>
 
@@ -299,68 +291,64 @@
                 <h5>$2,335</h5>
             </div>
         </div>
-        <div class="order-list">
-            <div class="order-item-box">
-                <div class="order-item-img" id="order-item-img" name="order-item-img">
-                    <span class="order-item-quantity">6</span>
-                    <h2>12</h2>
-                    <img src="./images/lemon-lime_mockup.png" alt="Lemon">
-                </div>
-                <div class="order-item-info">
-                    <div class="order-item-sel-box">
-                        <div class="order-item-name">
-                            Lemon
-                        </div>
-                        <div class="order-item-size">
-                            <p>
-                                12 x 355ml
-                            </p>
-                            <p>Delivery every 15 days</p>
-                        </div>
+        <div class="checkouts-main">
+            <div class="order-list">
+                <div class="order-item-box">
+                    <div class="order-item-img" id="order-item-img" name="order-item-img">
+                        <span class="order-item-quantity">6</span>
+                        <h2>12</h2>
+                        <img src="./images/lemon-lime_mockup.png" alt="Lemon">
                     </div>
-                    <div class="order-item-subtotal">$2,994</div>
+                    <div class="order-item-info">
+                        <div class="order-item-sel-box">
+                            <div class="order-item-name">
+                                Lemon
+                            </div>
+                            <div class="order-item-size">
+                                <p>
+                                    12 x 355ml
+                                </p>
+                                <p>Delivery every 15 days</p>
+                            </div>
+                        </div>
+                        <div class="order-item-subtotal">$2,994</div>
+                    </div>
+                </div>
+                <form action="#" method="get" class="gift-box">
+                    <input type="text" placeholder="Gift card or discount code" class="gift-text">
+                    <button type="submit" class="gift-btn">Apply</button>
+                </form>
+                <div class="discount-box">
+                    <p>Discount</p>
+                    <div class="discount-item">
+                        <p>Subtotal · <span>6</span> items</p>
+                        <p>$2,994</p>
+                    </div>
+                    <div class="discount-item">
+                        <p>Christmas discounts 88%</p>
+                        <p>$2,635</p>
+                    </div>
+                    <div class="discount-item">
+                        <p>New friend discounts</p>
+                        <p>-$100</p>
+                    </div>
+                    <div class="discount-item">
+                        <p>Gift card：<span>SODA200</span></p>
+                        <p>-$200</p>
+                    </div>
+                </div>
+                <div class="total-box">
+                    <h4>Total</h4>
+                    <h5>$2,335</h5>
                 </div>
             </div>
-
-            <form action="#" method="get" class="gift-box">
-                <input type="text" placeholder="Gift card or discount code" class="gift-text">
-                <button type="submit" class="gift-btn">Apply</button>
-            </form>
-            <div class="discount-box">
-                <p>Discount</p>
-                <div class="discount-item">
-                    <p>Subtotal · <span>6</span> items</p>
-                    <p>$2,994</p>
-                </div>
-                <div class="discount-item">
-                    <p>Christmas discounts 88%</p>
-                    <p>$2,635</p>
-                </div>
-                <div class="discount-item">
-                    <p>New friend discounts</p>
-                    <p>-$100</p>
-                </div>
-                <div class="discount-item">
-                    <p>Gift card：<span>SODA200</span></p>
-                    <p>-$200</p>
+            <div class="pay-container">
+                <div class="pay-way-box">
+                    <img class="pay-way-btn applePay" src="./images/icon/8666205_apple_pay_icon.svg" alt="applePay">
+                    <img class="pay-way-btn googlePay" src="./images/icon/8546747_google_pay_icon.svg" alt="googlePay">
+                    <img class="pay-way-btn amazonPay" src="./images/icon/8666126_amazon_pay_icon.svg" alt="amazonPay">
                 </div>
             </div>
-            <div class="total-box">
-                <h4>Total</h4>
-                <h5>$2,335</h5>
-            </div>
-        </div>
-        
-    </div>
-    <div class="checkouts-main">
-        <div class="pay-container">
-            <div class="pay-way-box">
-                <img class="pay-way-btn applePay" src="./images/icon/8666205_apple_pay_icon.svg" alt="applePay">
-                <img class="pay-way-btn googlePay" src="./images/icon/8546747_google_pay_icon.svg" alt="googlePay">
-                <img class="pay-way-btn amazonPay" src="./images/icon/8666126_amazon_pay_icon.svg" alt="amazonPay">
-            </div>
-        </div>
-        <div class="pay-car-lift">
 
         </div>
     </div>
