@@ -94,6 +94,28 @@ namespace SodaBackend.Controllers
                 }
             }
         }
+        
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCoupon(int id)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                string sql = "DELETE FROM Coupons WHERE Id = @Id";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                        return Ok(new { message = "優惠券已刪除" });
+                    else
+                        return NotFound(new { message = "找不到該優惠券" });
+                }
+            }
+        }
+
     }
 
 }

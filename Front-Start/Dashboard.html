@@ -464,6 +464,26 @@
             visibility: visible;
             opacity: 1;
         }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .delete-btn:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 
@@ -603,6 +623,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>代碼</th>
+                                <th>折扣方法</th>
                                 <th>折扣</th>
                                 <th>狀態</th>
                                 <th>操作</th>
@@ -886,6 +907,14 @@
                                onkeydown="if(event.key === 'Enter') updateCoupon(${c.id})">
                     </td>
                     <td>
+                        <select id="discountType-${c.id}" style="padding:4px; border-radius:4px; border:1px solid #ccc;"
+                                onchange="updateCoupon(${c.id})">
+                            <option value="A" ${c.discountType === "A" ? 'selected' : ''}>金額</option>
+                            <option value="P" ${c.discountType === "P" ? 'selected' : ''}>百分比</option>
+                        </select>
+                        
+                    </td>
+                    <td>
                         <input type="number" min="0" value="${c.discount}" id="discount-${c.id}" style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;"
                                onkeydown="if(event.key === 'Enter') updateCoupon(${c.id})">
                     </td>
@@ -896,13 +925,14 @@
                             <option value="inactive" ${c.status.toLowerCase() !== 'active' ? 'selected' : ''}>非活躍</option>
                         </select>
                     </td>
-                    <td>
-                        <select id="discountType-${c.id}" style="padding:4px; border-radius:4px; border:1px solid #ccc;"
-                                onchange="updateCoupon(${c.id})">
-                            <option value="A" ${c.discountType === "A" ? 'selected' : ''}>金額</option>
-                            <option value="P" ${c.discountType === "P" ? 'selected' : ''}>百分比</option>
-                        </select>
+                    
+                    
+                    <td>                        
+                        <button class="delete-btn" onclick="deleteCoupon(${c.id})">刪除</button>
                     </td>
+                      
+
+
                 `;
                         tbody.appendChild(tr);
                     });
