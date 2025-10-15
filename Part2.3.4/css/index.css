@@ -1,0 +1,719 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --main-black: #333333;
+}
+
+body {
+    width: 1920px;
+    height: 3240px;
+}
+
+.wrap {
+    width: 1920px;
+    height: 2160px;
+    margin: auto;
+    overflow: hidden;
+}
+
+h2,
+h3,
+p {
+    color: aliceblue;
+    text-align: center;
+}
+
+#group {
+    width: 6000px;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+#group1,
+#group2,
+#group3 {
+    width: 1920px;
+    height: 2160px;
+    overflow: hidden;
+    float: left;
+}
+
+
+.box1 {
+    background-color: #2BAD2F;
+}
+
+.box2 {
+    background-color: #DDA2F2;
+
+}
+
+.box3 {
+    background-color: #FE3489;
+}
+
+.box1,
+.box2,
+.box3 {
+    width: 1920px;
+    height: 1080px;
+    position: relative;
+
+}
+
+.box1 h2,
+.box2 h2,
+.box3 h2 {
+    font-family: "Mogra", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    width: 400px;
+    font-size: 120px;
+    position: absolute;
+    left: 190px;
+    top: 110px;
+    transform: rotate3d(1, 2, 1, -12deg);
+}
+
+.box1 h3,
+.box2 h3,
+.box3 h3 {
+    width: 500px;
+    font-weight: 700;
+    font-size: 60px;
+    position: absolute;
+    right: 100px;
+    top: 210px;
+    transform: rotate3d(1, 2, 1, 12deg);
+}
+
+.box1 p,
+.box2 p,
+.box3 p {
+    width: 400px;
+    font-weight: 700;
+    font-size: 36px;
+    position: absolute;
+    right: 160px;
+    top: 300px;
+    transform: rotate3d(1, 2, 1, 14deg);
+}
+
+.lomen1 {
+    position: absolute;
+    left: 170px;
+    top: 320px;
+}
+
+.lomen2 {
+    position: absolute;
+    right: 50px;
+    bottom: 90px;
+}
+
+.can1 {
+    position: absolute;
+    right: 740px;
+    bottom: 225px;
+    z-index: 99999;
+}
+
+.downBg {
+    position: absolute;
+    width: 1920px;
+    height: 300px;
+    bottom: 0;
+}
+
+nav.downbtn {
+    width: 1920px;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    position: absolute;
+    top: 900px;
+}
+
+nav a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.circle {
+    background-color: aliceblue;
+    border: 5px rgb(0, 0, 0) solid;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    font-size: 60px;
+    align-items: center;
+    justify-content: center;
+}
+
+.circle:hover {
+    cursor: pointer;
+    transform: translateY(3px);
+    box-shadow: 0px 0px 0px #ffffff00;
+}
+
+/* 按鈕樣式及動畫設定 */
+.btn {
+    box-shadow: 0px 3px 0px var(--main-black);
+    transition: all 100ms ease;
+}
+
+.btn-l {
+    width: 400px;
+    color: #333;
+    margin: 30px;
+    padding: 10px 0;
+    text-align: center;
+    border-radius: 50px;
+    font-size: 36px;
+    font-weight: 400;
+    border: 1px solid var(--main-black);
+}
+
+.btn:hover {
+    cursor: pointer;
+    transform: translateY(3px);
+    box-shadow: 0px 0px 0px #ffffff00;
+}
+
+.boxBody1,
+.boxBody2,
+.boxBody3 {
+    width: 1920px;
+    height: 1080px;
+    position: relative;
+}
+
+.boxBody1 {
+    background-color: #1A871D;
+
+}
+
+.boxBody2 {
+    background-color: #E33DDC;
+
+}
+
+.boxBody3 {
+    background-color: #D21670;
+
+}
+
+.boxBody1 img,
+.boxBody2 img,
+.boxBody3 img {
+    position: absolute;
+    right: 760px;
+    bottom: 0;
+    z-index: 9999;
+}
+
+.contentBg {
+    width: 1920px;
+    height: 956px;
+    background: url(./imge/contentbg.png);
+    position: absolute;
+    bottom: 0;
+}
+
+.boxBody1 .contentTitle {
+    background-color: #1A871D;
+}
+
+.boxBody2 .contentTitle {
+    background-color: #6B438B;
+}
+
+.boxBody3 .contentTitle {
+    background-color: #D21670;
+}
+
+.contentTitle {
+    display: flex;
+    width: 900px;
+    height: 160px;
+    font-size: 60px;
+    border-radius: 40px;
+    justify-content: center;
+    align-items: center;
+    line-height: 90px;
+    margin: auto;
+    margin-top: 160px;
+}
+
+.contentTitle h2 {
+    color: aliceblue;
+    margin: 30px;
+}
+
+.boxBody1 .contentMain {
+    background-color: #2BAD2F;
+
+}
+
+.boxBody2 .contentMain {
+    background-color: #E33DDC;
+}
+
+.boxBody3 .contentMain {
+    background-color: #FE3489;
+}
+
+.contentMain {
+    width: 900px;
+    height: 500px;
+    margin: auto;
+    border-radius: 50px;
+}
+
+.contentMain p {
+    width: 700px;
+    margin: auto;
+    padding-top: 70px;
+    font-size: 32px;
+    font-family: Noto Sans TC;
+    text-align: left;
+
+}
+
+.product {
+    width: 1920px;
+    height: 1080px;
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    position: relative;
+    z-index: 999;
+}
+
+/* border: 5px rgb(247, 0, 255) solid;*/
+
+
+.soda1,
+.soda2,
+.soda3 {
+    width: 640px;
+}
+
+.soda1 {
+    background-color: #2BAD2F;
+}
+
+.product h2 {
+    margin-top: 50px;
+    font-size: 46px;
+}
+
+.product .price {
+    width: 300px;
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: 10px;
+    font-size: 20px;
+    line-height: 1.8;
+    margin: auto;
+}
+
+.product .price p {
+    width: 50%;
+    box-sizing: border-box;
+}
+
+#sodaPhoto1 {
+    position: absolute;
+    top: 100px;
+    left: 0px;
+}
+
+#sodaPhoto2 {
+    position: absolute;
+    bottom: 50px;
+    left: 165px;
+}
+
+#sodaPhoto3 {
+    position: absolute;
+    bottom: 40px;
+    left: 400px;
+}
+
+.soda2 {
+    background-color: #FE2D7E;
+}
+
+#sodaPhoto4 {
+    position: absolute;
+    top: 160px;
+    left: 560px;
+}
+
+#sodaPhoto5 {
+    position: absolute;
+    bottom: 50px;
+    right: 770px;
+}
+
+#sodaPhoto6 {
+    position: absolute;
+    bottom: 40px;
+    right: 680px;
+}
+
+.soda3 {
+    background-color: #D5A5E6;
+}
+
+#sodaPhoto7 {
+    position: absolute;
+    top: 200px;
+    right: 180px;
+}
+
+#sodaPhoto8 {
+    position: absolute;
+    bottom: 50px;
+    right: 120px;
+}
+
+#sodaPhoto9 {
+    position: absolute;
+    bottom: 50px;
+    right: 20px;
+}
+
+nav.show {
+    width: 640px;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    position: absolute;
+    top: 440px;
+    display: none;
+}
+
+.show a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+
+.soda1:hover .show,
+.soda2:hover .show,
+.soda3:hover .show {
+    display: block;
+}
+
+
+/* 小尺寸：639px 以下 */
+@media (max-width: 640px) {
+    body {
+        width: 320px;
+    height: 1707px;
+}
+    .wrap {
+        width: 320px;
+        height: 1138px;
+        /*手機尺寸*/
+    }
+
+    #group {
+        width: 960px;
+        display: block;   
+    }
+
+    #group1,
+    #group2,
+    #group3 {
+        overflow: hidden;
+        width: 320px;
+        height: 1138px;
+        float: left;
+    }
+
+    .box1,
+    .box2,
+    .box3 {
+        width: 320px;
+        height: 569px;
+    }
+
+    .box1 h2,
+    .box2 h2,
+    .box3 h2 {
+        width: 320px;
+        font-size: 32px;
+        position: static;
+        font-style: normal;
+        transform: none;
+        padding-top: 20px;
+        padding-bottom: 10px;
+    }
+
+    .box1 h3,
+    .box2 h3,
+    .box3 h3 {
+        transform: none;
+        font-style: normal;
+        font-size: 18px;
+        position: static;
+        width: 320px;
+        padding-bottom: 10px;
+    }
+
+    .box1 p,
+    .box2 p,
+    .box3 p {
+        transform: none;
+        font-style: normal;
+        font-size: 18px;
+        position: static;
+        width: 320px;
+    }
+
+    .lomen1 img,
+    .lomen2 img {
+        width: 250px;
+        position: absolute;
+    }
+
+    .lomen1 {
+        left: -120px;
+        top: 250px;
+    }
+
+    .lomen2 {
+        left: 220px;
+        top: 420px;
+    }
+
+    .can1 img {
+        width: 200px;
+        height: 320px;
+    }
+
+    .can1 {
+        position: static;
+        text-align: center;
+        padding-top: 10px;
+        padding-left: 20px;
+        transform: rotate3d(1, 2, 1, 10deg);
+        z-index: 9999999;
+    }
+
+    .downBg {
+        display: none;
+    }
+
+    nav.downbtn {
+        width: 320px;
+        top: 460px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .circle {
+        border: 2px rgb(0, 0, 0) solid;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .circle:hover {
+        cursor: pointer;
+        transform: translateY(3px);
+        box-shadow: 0px 0px 0px #ffffff00;
+    }
+
+    /* 按鈕樣式及動畫設定 */
+    .btn {
+        box-shadow: 0px 3px 0px var(--main-black);
+        transition: all 100ms ease;
+    }
+
+    .btn-l {
+        width: 170px;
+        color: #333;
+        margin: 10px;
+        padding: 10px 0;
+        text-align: center;
+        border-radius: 50px;
+        font-size: 36px;
+        font-weight: 100;
+        border: 1px solid var(--main-black);
+    }
+
+    .btn:hover {
+        cursor: pointer;
+        transform: translateY(3px);
+        box-shadow: 0px 0px 0px #ffffff00;
+    }
+
+    .boxBody1,
+    .boxBody2,
+    .boxBody3 {
+        width: 320px;
+        height: 569px;
+    }
+
+    .boxBody1 {
+        background-color: #2BAD2F;
+    }
+
+    .boxBody2 {
+        background-color: #DDA2F2;
+    }
+
+    .boxBody3 {
+        background-color: #FE3489;
+    }
+
+    .boxBody1 img,
+    .boxBody2 img,
+    .boxBody3 img {
+        display: none;
+    }
+
+    .contentBg {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 320px;
+        height: 500px;
+    }
+
+    .contentTitle {
+        width: 280px;
+        height: 70px;
+        font-size: 18px;
+        margin-top: 80px;
+        border-radius: 15px;
+    }
+
+    .contentTitle h2 {
+        margin: 10px;
+    }
+
+    .contentMain {
+        width: 280px;
+        height: 250px;
+        border-radius: 15px;
+    }
+
+    .contentMain p {
+        width: 240px;
+        padding: 20px;
+        font-size: 18px;
+    }
+
+    .product {
+        width: 320px;
+        height: 1707px;
+        flex-direction: column;
+    }
+
+
+    .soda1,
+    .soda2,
+    .soda3 {
+        width: 320px;
+        height: 569px;
+    }
+
+    .product h2 {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: 36px;
+    }
+
+    .product .price {
+        width: 320px;
+        font-size: 20px;
+        line-height: 1.5;
+        padding: 0;
+    }
+
+    #sodaPhoto1,
+    #sodaPhoto4,
+    #sodaPhoto7 {
+        width: 250px;
+        position: absolute;
+    }
+
+    #sodaPhoto1 {
+        top: 70px;
+        left: 5px;
+    }
+
+    #sodaPhoto2,
+    #sodaPhoto5,
+    #sodaPhoto8 {
+        width: 170px;
+        position: absolute;
+    }
+
+    #sodaPhoto2 {
+        top: 280px;
+        left: 85px;
+    }
+
+    #sodaPhoto3,
+    #sodaPhoto6,
+    #sodaPhoto9 {
+        width: 90px;
+        position: absolute;
+    }
+
+    #sodaPhoto3 {
+        top: 460px;
+        left: 220px;
+    }
+
+    #sodaPhoto4 {
+        top: 680px;
+        left: -20px;
+    }
+
+    #sodaPhoto5 {
+        top: 840px;
+        left: 85px;
+    }
+
+    #sodaPhoto6 {
+        top: 1030px;
+        left: 220px;
+    }
+
+    #sodaPhoto7 {
+        top: 1270px;
+        left: -30px;
+    }
+
+    #sodaPhoto8 {
+        bottom: 5px;
+        left: 85px;
+    }
+
+    #sodaPhoto9 {
+        bottom: 15px;
+        left: 220px;
+    }
+
+    nav.show {
+        width: 320px;
+        top: 250px;
+    }
+
+    .show img {
+        width: 60px;
+        padding: 2px;
+    }
+
+}

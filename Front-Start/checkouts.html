@@ -11,14 +11,7 @@
     <link rel="stylesheet" href="./css/main_setting.css">
     <!-- style.css -->
     <link rel="stylesheet" href="./css/style.css">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
-    <!-- Bootstrap JS (bundle) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-/bQdsTh/Za+Yp6NIh9c54VQZ6Q9KKVQ5q49SRr2qz3zUksdQRVvoxMfooAo8W+0B"
-        crossorigin="anonymous"></script>
-<script src="./js/shoppingCart.js"></script>
+
 
     <style>
         .checkouts-container {}
@@ -75,8 +68,6 @@
         .order-list {
             position: relative;
             z-index: 1;
-            max-height: 1000px;
-            width: 100vw;
             padding: 20px;
             background: var(--light-yellow);
             overflow: hidden;
@@ -222,11 +213,11 @@
             justify-content: space-between;
         }
 
-.pay-way-box {
-    padding: 20px;
-    display: flex;
-    justify-content: space-around;
-}
+        .pay-way-box {
+            padding: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
 
 
         .pay-way-btn {
@@ -242,8 +233,10 @@
             background: var(--main-color);
             transform: translateY(3px);
         }
-
-        /* .applePay {
+        .pay-container{
+            width: 50%;
+        }
+        .applePay {
             background: var(--product-green-light);
         }
         .googlePay {
@@ -251,8 +244,8 @@
         }
         .amazonPay {
             background: var(--product-purple-light);
-        } */
-        
+        }
+
         /* 
         .checkouts-main {
             margin: auto;
@@ -297,9 +290,6 @@
         <a href="prodoct.html"><img src="./images/icon/8666616_shopping_cart_icon.svg" alt="shoppingCar"
                 title="返回商品頁面"></a>
     </div>
-<nav>
-
-</nav>
     <div class="shopping-list">
         <div class="list-title-box">
             <div class="list-title">
@@ -361,18 +351,23 @@
                 <h5>$2,335</h5>
             </div>
         </div>
+        
     </div>
-    <!-- <div class="checkouts-main">
-        <div class="pay-way-box">
-            <img class="pay-way-btn applePay" src="./images/icon/8666205_apple_pay_icon.svg" alt="applePay">
-            <img class="pay-way-btn googlePay" src="./images/icon/8546747_google_pay_icon.svg" alt="googlePay">
-            <img class="pay-way-btn amazonPay" src="./images/icon/8666126_amazon_pay_icon.svg" alt="amazonPay">
+    <div class="checkouts-main">
+        <div class="pay-container">
+            <div class="pay-way-box">
+                <img class="pay-way-btn applePay" src="./images/icon/8666205_apple_pay_icon.svg" alt="applePay">
+                <img class="pay-way-btn googlePay" src="./images/icon/8546747_google_pay_icon.svg" alt="googlePay">
+                <img class="pay-way-btn amazonPay" src="./images/icon/8666126_amazon_pay_icon.svg" alt="amazonPay">
+            </div>
         </div>
-    </div> -->
+        <div class="pay-car-lift">
+
+        </div>
+    </div>
 
 
     <script>
-
         document.addEventListener('DOMContentLoaded', function () {
             const titleBox = document.querySelector('.list-title-box');
             const orderList = document.querySelector('.order-list');
