@@ -757,7 +757,7 @@
                         }
 
 
-                        const productNames = items.map(i => `${i.ProductName}x${i.Quantity}`).join(', ');
+                        const productNames = items.map(i => `${i.Size}${i.ProductName}x${i.Quantity}`).join(', ');
 
 
                         const statusClass = o.status === 'Paid' ? 'status-active' : 'status-pending';
@@ -797,7 +797,7 @@
                         products = JSON.parse(o.productList || "[]");
                         if (Array.isArray(products) && products.length > 0) {
                             itemsHTML = '<ul style="list-style:none;">' + products.map(p =>
-                                `<li>${p.ProductName} × ${p.Quantity} — $${p.UnitPrice?.toFixed(2) ?? ''}</li>`
+                                `<li>${p.Size}${p.ProductName} × ${p.Quantity} — $${(p.UnitPrice * p.Quantity)?.toFixed(2) ?? ''}</li>`
                             ).join('') + '</ul>';
                         } else {
                             itemsHTML = '<p>無商品資料</p>';
