@@ -2,7 +2,7 @@
     /* 文字設定 */
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Zalando+Sans+SemiExpanded:ital,wght@0,200..900;1,200..900&display=swap');
     font-family: "Zalando Sans SemiExpanded", sans-serif;
-    
+
     /* 主樣式設定 */
     vertical-align: top;
     box-sizing: border-box;
@@ -10,12 +10,12 @@
     text-decoration: none;
 
     /* 顏色設定 */
-    --main-black:#333;
+    --main-black: #333;
     --main-color: #B1F3F7;
-    --light-blue:#74b8f7;
+    --light-blue: #74b8f7;
 
-    --main-gray-light:rgb(245, 245, 245);
-    --main-gray-drck:rgb(223, 223, 223);
+    --main-gray-light: rgb(245, 245, 245);
+    --main-gray-drck: rgb(223, 223, 223);
 
     --main-yellow: #FEE832;
     --light-yellow: #fff7e6;
@@ -61,17 +61,41 @@
     border: 1px solid var(--main-black);
 }
 
+.btn-s {
+    transition: all 100ms ease;
+    background: white;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.btn-s img {
+    width: 30%;
+}
+
 .btn:hover {
     cursor: pointer;
     transform: translateY(3px);
     box-shadow: 0px 0px 0px #ffffff00;
 }
 
+.btn-s:hover {
+    cursor: pointer;
+    transform: translateY(3px);
+}
 @media (max-width: 768px) {
-    .btn {
-        width: 90%;
+    .btn-l {
+        width: 80%;
         text-align: center;
         padding: 12px 0;
         font-size: 24px;
+    }
+
+    .btn-s {
+        width: 50px;
+        height: 50px;
     }
 }
