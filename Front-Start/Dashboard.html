@@ -502,7 +502,7 @@
                                 <th>規格</th>
                                 <th>價格</th>
                                 <th>庫存</th>
-                                <th>圖片連結</th>                                
+                                <th>圖片連結</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -565,6 +565,10 @@
                                 <th>ID</th>
                                 <th>名稱</th>
                                 <th>Email</th>
+                                <th>姓氏</th>
+                                <th>名字</th>
+                                <th>電話號碼</th>
+                                <th>建立時間</th>
                                 <th>狀態</th>
                             </tr>
                         </thead>
@@ -788,7 +792,7 @@
                         products = JSON.parse(o.productList || "[]");
                         if (Array.isArray(products) && products.length > 0) {
                             itemsHTML = '<ul style="list-style:none;">' + products.map(p =>
-                                `<li>${p.ProductName} × ${p.Quantity} — $${p.Price?.toFixed(2) ?? ''}</li>`
+                                `<li>${p.ProductName} × ${p.Quantity} — $${p.UnitPrice?.toFixed(2) ?? ''}</li>`
                             ).join('') + '</ul>';
                         } else {
                             itemsHTML = '<p>無商品資料</p>';
@@ -830,58 +834,38 @@
             document.getElementById('orderDetailModal').style.display = 'none';
         }
 
-
-
         // 用戶管理 API 
         function loadUsers() {
             axios.get('https://localhost:7085/api/users')
                 .then(res => {
                     const tbody = document.querySelector('#userTable tbody');
                     tbody.innerHTML = '';
+
                     res.data.forEach(u => {
+                        const isActive = u.isActive; 
+                        const statusClass = isActive ? 'status-active' : 'status-inactive';
+                        const statusText = isActive ? '活躍' : '非活躍';
+
                         const tr = document.createElement('tr');
-                        const statusClass = u.status === 'active' ? 'status-active' : 'status-pending';
-                        const statusText = u.status === 'active' ? '活躍' : '非活躍';
                         tr.innerHTML = `
-                            <td>${u.id}</td>
-                            <td>${u.name}</td>
-                            <td>${u.email}</td>
-                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                        `;
+                    <td>${u.id}</td>
+                    <td>${u.username}</td>
+                    <td>${u.email}</td>
+                    <td>${u.firstName}</td>
+                    <td>${u.lastName}</td>
+                    <td>${u.phoneNumber ?? '-'}</td>
+                    <td>${new Date(u.createdAt).toLocaleString()}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                `;
                         tbody.appendChild(tr);
                     });
                 })
                 .catch(err => {
+                    console.error(err);
                     showMessage('載入用戶資料時發生錯誤', 'error');
                 });
         }
 
-        // 優惠管理 API
-        function loadCoupons() {
-            axios.get('https://localhost:7085/api/coupons')
-                .then(res => {
-                    const tbody = document.querySelector('#couponTable tbody');
-                    tbody.innerHTML = '';
-                    res.data.forEach(c => {
-                        const tr = document.createElement('tr');
-                        const statusClass = c.status === 'active' ? 'status-active' : 'status-pending';
-                        const statusText = c.status === 'active' ? '有效' : '無效';
-                        tr.innerHTML = `
-                            <td>${c.id}</td>
-                            <td><code style="background: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-family: monospace;">${c.code}</code></td>
-                            <td><span class="price">${c.discount}%</span></td>
-                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                            <td>
-                                <button class="action-btn" onclick="deleteCoupon(${c.id})">刪除</button>
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                })
-                .catch(err => {
-                    showMessage('載入優惠資料時發生錯誤', 'error');
-                });
-        }
 
         function addCoupon() {
             const code = document.getElementById('couponCode').value;
