@@ -19,17 +19,210 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="stylesheet" href="./css/main_setting.css">
+    <link rel="stylesheet" href="">
+    <script src="./js/part1_5.js"></script>
+    <style>
+         html,
+        body {
+            height: 100%;
+            margin: 0;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: inherit;
+        }
+
+        body {
+            font-family: 'Mukta Malar', sans-serif;
+
+
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            /* 讓頁面可以往下拉 */
+        }
+        .fontB{
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* -------------------------------------------------
+   左右兩欄（佔滿畫面上 100% 高）
+------------------------------------------------- */
+        .product {
+            flex: 1;
+            /* 讓它撐滿剩餘高度 */
+            display: flex;
+            width: 100%;
+        }
+
+        .left,
+        .right {
+            flex: 1;
+            position: relative;
+        }
+
+        .left {
+            background: #00ffff;
+        }
+
+        .right {
+            background: #fdffa4;
+        }
+
+        /* 左側背景圖 */
+        .left .backgroundPicture {
+            position: absolute;
+            width: 84%;
+            height: 70%;
+            inset: 0;
+            background: url('./img/backgroundPicture.png') no-repeat center/100% 100%;
+            margin: 15% 0 0 8%;
+            /* 若想讓背景往下移可自行調整 */
+        }
+
+        /* Carousel (Bootstrap) */
+        #carouselExampleIndicators {
+            height: 100%;
+            /* 讓 carousel 撐滿左欄 */
+            min-width: 400px;
+        }
+
+        .carousel-inner {
+            width: 100%;
+            height: 100%;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            /* 讓圖片垂直置中 */
+            overflow: hidden;
+        }
+
+        .carousel-item {
+            height: 90%;
+        }
+
+        .carousel-item img {
+            max-width: 80%;
+            max-height: 80%;
+            margin: auto;
+            display: block;
+            object-fit: contain;
+            transform: translateY(5%);
+            /* 如需微調可自行改成 0 */
+            overflow: hidden;
+        }
+
+        /* 兩側箭頭寬度 */
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 5%;
+        }
+
+        /* -------------------------------------------------
+   右側內容
+------------------------------------------------- */
+        .details {
+            height: 100%;
+            min-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        h3 {
+            margin: 0.8rem 0;
+            font-size: 1.6rem;
+        }
+
+        table {
+            width: 90%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 1.8rem;
+            line-height: 1.4;
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid #000;
+            padding: .5rem;
+        }
+
+        .right-line {
+            border-right: 1px solid #000;
+        }
+
+        /* 按鈕、下拉選單 */
+        .sodaType {
+            margin-top: 2vw;
+            width: 10vw;
+        }
+
+       
+
+        /* -------------------------------------------------
+   手機排版（寬度 < 768px 時改為上下堆疊）
+------------------------------------------------- */
+        @media (max-width:768px) {
+
+            /* 1️⃣ 左右區塊改成上下堆疊 */
+            .product {
+                flex-direction: column;
+            }
+
+            /* 2️⃣ 給卡片列一個實際高度，讓 Flickity 正常顯示 */
+            .card-section {
+                height: 260px;
+                /* 依需求可調整，建議 240~300px */
+            }
+
+            /* 3️⃣ 把卡片容器改成可以換行的彈性格局 */
+            .card-wrap {
+                flex-direction: row;
+                /* 水平排列 */
+                flex-wrap: wrap;
+                /* 換行 */
+                justify-content: center;
+                /* 置中 */
+            }
+
+            /* 4️⃣ 卡片寬度改為 48%（大約兩卡佔滿一行），取消原本的 max‑width */
+            .card {
+                flex: 0 0 48%;
+                /* 佔 48% + margin */
+                max-width: none;
+                /* 移除 190px 的上限 */
+                margin: 5%;
+                /* 補上一點間距讓卡片不會黏在一起 */
+            }
+
+            .card:hover {
+                z-index: 10;
+            }
+
+            .card:focus {
+                z-index: 10;
+            }
+        }
+
+    </style>
 
 
 </head>
 
 <body>
-    <div id="app">
-        {{ a }}
-
-
-    </div>
-
     <!-- ---------- 上半部：左 / 右 ---------- -->
     <div class="product">
 
@@ -120,6 +313,7 @@
                 <div>
                     <select id="sodaType" class="sodaType">
                         <option value="12 x 355">12 x 355</option>
+                        <option value="24 x 355">24 x 355</option>
                     </select>
 
                     <button id="dec">-</button>
@@ -147,6 +341,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    
     <script>
         const app = Vue.createApp({
             data() {

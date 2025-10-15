@@ -395,11 +395,6 @@
       object-fit: contain;
     }
 
-    footer {
-      background-color: #aeacfc;
-      text-align: center;
-    }
-
     .coupon {
       background-color: #fff;
       max-width: 80%;
@@ -417,6 +412,8 @@
     footer {
       padding: 1vw 0;
       font-size: 2vw;
+      background-color: #aeacfc;
+      text-align: center;
     }
 
     /* =======桌機畫面========  */
