@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Soda.Data;
 
@@ -11,9 +12,11 @@ using Soda.Data;
 namespace Soda.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251015070116_ProductsHasDataTest")]
+    partial class ProductsHasDataTest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,24 +157,6 @@ namespace Soda.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Coupons", "dbo");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Code = "DISCOUNT10",
-                            Discount = 60m,
-                            DiscountType = "P",
-                            Status = "active"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Code = "DISCOUNT20",
-                            Discount = 600m,
-                            DiscountType = "A",
-                            Status = "active"
-                        });
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Order", b =>
@@ -243,25 +228,6 @@ namespace Soda.Migrations
                     b.HasKey("OrderID");
 
                     b.ToTable("Orders", "dbo");
-
-                    b.HasData(
-                        new
-                        {
-                            OrderID = 1,
-                            Notes = "",
-                            OrderDate = new DateTime(2025, 10, 15, 14, 31, 3, 296, DateTimeKind.Utc),
-                            OrderItems = "",
-                            PaymentMethod = "",
-                            PaymentStatus = "Unpaid",
-                            ProductList = "[{\"ProductName\":\"紅茶\",\"Size\":\"4*355\",\"Quantity\":2,\"UnitPrice\":199.00},{\"ProductName\":\"綠茶\",\"Size\":\"12*355\",\"Quantity\":1,\"UnitPrice\":499.00}]",
-                            ReceiverName = "",
-                            ShippingAddress = "",
-                            ShippingMethod = "",
-                            ShippingStatus = "Pending",
-                            Status = "Paid",
-                            TotalAmount = 897.00m,
-                            UserID = 1
-                        });
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Product", b =>
