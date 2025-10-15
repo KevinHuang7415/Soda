@@ -92,14 +92,20 @@ namespace WebApplication1.Models
         [MaxLength(50)]
         public string Code { get; set; } = string.Empty;
 
+        
         [Required]
-        [Range(0, 100)]
-        public int Discount { get; set; }
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal Discount { get; set; }
+
+        // A 表示金額折扣，P 表示百分比折扣
+        [Required]
+        [MaxLength(1)]
+        public string DiscountType { get; set; } = "A";
 
         [Required]
         [MaxLength(10)]
         public string Status { get; set; } = "active";
 
-        
+
     }
 }

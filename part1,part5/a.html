@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>本週精選商品 – Vue 3 Demo</title>
+
+  <!-- Tailwind CSS ( CDN ) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Vue 3 ( CDN) -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+  <!-- 讓 Tailwind 能使用自訂顏色（可自行調整） -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#2563eb',
+            secondary: '#64748b'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* toast（簡易彈出訊息） */
+    .toast {
+      @apply fixed bottom-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-md shadow-lg;
+      animation: fadeInOut 2s forwards;
+    }
+    @keyframes fadeInOut {
+      0%   { opacity: 0; transform: translateY(20px); }
+      10%  { opacity: 1; transform: translateY(0); }
+      90%  { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-20px); }
+    }
+    .btn-ghost {
+      @apply text-primary font-medium hover:text-primary/80;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+<div id="app">
+  <!-- ==== 商品區塊 ==== -->
+  <section id="shop" class="container mx-auto py-16 md:py-20">
+    <div class="mb-8 flex items-end justify-between">
+      <div>
+        <h2 class="text-2xl font-extrabold md:text-3xl">本週精選</h2>
+        <p class="text-slate-600">熱銷商品，不容錯過</p>
+      </div>
+      <a href="#" class="btn-ghost">查看全部</a>
+    </div>
+
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <ProductCard
+        v-for="p in products"
+        :key="p.id"
+        v-bind="p"
+        @add-to-cart="() => addToCart(p)"
+      />
+    </div>
+  </section>
+
+  <!-- ==== Toast ==== -->
+  <transition name="fade">
+    <div v-if="toastVisible" class="toast">{{ toast }}</div>
+  </transition>
+</div>
+
+<script>
+  const { createApp, ref, defineComponent, computed } = Vue
+
+  /* ---------- ProductCard 元件 ---------- */
+  const ProductCard = defineComponent({
+    name: 'ProductCard',
+    props: {
+      id: Number,
+      title: String,
+      subtitle: String,
+      image: String,
+      price: Number,
+      compareAt: Number,
+      rating: Number,
+      badge: String
+    },
+    emits: ['add-to-cart'],
+    setup(props, { emit }) {
+      const onAdd = () => emit('add-to-cart')
+      const formattedPrice = computed(() => `$${props.price.toFixed(0)}`)
+      const formattedCompare = computed(() =>
+        props.compareAt ? `$${props.compareAt.toFixed(0)}` : null
+      )
+      return { onAdd, formattedPrice, formattedCompare }
+    },
+    template: `
+      <div class="bg-white rounded-xl shadow-sm p-4 flex flex-col h-full">
+        <!-- Badge -->
+        <div v-if="badge"
+             class="self-start bg-primary/10 text-primary text-xs font-medium px-2 py-1 rounded">
+          {{ badge }}
+        </div>
+
+        <!-- Image -->
+        <img :src="image" :alt="title"
+             class="mt-3 w-full h-48 object-cover rounded-md">
+
+        <!-- Body -->
+        <div class="mt-4 flex-1 flex flex-col">
+          <h3 class="text-lg font-semibold text-gray-800">{{ title }}</h3>
+          <p class="text-sm text-gray-500 mt-1">{{ subtitle }}</p>
+
+          <!-- Rating -->
+          <div v-if="rating" class="flex items-center mt-2 text-yellow-500">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+              <path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91
+                       7.051 5.955 10 0l2.95 5.955 6.562.955-4.756
+                       4.635 1.122 6.545z"/>
+            </svg>
+            <span class="ml-1 text-sm font-medium text-gray-600">
+              {{ rating.toFixed(1) }}
+            </span>
+          </div>
+
+          <!-- Price -->
+          <div class="mt-4">
+            <span class="text-lg font-bold text-primary">{{ formattedPrice }}</span>
+            <span v-if="formattedCompare"
+                  class="ml-2 text-sm line-through text-gray-500">
+              {{ formattedCompare }}
+            </span>
+          </div>
+
+          <!-- Add to Cart -->
+          <button @click="onAdd"
+                  class="mt-4 w-full bg-primary text-white py-2 rounded-md
+                         hover:bg-primary/90 transition">
+            加入購物車
+          </button>
+        </div>
+      </div>
+    `
+  })
+
+  /* ---------- 主程式 ---------- */
+  const app = createApp({
+    components: { ProductCard },
+    setup() {
+      const products = ref([
+        {
+          id: 1,
+          title: '極簡皮革斜背包',
+          subtitle: '義大利植鞣皮革，百搭都會風格',
+          image: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?q=80&w=1600&auto=format&fit=crop',
+          price: 129,
+          compareAt: 159,
+          rating: 4.8,
+          badge: '熱銷'
+        },
+        {
+          id: 2,
+          title: '北歐簡約檯燈',
+          subtitle: '柔和光源，營造質感居家氛圍',
+          image: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?q=80&w=1600&auto=format&fit=crop',
+          price: 89,
+          rating: 4.6,
+          badge: '新品'
+        },
+        {
+          id: 3,
+          title: '手工陶瓷濾杯組',
+          subtitle: '職人手感，每日精緻咖啡時光',
+          image: 'https://images.unsplash.com/photo-1461988320302-91bde64fc8e4?q=80&w=1600&auto=format&fit=crop',
+          price: 49,
+          rating: 4.9
+        },
+        {
+          id: 4,
+          title: '日本和紙筆記本',
+          subtitle: '64 張方眼，靈感隨手記錄',
+          image: 'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?q=80&w=1600&auto=format&fit=crop',
+          price: 15,
+          rating: 4.5
+        },
+        {
+          id: 5,
+          title: '經典白色球鞋',
+          subtitle: '舒適透氣，走出自信步伐',
+          image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1600&auto=format&fit=crop',
+          price: 119,
+          compareAt: 149,
+          rating: 4.7
+        },
+        {
+          id: 6,
+          title: '天然木紋餐盤',
+          subtitle: '日式自然系餐桌風景',
+          image: 'https://images.unsplash.com/photo-1551927336-09d50efd69f8?q=80&w=1600&auto=format&fit=crop',
+          price: 24,
+          rating: 4.4
+        }
+      ])
+
+      const cart = ref([])               // 暫時只記錄商品陣列
+      const toast = ref('')              // toast 文字
+      const toastVisible = ref(false)    // 是否顯示 toast
+
+      const showToast = (msg) => {
+        toast.value = msg
+        toastVisible.value = true
+        setTimeout(() => (toastVisible.value = false), 1800)
+      }
+
+      const addToCart = (product) => {
+        cart.value.push(product)
+        showToast(`已將「${product.title}」加入購物車`)
+      }
+
+      return { products, cart, toast, toastVisible, addToCart }
+    }
+  })
+
+  app.mount('#app')
+</script>
+</body>
+</html>

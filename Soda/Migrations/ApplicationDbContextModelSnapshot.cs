@@ -138,8 +138,13 @@ namespace Soda.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("Discount")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("DiscountType")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("nvarchar(1)");
 
                     b.Property<string>("Status")
                         .IsRequired()
