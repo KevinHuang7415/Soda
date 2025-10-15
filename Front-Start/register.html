@@ -4,67 +4,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create an Account</title>
+  <title>Create an titleount</title>
+  <!-- Reset -->
+  <link rel="stylesheet" href="./css/Reset.css">
+  <!-- main_setting -->
   <link rel="stylesheet" href="./css/main_setting.css">
+  <!-- style.css -->
+  <link rel="stylesheet" href="./css/shoppingCart_style.css">
+  <!-- axios -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
   <style>
+    /* register CSS */
     body {
-      background-color: #fff7e6;
-      font-family: Arial, sans-serif;
-      width: 100%;
+      background: var(--light-yellow);
     }
 
-    .container {
-      width: 30%;
+    .containerAcc {
       margin: auto;
-      margin-top: 180px;
-
+      width: calc(300px + (300) * ((100vw - 480px) / (1200 - 480)));
+      /* 在 480px 寬螢幕時寬度約為 300px
+         在 1200px 寬螢幕時寬度約為 800px
+         之間會平滑變化 */
     }
 
-    .create_acc {
-      width: 100%;
-      margin-bottom: 50px;
+    .titleAcc {
+      width: 100%
     }
 
-    h1 {
+    .containerAcc h1 {
       font-size: 4em;
       font-weight: bold;
-      margin-bottom: 40px;
+      margin-bottom: 20px;
       line-height: 1.1;
     }
 
-    label {
+    .containerAcc label {
       display: block;
       font-size: 24px;
       margin-bottom: 6px;
     }
 
-    input {
+    .containerAcc input {
       width: 92%;
       padding: 24px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 10px;
       margin-bottom: 20px;
-      font-size: 16px;
+      font-size: 24px;
     }
 
-    ::-webkit-input-placeholder {
-      font-size: 25px;
+    .formAcc button {
+      display: block;
     }
 
-    button:hover {
-      background-color: #74b8f7;
+    @media (max-width: 768px) {
+      .containerAcc h1 {
+        font-size: 2em;
+      }
+
+      .containerAcc label {
+        font-size: 16px;
+      }
+      .containerAcc input {
+        font-size: 16px;
+        padding: 20px;
+      }
     }
+     /* register CSS end */
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="create_acc">
+  <div class="containerAcc">
+    <div class="titleAcc">
       <h1>CREATE AN ACCOUNT</h1>
     </div>
-
-    <form method="post" id="create_acc">
+    <form method="post" class="formAcc" id="formAcc">
       <label for="FirstName">First name</label>
       <input type="text" id="FirstName" placeholder="First name">
 
@@ -77,41 +93,9 @@
       <label for="Password">Password</label>
       <input type="password" id="Password" placeholder="Password">
 
-      <button type="submit" class="btn btn-l"
-        style="margin-left: 0px;width: 100%;background-color: #8cc9ff;">Create</button>
+      <button type="submit" class="btn btn-l">Create</button>
     </form>
   </div>
 </body>
-<script>
-  document.getElementById("create_acc").addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const data = {
-        firstName: document.getElementById("FirstName").value,
-        lastName: document.getElementById("LastName").value,
-        email: document.getElementById("Email").value,
-        password: document.getElementById("Password").value
-      };
-
-      // 使用 Axios 發送 POST 請求
-      axios.post("http://localhost:5206/api/Home/CreateAccount", data, {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-        .then(response => {
-          alert("帳號建立成功！");
-          console.log("伺服器回應：", response.data);
-        })
-        .catch(error => {
-          console.error("發生錯誤：", error);
-          if (error.response) {
-            alert("建立失敗：" + error.response.status + " - " + error.response.data);
-          } else {
-            alert("建立失敗，請確認伺服器是否啟動！");
-          }
-        });
-    });
-</script>
 
 </html>

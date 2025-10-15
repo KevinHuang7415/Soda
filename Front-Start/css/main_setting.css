@@ -12,12 +12,13 @@
     /* 顏色設定 */
     --main-black:#333;
     --main-color: #B1F3F7;
+    --light-blue:#74b8f7;
 
     --main-gray-light:rgb(245, 245, 245);
     --main-gray-drck:rgb(223, 223, 223);
 
     --main-yellow: #FEE832;
-    --light-yellow: #fffcdc;
+    --light-yellow: #fff7e6;
 
     --main-orange: #fe8e32;
     --drck-orange: #ef8024;
@@ -43,6 +44,7 @@
 
 /* 按鈕樣式及動畫設定 */
 .btn {
+    background: var(--light-blue);
     box-shadow: 0px 3px 0px var(--main-black);
     transition: all 100ms ease;
 }
@@ -50,7 +52,7 @@
 .btn-l {
     width: 400px;
     color: #333;
-    margin: 30px;
+    margin: 30px auto;
     padding: 10px 0;
     text-align: center;
     border-radius: 50px;
@@ -63,4 +65,13 @@
     cursor: pointer;
     transform: translateY(3px);
     box-shadow: 0px 0px 0px #ffffff00;
+}
+
+@media (max-width: 768px) {
+    .btn {
+        width: 90%;
+        text-align: center;
+        padding: 12px 0;
+        font-size: 24px;
+    }
 }

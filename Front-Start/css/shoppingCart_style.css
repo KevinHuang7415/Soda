@@ -351,11 +351,7 @@ input[type=number]:hover {
         margin: auto;
     }
 
-    .payment-btn {
-        width: 90%;
-        text-align: center;
-        padding: 12px 0;
-    }
+
 }
 
 /* 桌機優化（>= 992px）：右側固定卡片 */
