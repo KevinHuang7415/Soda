@@ -22,7 +22,9 @@ function injectshoppingCartHTML() {
         </div>
     </div>
     `;
-    document.body.insertAdjacentHTML("beforeend", html);
+    // 購物車會插在 <body> 的最前面（避免被其他內容影響排版）
+    document.body.insertAdjacentHTML("afterbegin", html);
+
 }
 // ==============================
 // JS 功能邏輯
