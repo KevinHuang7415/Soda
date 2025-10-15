@@ -1,4 +1,4 @@
-/* ShoppingCart CSS */
+/* shoppingCart CSS */
 html,
 body {
     height: 100%;
@@ -7,8 +7,9 @@ body {
     overflow-y: auto;
 }
 
-.shoppingCar {
+.shoppingCart {
     position: fixed;
+    
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
     display: flex;
@@ -23,13 +24,13 @@ body {
 }
 
 /* 關閉動畫：淡出、微上移 */
-.shoppingCar.is-closing .cart {
+.shoppingCart.is-closing .cart {
     opacity: 0;
     transform: translateY(-8px);
 }
 
 /* 動畫結束後真正隱藏 */
-.shoppingCar.is-hidden {
+.shoppingCart.is-hidden {
     opacity: 0;
     pointer-events: none;
 }
@@ -369,4 +370,4 @@ input[type=number]:hover {
     }
 }
 
-/* ShoppingCart End */
+/* shoppingCart End */
