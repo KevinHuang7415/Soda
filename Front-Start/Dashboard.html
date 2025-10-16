@@ -675,9 +675,9 @@
     </div>
 
     <script>
-
+        //顯示點選圖標頁面
         function showTab(tabId) {
-
+            
             document.querySelectorAll('.tabContent').forEach(t => {
                 t.style.display = 'none';
                 t.style.opacity = '0';
@@ -711,7 +711,7 @@
             }
         }
 
-
+        //顯示錯誤訊息
         function showMessage(message, type = 'success') {
 
             const existingMessage = document.querySelector('.message');
@@ -762,7 +762,7 @@
                     showMessage('載入商品資料時發生錯誤', 'error');
                 });
         }
-
+        //透過id更新商品
         function updateProduct(id) {
             const newName = document.getElementById(`name-${id}`).value.trim();
             const newPrice = parseFloat(document.getElementById(`price-${id}`).value);
@@ -883,7 +883,7 @@
                 });
         }
 
-
+        //關閉單筆訂單詳細資訊
         function closeOrderDetail() {
             document.getElementById('orderDetailModal').style.display = 'none';
         }
@@ -995,7 +995,7 @@
         }
 
 
-
+        //增加優惠券
         function addCoupon() {
             const code = document.getElementById('couponCode').value.trim();
             const discount = parseFloat(document.getElementById('couponDiscount').value);
@@ -1013,16 +1013,14 @@
             axios.post('https://localhost:7085/api/coupons', {
                 code: code,
                 discount: discount,
-                discountType: discountType, // 'P' 或 'A'
-                status: 'active' // 預設活躍
+                discountType: discountType, 
+                status: 'active' 
             })
                 .then(() => {
-                    showMessage('優惠券新增成功！', 'success');
-                    // 清空輸入框
+                    showMessage('優惠券新增成功！', 'success');                    
                     document.getElementById('couponCode').value = '';
                     document.getElementById('couponDiscount').value = '';
                     document.getElementById('couponDiscountType').value = 'P';
-                    // 重新載入表格
                     loadCoupons();
                 })
                 .catch(err => {
@@ -1031,14 +1029,14 @@
                 });
         }
 
-
+        //刪除優惠券
         function deleteCoupon(id) {
             if (!confirm("確定要刪除此優惠券嗎？")) return;
 
             axios.delete(`https://localhost:7085/api/coupons/${id}`)
                 .then(() => {
                     showMessage('優惠券刪除成功！', 'success');
-                    loadCoupons(); // 重新載入優惠券列表
+                    loadCoupons();
                 })
                 .catch(err => {
                     console.error(err);
