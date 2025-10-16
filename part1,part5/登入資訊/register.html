@@ -131,9 +131,9 @@
     const container = document.getElementById('messageContainer');
     container.textContent = message;
     container.style.color = type === 'error' ? 'red' : 'green';
-    // setTimeout(() => {
-    //   container.textContent = '';
-    // }, 3000);
+    setTimeout(() => {
+      container.textContent = '';
+    }, 3000);
   }
 
   function register() {
