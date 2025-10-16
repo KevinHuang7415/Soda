@@ -20,6 +20,7 @@ namespace Soda.Services
 
         public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
         {
+            
             if (await _context.Users.AnyAsync(u => u.Username == request.Username))
             {
                 return new AuthResponse

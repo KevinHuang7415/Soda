@@ -10,7 +10,7 @@
   <!-- main_setting -->
   <link rel="stylesheet" href="../css/main_setting.css">
   <!-- style.css -->
-  <link rel="stylesheet" href="../css/shoppingCart_style.css">
+  <link rel="stylesheet" href="../css/shoppingCar.css">
   <!-- axios -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -131,9 +131,9 @@
     const container = document.getElementById('messageContainer');
     container.textContent = message;
     container.style.color = type === 'error' ? 'red' : 'green';
-    setTimeout(() => {
-      container.textContent = '';
-    }, 3000);
+    // setTimeout(() => {
+    //   container.textContent = '';
+    // }, 3000);
   }
 
   function register() {
@@ -151,7 +151,7 @@
       showMessage('Email 格式不正確');
       return;
     }
-    axios.post('https://localhost:7085/api/createUsers', {
+    axios.post('https://localhost:7085/api/Auth/register', {
       Username: UserName,
       FirstName: FirstName,
       LastName: LastName,
