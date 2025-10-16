@@ -30,6 +30,9 @@ namespace Soda.Models.Entities
         [MaxLength(50)]
         public string? LastName { get; set; }
 
+        [MaxLength(200)]
+        public string? Address { get; set; }
+
         public UserRole Role { get; set; } = UserRole.User;
 
         public bool IsActive { get; set; } = true;

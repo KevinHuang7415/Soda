@@ -20,7 +20,6 @@ namespace Soda.Services
 
         public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
         {
-            
             if (await _context.Users.AnyAsync(u => u.Username == request.Username))
             {
                 return new AuthResponse
@@ -46,6 +45,7 @@ namespace Soda.Services
                 PasswordHash = PasswordHasher.HashPassword(request.Password),
                 FirstName = request.FirstName,
                 LastName = request.LastName,
+                Address = request.Address,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow.ToTaipeiTimeString()
             };
@@ -121,6 +121,7 @@ namespace Soda.Services
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                Address = user.Address,
                 Role = user.Role.ToString(),
                 IsActive = user.IsActive,
                 CreatedAt = user.CreatedAt,

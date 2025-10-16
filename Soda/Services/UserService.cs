@@ -44,10 +44,11 @@ namespace Soda.Services
             if (user == null)
                 return false;
 
-            user.FirstName = userUpdate.FirstName;
-            user.LastName = userUpdate.LastName;
             user.Email = userUpdate.Email;
             user.PhoneNumber = userUpdate.PhoneNumber;
+            user.FirstName = userUpdate.FirstName;
+            user.LastName = userUpdate.LastName;
+            user.Address = userUpdate.Address;
             user.UpdatedAt = DateTime.UtcNow.ToTaipeiTimeString();
 
             await _context.SaveChangesAsync();
@@ -137,6 +138,7 @@ namespace Soda.Services
                 Email = user.Email,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                Address = user.Address,
                 Role = user.Role.ToString(),
                 IsActive = user.IsActive,
                 CreatedAt = user.CreatedAt,
