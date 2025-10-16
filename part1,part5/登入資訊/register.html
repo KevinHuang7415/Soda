@@ -121,6 +121,8 @@
 
       <label for="Password">密碼</label>
       <input type="password" id="Password" placeholder="XXXX - XXXX">
+      <label for="Password">Address</label>
+      <input type="text" id="Address" placeholder="XXXX - XXXX">
 
       <button type="button" class="btn btn-l alc" onclick="register()">註冊</button>
     </form>
@@ -142,6 +144,7 @@
     const LastName = document.getElementById('LastName').value.trim();
     const Email = document.getElementById('Email').value.trim();
     const Password = document.getElementById('Password').value.trim();
+    const Address = document.getElementById('Address').value.trim();
     if (!UserName || !FirstName || !LastName || !Email || !Password) {
       showMessage('請輸入完整內容');
       return;
@@ -156,7 +159,8 @@
       FirstName: FirstName,
       LastName: LastName,
       Email: Email,
-      Password: Password
+      Password: Password,
+      Address: Address
     })
       .then(res => {
         showMessage(res.data.message, 'success');

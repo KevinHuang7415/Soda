@@ -63,24 +63,14 @@ namespace Soda.Data
                 new Product { Id = 5, Name = "清茶", Price = 40, Stock = 60, ImageUrl = "test.com", Size = "4*355" },
                 new Product { Id = 6, Name = "清茶", Price = 35, Stock = 60, ImageUrl = "test.com", Size = "12*355" }
             );
+
             
-            modelBuilder.Entity<Order>().HasData(
-                new Order
-                {
-                    OrderID = 1,
-                    UserID = 1,
-                    ProductList = "[{\"ProductName\":\"紅茶\",\"Size\":\"4*355\",\"Quantity\":2,\"UnitPrice\":199.00},{\"ProductName\":\"綠茶\",\"Size\":\"12*355\",\"Quantity\":1,\"UnitPrice\":499.00}]",
-                    TotalAmount = 897.00m,
-                    Status = "Paid",
-                    OrderDate = new DateTime(2025, 10, 15, 14, 31, 3, 296, DateTimeKind.Utc)
-                    
-                }
-            );
 
             modelBuilder.Entity<Coupon>().HasData(
                 new Coupon { Id = 1, Code = "DISCOUNT10", Discount = 60, DiscountType = "P", Status = "active" },
                 new Coupon { Id = 2, Code = "DISCOUNT20", Discount = 600, DiscountType = "A", Status = "active" }
             );
+
 
         }
     }
