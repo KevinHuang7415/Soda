@@ -18,7 +18,7 @@ namespace Soda.Middleware
 
             if (token != null)
             {
-                // 檢查 Token 是否被撤銷（新增）
+                // 檢查 Token 是否被撤銷
                 var isRevoked = await tokenService.IsTokenRevokedAsync(token);
 
                 if (!isRevoked)

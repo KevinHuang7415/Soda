@@ -14,8 +14,8 @@ namespace Soda.Helpers
         public JwtHelper(IConfiguration configuration)
         {
             _secret = configuration["Jwt:Secret"] ?? throw new ArgumentNullException("Jwt:Secret");
-            _issuer = configuration["Jwt:Issuer"] ?? "MembershipAPI";
-            _audience = configuration["Jwt:Audience"] ?? "MembershipClient";
+            _issuer = configuration["Jwt:Issuer"] ?? "SodaAPI";
+            _audience = configuration["Jwt:Audience"] ?? "SodaClient";
         }
 
         public string GenerateToken(int userId, string username, string email, string role)
