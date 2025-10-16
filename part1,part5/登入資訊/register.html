@@ -57,7 +57,8 @@
     .formAcc button {
       display: block;
     }
-   .alc {
+
+    .alc {
       text-align: center;
     }
 
@@ -104,11 +105,15 @@
     <div class="titleAcc">
       <h1 class="alc mgt">註冊個人資料</h1>
     </div>
-    <form method="post" class="formAcc" id="formAcc">
+    <div id="messageContainer" style="color:red; text-align:center; margin-bottom:10px;"></div>
+    <form class="formAcc" id="formAcc">
+      <label for="UserName">使用者名稱</label>
+      <input type="text" id="UserName" placeholder="test">
+
       <label for="FirstName">姓氏</label>
       <input type="text" id="FirstName" placeholder="王">
 
-      <label for="LastName">名子</label>
+      <label for="LastName">名字</label>
       <input type="text" id="LastName" placeholder="小明">
 
       <label for="Email">電子郵箱</label>
@@ -117,9 +122,68 @@
       <label for="Password">密碼</label>
       <input type="password" id="Password" placeholder="XXXX - XXXX">
 
-      <button type="submit" class="btn btn-l alc">註冊</button>
+      <button type="button" class="btn btn-l alc" onclick="register()">註冊</button>
     </form>
   </div>
 </body>
+<script>
+  function showMessage(message, type = 'error') {
+    const container = document.getElementById('messageContainer');
+    container.textContent = message;
+    container.style.color = type === 'error' ? 'red' : 'green';
+    setTimeout(() => {
+        container.textContent = '';
+    }, 3000);
+}
+
+function register() {
+    const UserName = document.getElementById('UserName').value.trim();
+    const FirstName = document.getElementById('FirstName').value.trim();
+    const LastName = document.getElementById('LastName').value.trim();
+    const Email = document.getElementById('Email').value.trim();
+    const Password = document.getElementById('Password').value.trim();
+    if (!UserName || !FirstName || !LastName || !Email || !Password) {
+        showMessage('請輸入完整內容');
+        return;
+    }
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(Email)) {
+        showMessage('Email 格式不正確');
+        return;
+    }
+    axios.post('https://localhost:7085/api/createUsers', {
+        Username: UserName,
+        FirstName: FirstName,
+        LastName: LastName,
+        Email: Email,
+        Password: Password
+    })
+    .then(res => {
+        showMessage(res.data.message, 'success');
+        document.getElementById('formAcc').reset();
+    })
+    .catch(err => {
+        if (err.response) {
+            if (err.response.status === 400) {
+                const errors = err.response.data;
+                let messages = [];
+                for (const key in errors) {
+                    if (Array.isArray(errors[key])) {
+                        messages.push(...errors[key]);
+                    } else {
+                        messages.push(errors[key]);
+                    }
+                }
+                showMessage(messages.join('\n'));
+            } else  if(err.response.status === 409) {
+                showMessage(err.response.data.message);
+            } 
+        } else {
+            showMessage('無法連線到伺服器');
+        }
+    });
+}
+
+</script>
 
 </html>
