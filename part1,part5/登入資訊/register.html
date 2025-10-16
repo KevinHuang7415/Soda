@@ -132,57 +132,61 @@
     container.textContent = message;
     container.style.color = type === 'error' ? 'red' : 'green';
     setTimeout(() => {
-        container.textContent = '';
+      container.textContent = '';
     }, 3000);
-}
+  }
 
-function register() {
+  function register() {
     const UserName = document.getElementById('UserName').value.trim();
     const FirstName = document.getElementById('FirstName').value.trim();
     const LastName = document.getElementById('LastName').value.trim();
     const Email = document.getElementById('Email').value.trim();
     const Password = document.getElementById('Password').value.trim();
     if (!UserName || !FirstName || !LastName || !Email || !Password) {
-        showMessage('請輸入完整內容');
-        return;
+      showMessage('請輸入完整內容');
+      return;
     }
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(Email)) {
-        showMessage('Email 格式不正確');
-        return;
+      showMessage('Email 格式不正確');
+      return;
     }
     axios.post('https://localhost:7085/api/createUsers', {
-        Username: UserName,
-        FirstName: FirstName,
-        LastName: LastName,
-        Email: Email,
-        Password: Password
+      Username: UserName,
+      FirstName: FirstName,
+      LastName: LastName,
+      Email: Email,
+      Password: Password
     })
-    .then(res => {
+      .then(res => {
         showMessage(res.data.message, 'success');
         document.getElementById('formAcc').reset();
-    })
-    .catch(err => {
+        
+        setTimeout(() => {
+          window.location.href = './login.html';
+        }, 3000);
+      })
+      .catch(err => {
         if (err.response) {
-            if (err.response.status === 400) {
-                const errors = err.response.data;
-                let messages = [];
-                for (const key in errors) {
-                    if (Array.isArray(errors[key])) {
-                        messages.push(...errors[key]);
-                    } else {
-                        messages.push(errors[key]);
-                    }
-                }
-                showMessage(messages.join('\n'));
-            } else  if(err.response.status === 409) {
-                showMessage(err.response.data.message);
-            } 
+          if (err.response.status === 400) {
+            const errors = err.response.data;
+            let messages = [];
+            for (const key in errors) {
+              if (Array.isArray(errors[key])) {
+                messages.push(...errors[key]);
+              } else {
+                messages.push(errors[key]);
+              }
+            }
+            showMessage(messages.join('\n'));
+          } else if (err.response.status === 409) {
+            showMessage(err.response.data.message);
+          }
         } else {
-            showMessage('無法連線到伺服器');
+          showMessage('無法連線到伺服器');
         }
-    });
-}
+      });
+  }
 
 </script>
 

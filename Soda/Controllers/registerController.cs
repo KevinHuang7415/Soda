@@ -56,7 +56,7 @@ namespace SodaBackend.Controllers
                         int rowsAffected = cmd.ExecuteNonQuery();
 
                         if (rowsAffected > 0)
-                            return Ok(new { message = "建立帳號成功" });
+                            return Ok(new { message = "建立帳號成功 三秒後跳轉到註冊頁面" });
                         else
                             return BadRequest(new { message = "建立帳號失敗" });
                     }
