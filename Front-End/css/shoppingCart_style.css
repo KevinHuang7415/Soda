@@ -267,6 +267,52 @@ input[type=number]:hover {
     font-weight: 200;
 }
 
+/* Tab 切換樣式 */
+.cart-tabs {
+    display: flex;
+    gap: 20px;
+}
+
+.cart-tab {
+    padding: 5px 10px;
+    opacity: 0.5;
+}
+
+.cart-tab:hover {
+    opacity: 0.8;
+    border-bottom: 5px dotted var(--light-orange);
+}
+
+.cart-tab.active {
+    opacity: 1;
+    border-bottom: 5px solid var(--light-orange);
+}
+
+.cart-view {
+    display: none;
+}
+
+.cart-view.active {
+    display: block;
+}
+
+.favorite-item .add-to-cart-from-fav {
+    color: #333;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 10px;
+    border: 2px solid var(--light-orange);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.favorite-item .add-to-cart-from-fav:hover {
+    background: var(--light-orange);
+    border: none;
+}
+
 /* 通用：避免超出螢幕 */
 .cart {
     max-width: calc(100vw - 2rem);

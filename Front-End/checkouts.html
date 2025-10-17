@@ -54,6 +54,107 @@
             margin-top: 20px;
         }
 
+        /* ===== 現代化跑馬燈樣式 ===== */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            line-height: 2rem;
+            margin: 0px 250px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+            /* 性能優化 */
+            contain: layout style paint;
+            /* 確保容器有固定高度 */
+            height: 2rem;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            
+            animation: marquee-scroll 200s linear infinite;
+            will-change: transform;
+            /* 性能優化 */
+            backface-visibility: hidden;
+            transform: translateZ(0);
+            /* 確保內容不會換行 */
+            white-space: nowrap;
+            /* 添加一些間距讓動畫更自然 */
+            padding-right: 100px;
+        }
+
+        .marquee-content.paused {
+            animation-play-state: paused;
+        }
+
+        .marquee-content:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes marquee-scroll {
+            0% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+
+        }
+
+        /* 添加淡入淡出效果 */
+        .marquee-container::before,
+        .marquee-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 50px;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .marquee-container::before {
+            left: 0;
+            background: linear-gradient(to right, var(--bg-color), transparent);
+        }
+
+        .marquee-container::after {
+            right: 0;
+            background: linear-gradient(to left, var(--bg-color), transparent);
+        }
+
+        .marquee-item {
+            display: inline-block;
+            color: var(--main-gray);
+            margin-right: 50px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            /* 性能優化 */
+            will-change: transform, color, background-color;
+        }
+
+        .marquee-item:hover {
+            color: var(--main-orange);
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* 無障礙設計 */
+        .marquee-item:focus {
+            outline: 2px solid var(--main-orange);
+            outline-offset: 2px;
+        }
+
+        /* 減少動畫對用戶的干擾 */
+        @media (prefers-reduced-motion: reduce) {
+            .marquee-content {
+                animation: none;
+            }
+        }
+
         .list-title-box {
             display: none;
             position: relative;
@@ -97,6 +198,9 @@
             transition: all 0.5s ease;
             /* 預設不位移 */
             transform: translateY(0);
+            /* 確保在全螢幕下釘在頂部 */
+            z-index: 1;
+            height: fit-content;
         }
 
         /* 收起狀態 */
@@ -116,7 +220,7 @@
         }
 
         .list-title img.rotate {
-            transform: rotate(-180deg);
+            transform: rotate(180deg);
         }
 
         /* 讓箭頭旋轉 End */
@@ -191,7 +295,9 @@
             border-radius: 5px;
             width: 350px;
             font-size: 16px;
-            padding-left: 10px;
+            padding: 10px;
+            height: 50px;
+            box-sizing: border-box;
         }
 
         .input-box:focus {
@@ -277,7 +383,7 @@
         }
 
         .pay-way-btn:hover {
-            background: var(--main-color);
+            background: var(--drck-orange);
             transform: translateY(3px);
         }
 
@@ -328,7 +434,7 @@
 
         .form-box {
             padding-bottom: 30px;
-        border-bottom: 1px solid var(--main-gray-drck);
+            border-bottom: 1px solid var(--main-gray-drck);
             display: flex;
             flex-direction: column;
             gap: 50px;
@@ -376,6 +482,12 @@
         .select-box:invalid {
             color: var(--main-gray);
             /* 當還沒選時，顯示灰色 */
+        }
+
+        /* 讓預設選項文字變淡 */
+        .select-box option:disabled {
+            color: var(--main-gray);
+            opacity: 0.5;
         }
 
         .city-container {
@@ -437,6 +549,24 @@
                 padding: 50px 50px 20px 20px;
 
             }
+
+            .marquee-container {
+                margin: 0px 20px;
+            }
+        }
+
+        /* 全螢幕模式（大於 1140px）的 order-list 釘頂效果 */
+        @media (min-width: 1141px) {
+            .order-list {
+                position: sticky;
+                top: 0;
+                z-index: 10;
+                max-height: 100vh;
+                overflow-y: auto;
+                /* 讓背景色延伸到底部 */
+                min-height: 100vh;
+                background: var(--light-yellow);
+            }
         }
 
         @media (max-width: 1140px) {
@@ -452,7 +582,6 @@
             .checkouts-main {
                 display: block;
                 width: 100%;
-
             }
 
             .order-list,
@@ -466,11 +595,29 @@
                 display: block;
             }
 
+            /* 響應式模式下預設打開 order-list，不釘頂 */
+            .order-list {
+                position: static;
+                display: block;
+                max-height: none;
+                overflow: visible;
+                min-height: auto;
+            }
+
+            .order-list.hidden {
+                display: none;
+            }
+
             .gift-box {
                 gap: 10px;
                 flex-wrap: wrap;
             }
 
+            .gift-box .input-box {
+                height: 50px;
+                min-height: 50px;
+                flex-shrink: 0;
+            }
 
             /* 圖片與內容也保險加上不超出容器 */
             img {
@@ -482,8 +629,6 @@
                 width: 100%;
                 justify-content: space-between;
             }
-
-
 
             .googlePay {
                 width: 45%;
@@ -514,17 +659,23 @@
         <a href="./prodoct.html" class="backPd-btn"><img src="./images/icon/4781813_bag_buy_cart_market_shop_icon.png"
                 alt="shoppingCar" title="返回商品頁面"></a>
     </div>
+
+    <div class="marquee-container">
+        <div class="marquee-content" id="discount-marquee" title="點一下可以複製優惠卷到欄位中">
+            <!-- 跑馬燈內容將由 JavaScript 動態生成 -->
+        </div>
+    </div>
     <div class="checkouts-main">
         <div class="list-title-box">
             <div class="list-title">
                 訂單摘要
-                <img src="./images/icon/8674526_ic_fluent_chevron_down_regular_icon.svg" alt="">
+                <img src="./images/icon/8674511_ic_fluent_chevron_up_regular_icon.svg" alt="">
             </div>
             <div class="list-title-sum">
                 <h5>$2,335</h5>
             </div>
         </div>
-        <div class="order-list ">
+        <div class="order-list">
             <div class="order-item-box">
                 <div class="order-item-img" id="order-item-img" name="order-item-img">
                     <span class="order-item-quantity">6</span>
@@ -551,21 +702,12 @@
             </form>
             <div class="discount-box">
                 <p>折扣</p>
-                <div class="discount-item">
-                    <p>小計 · <span>6</span> 件</p>
-                    <p>$2,994</p>
+                <div class="discount-item" id="subtotal-item">
+                    <p>小計 · <span id="total-items">6</span> 件</p>
+                    <p id="subtotal-amount">$2,994</p>
                 </div>
-                <div class="discount-item">
-                    <p>歡慶聖誕 88%</p>
-                    <p>$2,635</p>
-                </div>
-                <div class="discount-item">
-                    <p>登入新好友折價</p>
-                    <p>-$100</p>
-                </div>
-                <div class="discount-item">
-                    <p>使用優惠：<span>SODA200</span></p>
-                    <p>-$200</p>
+                <div id="discount-items-container">
+                    <!-- 動態折扣項目將在這裡添加 -->
                 </div>
             </div>
             <div class="total-box">
@@ -588,7 +730,7 @@
                 <div class="contact-box">
                     <div class="contact-box-title">
                         <h3>訂閱</h3>
-                        <a href="http://">登入</a>
+                        <a href="../part1,part5/登入資訊/login.html">登入</a>
                     </div>
                     <div class="contact-box-emailBox">
                         <input class="input-box contact-input" type="email" id="email" placeholder="abc123@gmail.com">
@@ -626,7 +768,7 @@
                     <p class="fontGray fontSize14">所有交易都是安全且加密的。</p>
                     <div class="creditCard-box">
                         <label>
-                            <input class="input-box contact-input" type="text" id="cardNum" inputmode="numeric"
+                            <input class="input-box contact-input" type="number" id="cardNum" inputmode="numeric"
                                 maxlength="19" placeholder="信用卡號 (**** **** **** ****)" required>
                         </label>
 
@@ -640,7 +782,7 @@
                         </div>
 
                         <label>
-                            <input class="input-box contact-input" type="text" id="cvv" inputmode="numeric"
+                            <input class="input-box contact-input" type="number" id="cvv" inputmode="numeric"
                                 maxlength="4" placeholder="CVV" required>
                         </label>
 
@@ -667,7 +809,919 @@
 
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        // 商品背景顏色對應表
+        const productBackgroundMap = {
+            '檸檬能量飲': 'var(--product-green-light)',
+            '葡萄能量飲': 'var(--product-purple-light)',
+            '草莓能量飲': 'var(--product-pink-light)'
+        };
+
+        // 從 URL 參數獲取購物車資料
+        function getCartDataFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const cartData = urlParams.get('cart');
+            const totalData = urlParams.get('total');
+
+            if (cartData && totalData) {
+                try {
+                    const cart = JSON.parse(decodeURIComponent(cartData));
+                    const total = parseFloat(decodeURIComponent(totalData));
+                    return { cart, total };
+                } catch (error) {
+                    console.error('解析購物車資料失敗:', error);
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        // 更新訂單摘要顯示
+        function updateOrderSummary(cartData, total) {
+            const orderList = document.querySelector('.order-list');
+            const listTitleSum = document.querySelector('.list-title-sum h5');
+            const totalBox = document.querySelector('.total-box h5');
+
+            // 更新總計顯示
+            if (listTitleSum) listTitleSum.textContent = `$${total.toLocaleString()}`;
+            if (totalBox) totalBox.textContent = `$${total.toLocaleString()}`;
+
+            // 清空現有的訂單項目
+            const existingItems = orderList.querySelectorAll('.order-item-box');
+            existingItems.forEach(item => item.remove());
+
+            // 動態生成訂單項目
+            cartData.forEach((item, index) => {
+                const orderItemBox = document.createElement('div');
+                orderItemBox.className = 'order-item-box';
+
+                const bgColor = productBackgroundMap[item.name] || 'var(--main-gray-light)';
+                const subtotal = item.price * item.qty;
+
+                orderItemBox.innerHTML = `
+                    <div class="order-item-img" style="background-color: ${bgColor}">
+                        <span class="order-item-quantity">${item.qty}</span>
+                        <h2>${item.size}</h2>
+                        <img src="${item.imageUrl}" alt="${item.name}">
+                    </div>
+                    <div class="order-item-info">
+                        <div class="order-item-sel-box">
+                            <div class="order-item-name">
+                                ${item.name}
+                            </div>
+                            <div class="order-item-size">
+                                <p>
+                                    ${item.size} x 355ml
+                                </p>
+                            </div>
+                        </div>
+                        <div class="order-item-subtotal">$${subtotal.toLocaleString()}</div>
+                    </div>
+                `;
+
+                // 將新項目插入到禮物卡表單之前
+                const giftBox = orderList.querySelector('.gift-box');
+                if (giftBox) {
+                    orderList.insertBefore(orderItemBox, giftBox);
+                } else {
+                    orderList.appendChild(orderItemBox);
+                }
+            });
+
+            // 更新折扣區域的商品數量
+            const discountItem = orderList.querySelector('.discount-item p span');
+            if (discountItem) {
+                const totalItems = cartData.reduce((sum, item) => sum + item.qty, 0);
+                discountItem.textContent = totalItems;
+            }
+
+            // 更新小計
+            const subtotalAmount = document.getElementById('subtotal-amount');
+            if (subtotalAmount) {
+                subtotalAmount.textContent = `$${total.toLocaleString()}`;
+            }
+
+            // 更新商品數量
+            const totalItems = document.getElementById('total-items');
+            if (totalItems) {
+                const totalItemsCount = cartData.reduce((sum, item) => sum + item.qty, 0);
+                totalItems.textContent = totalItemsCount;
+            }
+
+            // 更新總計
+            updateTotal();
+        }
+
+        // 應用程式狀態管理
+        const AppState = {
+            appliedDiscounts: [],
+            subtotal: 0,
+            discountTypes: {},
+            marqueeItems: [],
+            isUserLoggedIn: false,
+            userInfo: null,
+            marqueeInstance: null
+        };
+
+        // 向後兼容的變數
+        let appliedDiscounts = AppState.appliedDiscounts;
+        let subtotal = AppState.subtotal;
+        let discountTypes = AppState.discountTypes;
+        let marqueeItems = AppState.marqueeItems;
+        let isUserLoggedIn = AppState.isUserLoggedIn;
+        let userInfo = AppState.userInfo;
+        let marqueeInstance = AppState.marqueeInstance;
+
+        // 現代化跑馬燈控制
+        class ModernMarquee {
+            constructor(containerId) {
+                this.container = document.querySelector(containerId);
+                this.content = this.container?.querySelector('.marquee-content');
+                this.isPaused = false;
+                this.animationDuration = 200; // 秒
+                this.init();
+            }
+
+            init() {
+                if (!this.content) return;
+
+                // 設置初始動畫速度
+                this.setSpeed(this.animationDuration);
+
+                // 綁定事件
+                this.content.addEventListener('mouseenter', () => this.pause());
+                this.content.addEventListener('mouseleave', () => this.resume());
+            }
+
+            pause() {
+                if (this.isPaused) return;
+                this.isPaused = true;
+                this.content?.classList.add('paused');
+            }
+
+            resume() {
+                if (!this.isPaused) return;
+                this.isPaused = false;
+                this.content?.classList.remove('paused');
+            }
+
+            setSpeed(duration) {
+                this.animationDuration = duration;
+                if (this.content) {
+                    this.content.style.animationDuration = `${duration}s`;
+                }
+            }
+
+            // 重新啟動動畫（用於內容更新後）
+            restart() {
+                if (this.content) {
+                    this.content.style.animation = 'none';
+                    // 強制重繪
+                    this.content.offsetHeight;
+                    this.content.style.animation = `marquee-scroll ${this.animationDuration}s linear infinite`;
+                }
+            }
+
+            destroy() {
+                this.content?.classList.add('paused');
+            }
+        }
+
+        // 跑馬燈實例將在 AppState 中管理
+
+        // 防抖動函數
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // 節流函數
+        function throttle(func, limit) {
+            let inThrottle;
+            return function (...args) {
+                if (!inThrottle) {
+                    func.apply(this, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
+
+        // 檢查用戶登入狀態（優化版）
+        function checkUserLoginStatus() {
+            try {
+                // 從 localStorage 或 sessionStorage 檢查登入狀態
+                const loginData = localStorage.getItem('userLoginData') || sessionStorage.getItem('userLoginData');
+
+                if (loginData) {
+                    const userData = JSON.parse(loginData);
+
+                    // 驗證數據完整性
+                    if (!userData || typeof userData !== 'object' || !userData.loginTime) {
+                        throw new Error('無效的登入數據');
+                    }
+
+                    // 檢查登入是否過期（例如：24小時）
+                    const loginTime = userData.loginTime;
+                    const currentTime = Date.now();
+                    const twentyFourHours = 24 * 60 * 60 * 1000;
+
+                    if (currentTime - loginTime < twentyFourHours) {
+                        AppState.isUserLoggedIn = true;
+                        AppState.userInfo = userData;
+                        console.log('用戶已登入:', userData);
+                        return true;
+                    } else {
+                        // 登入已過期，清除資料
+                        this.clearLoginData();
+                        return false;
+                    }
+                }
+
+                // 也可以從 cookie 檢查
+                const authToken = getCookie('authToken');
+                if (authToken && authToken.length > 0) {
+                    // 這裡可以驗證 token 的有效性
+                    AppState.isUserLoggedIn = true;
+                    AppState.userInfo = { token: authToken };
+                    return true;
+                }
+
+                return false;
+            } catch (error) {
+                console.error('檢查登入狀態失敗:', error);
+                this.clearLoginData();
+                return false;
+            }
+        }
+
+        // 清除登入數據
+        function clearLoginData() {
+            AppState.isUserLoggedIn = false;
+            AppState.userInfo = null;
+            localStorage.removeItem('userLoginData');
+            sessionStorage.removeItem('userLoginData');
+        }
+
+        // 獲取 Cookie 的輔助函數
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+
+        // 登出
+        function logout() {
+            localStorage.removeItem('userLoginData');
+            sessionStorage.removeItem('userLoginData');
+            document.cookie = 'authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            isUserLoggedIn = false;
+            userInfo = null;
+            console.log('用戶已登出');
+        }
+
+        // 保存當前折扣狀態
+        function saveDiscountState() {
+            const discountState = {
+                appliedDiscounts: appliedDiscounts,
+                subtotal: subtotal,
+                timestamp: Date.now()
+            };
+
+            sessionStorage.setItem('checkoutDiscountState', JSON.stringify(discountState));
+            console.log('已保存折扣狀態:', discountState);
+        }
+
+        // 恢復折扣狀態
+        function restoreDiscountState() {
+            try {
+                const savedState = sessionStorage.getItem('checkoutDiscountState');
+                if (savedState) {
+                    const discountState = JSON.parse(savedState);
+
+                    // 檢查時間戳，如果超過30分鐘則不恢復
+                    const now = Date.now();
+                    const thirtyMinutes = 30 * 60 * 1000;
+
+                    if (now - discountState.timestamp < thirtyMinutes) {
+                        appliedDiscounts = discountState.appliedDiscounts || [];
+                        subtotal = discountState.subtotal || 0;
+
+                        // 更新顯示
+                        updateDiscountDisplay();
+                        updateTotal();
+
+                        console.log('已恢復折扣狀態:', discountState);
+                        return true;
+                    } else {
+                        // 過期，清除保存的狀態
+                        sessionStorage.removeItem('checkoutDiscountState');
+                        console.log('折扣狀態已過期，已清除');
+                    }
+                }
+            } catch (error) {
+                console.error('恢復折扣狀態失敗:', error);
+                sessionStorage.removeItem('checkoutDiscountState');
+            }
+            return false;
+        }
+
+        // 清除保存的折扣狀態
+        function clearDiscountState() {
+            sessionStorage.removeItem('checkoutDiscountState');
+            console.log('已清除保存的折扣狀態');
+        }
+
+        // 檢查是否從登入頁面返回
+        function checkLoginReturn() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const loginSuccess = urlParams.get('loginSuccess');
+            const loginError = urlParams.get('loginError');
+
+            if (loginSuccess === 'true') {
+                // 登入成功，重新檢查登入狀態
+                checkUserLoginStatus();
+
+                // 清除保存的折扣狀態（因為登入成功，不需要恢復）
+                clearDiscountState();
+
+                // 重新套用自動優惠
+                setTimeout(() => {
+                    applyAutoDiscounts();
+                }, 100);
+
+                // 顯示成功訊息
+                pauseMarquee();
+                alert('登入成功！已為您套用相關優惠。');
+                resumeMarquee();
+
+                // 清除 URL 參數
+                const newUrl = window.location.pathname + window.location.search.replace(/[?&]loginSuccess=true/, '').replace(/[?&]loginError=[^&]*/, '');
+                window.history.replaceState({}, document.title, newUrl);
+            } else if (loginError) {
+                // 登入失敗
+                pauseMarquee();
+                alert('登入失敗：' + decodeURIComponent(loginError));
+                resumeMarquee();
+
+                // 清除 URL 參數
+                const newUrl = window.location.pathname + window.location.search.replace(/[?&]loginError=[^&]*/, '');
+                window.history.replaceState({}, document.title, newUrl);
+            }
+        }
+
+        // 從 API 載入優惠券資料
+        async function loadDiscountData() {
+            try {
+                // 這裡可以替換 API 端點
+                const response = await fetch('/api/discounts');
+                if (!response.ok) throw new Error('無法載入優惠券資料');
+
+                const data = await response.json();
+                discountTypes = data.discountTypes || {};
+                marqueeItems = data.marqueeItems || [];
+
+                console.log('從 API 載入優惠券資料成功:', discountTypes);
+
+                // 更新跑馬燈內容
+                updateMarqueeContent();
+            } catch (error) {
+                console.error('載入優惠券資料失敗:', error);
+                console.log('使用預設優惠券資料');
+                // 使用預設資料作為備用
+                loadDefaultDiscountData();
+            }
+        }
+
+        // 預設優惠券資料（API 失敗時使用）
+        function loadDefaultDiscountData() {
+            discountTypes = {
+                // 活動優惠（特殊節慶）
+                1: {
+                    id: 1,
+                    name: '歡慶聖誕 88 折',
+                    type: 'percentage',
+                    value: 0.12,
+                    discountType: 'event', // 活動優惠
+                    isActive: true,
+                    startDate: '2024-12-01',
+                    endDate: '2026-12-31',
+                    autoApply: true // 自動套用
+                },
+                // 新好友優惠
+                2: {
+                    id: 2,
+                    name: '登入獲得新好友折價',
+                    type: 'fixed',
+                    value: 100,
+                    discountType: 'newuser', // 新好友優惠
+                    isActive: true,
+                    startDate: '2024-01-01',
+                    endDate: '2026-12-31',
+                    autoApply: true, // 自動套用
+                    requiresLogin: true // 需要登入
+                },
+                // 優惠券（需要手動輸入代碼）
+                3: {
+                    id: 3,
+                    name: '使用優惠',
+                    type: 'coupon',
+                    value: 200,
+                    code: 'SODA200',
+                    discountType: 'coupon', // 優惠券
+                    isActive: true,
+                    startDate: '2024-01-01',
+                    endDate: '2026-12-31',
+                    autoApply: false, // 不自動套用
+                    minAmount: 2500 // 最低消費限制
+                },
+                4: {
+                    id: 4,
+                    name: '30%OFF',
+                    type: 'percentage',
+                    value: 0.3,
+                    code: 'coupon30',
+                    discountType: 'coupon', // 優惠券
+                    isActive: true,
+                    startDate: '2024-01-01',
+                    endDate: '2026-12-31',
+                    autoApply: false // 不自動套用
+                },
+                5: {
+                    id: 5,
+                    name: '50%OFF',
+                    type: 'percentage',
+                    value: 0.5,
+                    code: 'coupon50',
+                    discountType: 'coupon', // 優惠券
+                    isActive: true,
+                    startDate: '2024-01-01',
+                    endDate: '2026-12-31',
+                    autoApply: false // 不自動套用
+                },
+                6: {
+                    id: 6,
+                    name: '70%OFF',
+                    type: 'percentage',
+                    value: 0.7,
+                    code: 'coupon70',
+                    discountType: 'coupon', // 優惠券
+                    isActive: true,
+                    startDate: '2024-01-01',
+                    endDate: '2026-12-31',
+                    autoApply: false // 不自動套用
+                }
+            };
+
+            marqueeItems = [
+                { discountId: 1, text: '歡慶聖誕 88 折' },
+                { discountId: 2, text: '登入獲得新好友折價' },
+                { discountId: 3, text: '滿兩千五折兩百' },
+                { discountId: 4, text: '30%OFF' },
+                { discountId: 5, text: '50%OFF' },
+                { discountId: 6, text: '70%OFF' }
+            ];
+
+            console.log('載入預設優惠券資料:', discountTypes);
+            console.log('SODA200 優惠券資料:', discountTypes.coupon);
+
+            updateMarqueeContent();
+        }
+
+        // 更新跑馬燈內容
+        function updateMarqueeContent() {
+            const marquee = document.querySelector('#discount-marquee');
+            if (!marquee) return;
+
+            // 生成更多重複的內容，確保畫面始終有內容
+            const repeatedItems = [...marqueeItems, ...marqueeItems, ...marqueeItems, ...marqueeItems];
+
+            marquee.innerHTML = repeatedItems.map(item => {
+                const discount = discountTypes[item.discountId];
+                if (!discount || !discount.isActive) return '';
+
+                return `
+                    <span class="marquee-item" 
+                          data-discount="${item.discountId}" 
+                          data-type="${discount.type}" 
+                          data-value="${discount.value}"
+                          ${discount.code ? `data-code="${discount.code}"` : ''}>
+                        ${item.text}
+                    </span>
+                `;
+            }).join('');
+
+            // 重新綁定點擊事件
+            bindMarqueeEvents();
+
+            // 重新啟動動畫
+            if (marqueeInstance) {
+                marqueeInstance.restart();
+            }
+        }
+
+        // 綁定跑馬燈事件
+        function bindMarqueeEvents() {
+            const marquee = document.querySelector('#discount-marquee');
+            if (!marquee) return;
+
+            // 移除舊的事件監聽器
+            marquee.removeEventListener('click', handleMarqueeClick);
+
+            // 添加新的事件監聽器
+            marquee.addEventListener('click', handleMarqueeClick);
+        }
+
+        // 計算折扣
+        function calculateDiscounts() {
+            let totalDiscount = 0;
+            appliedDiscounts.forEach(discount => {
+                // 只計算有效的折扣（沒有 isInvalid 和 isReplaced 標記）
+                if (!discount.isInvalid && !discount.isReplaced) {
+                    if (discount.type === 'percentage') {
+                        totalDiscount += Math.floor(subtotal * discount.value);
+                    } else if (discount.type === 'fixed' || discount.type === 'coupon') {
+                        totalDiscount += discount.value;
+                    }
+                }
+            });
+            return totalDiscount;
+        }
+
+        // 更新總計顯示
+        function updateTotal() {
+            const totalDiscount = calculateDiscounts();
+            const finalTotal = subtotal - totalDiscount;
+
+            // 更新總計顯示
+            const totalBox = document.querySelector('.total-box h5');
+            if (totalBox) {
+                totalBox.textContent = `$${finalTotal.toLocaleString()}`;
+            }
+
+            // 更新訂單摘要總計
+            const listTitleSum = document.querySelector('.list-title-sum h5');
+            if (listTitleSum) {
+                listTitleSum.textContent = `$${finalTotal.toLocaleString()}`;
+            }
+        }
+
+        // 計算優惠券折扣金額
+        function calculateDiscountAmount(discount) {
+            if (discount.type === 'percentage') {
+                return Math.floor(subtotal * discount.value);
+            } else if (discount.type === 'fixed' || discount.type === 'coupon') {
+                return discount.value;
+            }
+            return 0;
+        }
+
+        // 添加折扣項目
+        function addDiscountItem(discountId) {
+            const discount = discountTypes[discountId];
+            if (!discount) return;
+
+            // 檢查最低消費限制
+            if (discount.minAmount && subtotal < discount.minAmount) {
+                pauseMarquee();
+                alert(`此優惠券需要最低消費 $${discount.minAmount.toLocaleString()}，目前小計 $${subtotal.toLocaleString()}`);
+                resumeMarquee();
+                return;
+            }
+
+            // 檢查登入要求
+            if (discount.requiresLogin && !isUserLoggedIn) {
+                pauseMarquee();
+                const shouldLogin = confirm('此優惠需要登入才能使用！\n\n點擊「確定」前往登入頁面，或點擊「取消」繼續購物。');
+                if (shouldLogin) {
+                    // 保存當前折扣狀態
+                    saveDiscountState();
+
+                    // 重定向到登入頁面
+                    window.location.href = '../part1,part5/登入資訊/login.html?returnUrl=' + encodeURIComponent(window.location.href);
+                } else {
+                    resumeMarquee();
+                }
+                return;
+            }
+
+            // 檢查是否已經使用過此折扣
+            if (appliedDiscounts.find(d => d.id == discountId)) {
+                pauseMarquee();
+                alert('已套用優惠');
+                resumeMarquee();
+                return;
+            }
+
+            const newDiscountAmount = calculateDiscountAmount(discount);
+            const newDiscount = {
+                id: discountId,
+                name: discount.name,
+                type: discount.type,
+                value: discount.value,
+                amount: newDiscountAmount,
+                code: discount.code,
+                discountType: discount.discountType
+            };
+
+            // 根據折扣類型處理
+            if (discount.discountType === 'event' || discount.discountType === 'newuser') {
+                // 活動優惠和新好友優惠：可以同時存在
+                appliedDiscounts.push(newDiscount);
+                updateDiscountDisplay();
+            } else {
+                // 所有優惠券類型：進行比較（每筆訂單只能用一份優惠券）
+                // 找到所有現有的優惠券
+                const existingCoupons = appliedDiscounts.filter(d =>
+                    d.discountType === 'coupon' && !d.isReplaced && !d.isInvalid
+                );
+
+                console.log('檢查現有優惠券:', existingCoupons);
+                console.log('新優惠券金額:', newDiscountAmount);
+
+                if (existingCoupons.length > 0) {
+                    // 找到最優惠的現有優惠券
+                    const bestExistingCoupon = existingCoupons.reduce((best, current) =>
+                        current.amount > best.amount ? current : best
+                    );
+
+                    console.log('最優惠的現有優惠券:', bestExistingCoupon);
+
+                    // 比較優惠程度
+                    if (newDiscountAmount > bestExistingCoupon.amount) {
+                        // 新優惠更划算，將所有現有優惠券標記為被替換
+                        appliedDiscounts.forEach(d => {
+                            if (d.discountType === 'coupon' && !d.isReplaced && !d.isInvalid) {
+                                d.isReplaced = true;
+                            }
+                        });
+                        alert('耶!! 獲得魔法~~');
+                        appliedDiscounts.push(newDiscount);
+                        updateDiscountDisplay();
+                        pauseMarquee();
+                        resumeMarquee();
+                    } else {
+                        // 新優惠不划算，仍然添加但標記為無效
+                        alert('沒有比較優惠>_< 魔法失效了');
+                        newDiscount.isInvalid = true;
+                        appliedDiscounts.push(newDiscount);
+                        updateDiscountDisplay();
+                        pauseMarquee();
+                        resumeMarquee();
+                    }
+                } else {
+                    // 沒有現有優惠券，直接添加
+                    appliedDiscounts.push(newDiscount);
+                    updateDiscountDisplay();
+                }
+            }
+
+            // 更新總計
+            updateTotal();
+
+            // 保存當前折扣狀態
+            saveDiscountState();
+        }
+
+        // 生成折扣顯示名稱
+        function generateDiscountDisplayName(discount) {
+            const prefix = '使用優惠';
+
+            // 根據折扣類型決定顯示內容
+            switch (discount.discountType) {
+                case 'event':
+                    // 活動優惠：顯示活動名稱
+                    return `${prefix}：${discount.name}`;
+
+                case 'newuser':
+                    // 新好友優惠：顯示優惠名稱
+                    return `${prefix}：${discount.name}`;
+
+                case 'coupon':
+                    // 優惠券：顯示優惠券代碼
+                    return `${prefix}：${discount.code || discount.id}`;
+
+                default:
+                    // 預設：使用名稱
+                    return `${prefix}：${discount.name}`;
+            }
+        }
+
+        // 更新折扣顯示
+        function updateDiscountDisplay() {
+            const container = document.getElementById('discount-items-container');
+            container.innerHTML = '';
+
+            appliedDiscounts.forEach(discount => {
+                const discountItem = document.createElement('div');
+                discountItem.className = 'discount-item';
+
+                // 設定樣式
+                if (discount.isInvalid) {
+                    // 無效的優惠券（不划算的）
+                    discountItem.style.textDecoration = 'line-through';
+                    discountItem.style.opacity = '0.6';
+                    discountItem.style.color = '#999';
+                } else if (discount.isReplaced) {
+                    // 被替換的優惠券（更優惠的替換了這個）
+                    discountItem.style.textDecoration = 'line-through';
+                    discountItem.style.opacity = '0.6';
+                    discountItem.style.color = '#999';
+                }
+
+                // 使用動態生成函數
+                const displayName = generateDiscountDisplayName(discount);
+
+                discountItem.innerHTML = `
+                    <p>${displayName}</p>
+                    <p>-$${discount.amount.toLocaleString()}</p>
+                `;
+
+                container.appendChild(discountItem);
+            });
+
+            // 保存當前折扣狀態
+            saveDiscountState();
+        }
+
+        // 處理跑馬燈點擊事件
+        function handleMarqueeClick(event) {
+            const target = event.target;
+            if (target.classList.contains('marquee-item')) {
+                const discountId = target.dataset.discount;
+                const discount = discountTypes[discountId];
+
+                if (discount) {
+                    if (discount.discountType === 'coupon') {
+                        // 優惠券：複製到輸入框
+                        const giftInput = document.querySelector('.gift-box .input-box');
+                        if (giftInput) {
+                            giftInput.value = discount.code || discountId;
+                            giftInput.focus();
+                        }
+                    } else if (discount.discountType === 'event' || discount.discountType === 'newuser') {
+                        // 活動優惠和新好友優惠：直接套用
+                        addDiscountItem(discountId);
+                    }
+                }
+            }
+        }
+
+        // 驗證優惠代碼
+        async function validateCouponCode(code) {
+            try {
+                // 這裡可以替換為您的 API 端點
+                const response = await fetch(`/api/coupons/validate?code=${encodeURIComponent(code)}`);
+                if (!response.ok) throw new Error('API 請求失敗');
+
+                const data = await response.json();
+                return data.valid ? data.discount : null;
+            } catch (error) {
+                console.error('驗證優惠代碼失敗:', error);
+                // 離線模式：檢查本地優惠券資料
+                console.log('使用離線模式驗證優惠代碼:', code);
+
+                // 支援所有類型的優惠券（包括百分比和固定金額）
+                const discount = Object.values(discountTypes).find(d =>
+                    (d.code === code || d.id == code) && d.isActive
+                );
+
+                console.log('找到的折扣:', discount);
+
+                // 檢查最低消費限制
+                if (discount && discount.minAmount) {
+                    if (subtotal < discount.minAmount) {
+                        console.log(`優惠券 ${code} 需要最低消費 ${discount.minAmount}，目前小計 ${subtotal}`);
+                        return {
+                            ...discount,
+                            validationError: `此優惠券需要最低消費 $${discount.minAmount.toLocaleString()}，目前小計 $${subtotal.toLocaleString()}`
+                        };
+                    }
+                }
+
+                // 檢查登入要求
+                if (discount && discount.requiresLogin) {
+                    if (!isUserLoggedIn) {
+                        console.log(`優惠券 ${code} 需要登入，目前未登入`);
+                        return {
+                            ...discount,
+                            validationError: '此優惠需要登入才能使用，請先登入！',
+                            requiresLogin: true
+                        };
+                    }
+                }
+
+                return discount || null;
+            }
+        }
+
+        // 處理禮物卡使用按鈕
+        async function handleGiftCodeSubmit(event) {
+            event.preventDefault();
+            const giftInput = document.querySelector('.gift-box .input-box');
+            const code = giftInput.value.trim();
+
+            if (!code) return;
+
+            console.log('驗證優惠代碼:', code);
+            const discount = await validateCouponCode(code);
+            console.log('驗證結果:', discount);
+
+            if (discount) {
+                // 檢查是否有驗證錯誤（如最低消費限制）
+                if (discount.validationError) {
+                    console.log('優惠代碼驗證失敗:', discount.validationError);
+                    pauseMarquee();
+                    alert(discount.validationError);
+                    resumeMarquee();
+                    return;
+                }
+
+                console.log('優惠代碼有效，添加折扣項目');
+                addDiscountItem(discount.id);
+                giftInput.value = ''; // 清空輸入框
+            } else {
+                console.log('優惠代碼無效');
+                pauseMarquee();
+                alert('無效的優惠代碼！');
+                resumeMarquee();
+            }
+        }
+
+        // 自動套用活動優惠和新好友優惠
+        function applyAutoDiscounts() {
+            const now = new Date();
+            const autoDiscounts = Object.values(discountTypes).filter(discount =>
+                discount.isActive &&
+                discount.autoApply &&
+                new Date(discount.startDate) <= now &&
+                new Date(discount.endDate) >= now
+            );
+
+            autoDiscounts.forEach(discount => {
+                // 檢查是否已經使用過
+                if (!appliedDiscounts.find(d => d.id === discount.id)) {
+                    // 檢查是否需要登入
+                    if (discount.requiresLogin && !isUserLoggedIn) {
+                        
+                        console.log('跳過需要登入的優惠:', discount.name);
+                        return;
+                    }
+
+                    console.log('自動套用優惠:', discount.name);
+                    addDiscountItem(discount.id);
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            // 檢查是否從登入頁面返回
+            checkLoginReturn();
+
+            // 檢查用戶登入狀態
+            checkUserLoginStatus();
+
+            // 載入優惠券資料
+            await loadDiscountData();
+
+            // 載入購物車資料並更新顯示
+            const cartData = getCartDataFromURL();
+            if (cartData) {
+                subtotal = cartData.total;
+                updateOrderSummary(cartData.cart, cartData.total);
+            } else {
+                console.warn('未找到購物車資料，使用預設顯示');
+                subtotal = 2994; // 預設小計
+            }
+
+            // 嘗試恢復之前保存的折扣狀態
+            const stateRestored = restoreDiscountState();
+
+            if (!stateRestored) {
+                // 如果沒有恢復到狀態，才自動套用活動優惠和新好友優惠
+                applyAutoDiscounts();
+            }
+
+            // 初始化現代化跑馬燈
+            marqueeInstance = new ModernMarquee('.marquee-container');
+
+            // 綁定跑馬燈點擊事件
+            bindMarqueeEvents();
+
+            // 綁定禮物卡表單提交事件
+            const giftForm = document.querySelector('.gift-box');
+            if (giftForm) {
+                giftForm.addEventListener('submit', handleGiftCodeSubmit);
+            }
+
             const titleBox = document.querySelector('.list-title-box');
             const orderList = document.querySelector('.order-list');
             const arrowIcon = document.querySelector('.list-title img');
@@ -683,13 +1737,13 @@
 
             function syncPanel(e) {
                 if (e.matches) {
-                    // 進入中尺寸：預設收起（也可改成保留使用者上次狀態）
-                    orderList.classList.add('hidden');
-                    arrowIcon.classList.remove('rotate'); // 讓箭頭朝下顯示可展開
-                } else {
-                    // 回到全螢幕：一定展開
+                    // 進入響應式模式：預設打開，不釘頂
                     orderList.classList.remove('hidden');
-                    // 清掉可能殘留的 inline 樣式（若你有做動畫）
+                    arrowIcon.classList.remove('rotate'); // 讓箭頭朝下顯示可收起
+                } else {
+                    // 回到全螢幕：一定展開並釘頂
+                    orderList.classList.remove('hidden');
+                    // 清掉可能殘留的 inline 樣式
                     orderList.style.removeProperty('display');
                     orderList.style.removeProperty('height');
                     orderList.style.removeProperty('opacity');
@@ -816,10 +1870,10 @@
             const district = districtSelect.value;
             const zip = taiwanZipData[city]?.[district];
 
-            console.log("查到郵遞區號：", zip); // ✅ 可以確認有抓到
+            console.log("查到郵遞區號：", zip);
 
             if (zip) {
-                zipcodeInput.value = zip; // ✅ 寫入 input
+                zipcodeInput.value = zip;
             } else {
                 zipcodeInput.value = "沒有";
             }
