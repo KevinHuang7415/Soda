@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>購物車按鈕測試 (API 版)</title>
+      <!-- Reset -->
+      <link rel="stylesheet" href="./css/Reset.css">
+      <!-- main_setting -->
+      <link rel="stylesheet" href="./css/main_setting.css">
+      <!-- style.css -->
+      <link rel="stylesheet" href="./css/shoppingCart_style.css">
+      <!-- ShoppingCart (新版 - API 版本) -->
+      <script src="./js/shoppingCart_v2.js"></script>
+      <style>
+            .addCart {
+                  margin: 20px auto;
+                  padding: 30px;
+                  border: 2px solid var(--main-orange);
+                  border-radius: 12px;
+                  max-width: 500px;
+                  background: white;
+                  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+
+            .addCart h3 {
+                  margin-bottom: 20px;
+                  color: var(--main-orange);
+                  font-size: 24px;
+                  text-align: center;
+            }
+
+            .product-selector {
+                  margin: 15px 0;
+            }
+
+            .product-selector label {
+                  display: block;
+                  margin-bottom: 5px;
+                  color: var(--main-gray-drck);
+                  font-weight: 600;
+            }
+
+            .product-selector select {
+                  width: 100%;
+                  padding: 10px;
+                  border: 1px solid var(--main-gray-drck);
+                  border-radius: 5px;
+                  font-size: 16px;
+                  cursor: pointer;
+            }
+
+            .quantity-control {
+                  margin: 20px 0;
+            }
+
+            .quantity-control label {
+                  display: block;
+                  margin-bottom: 5px;
+                  color: var(--main-gray-drck);
+                  font-weight: 600;
+            }
+
+            .quantity-box {
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 15px;
+                  margin-top: 10px;
+            }
+
+            .qty-btn {
+                  width: 40px;
+                  height: 40px;
+                  border: 1px solid var(--main-gray-drck);
+                  border-radius: 50%;
+                  background: white;
+                  cursor: pointer;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 20px;
+                  transition: all 0.3s;
+            }
+
+            .qty-btn:hover {
+                  background: var(--main-orange);
+                  color: white;
+                  transform: scale(1.1);
+            }
+
+            .qty-input {
+                  width: 80px;
+                  height: 40px;
+                  text-align: center;
+                  font-size: 20px;
+                  font-weight: bold;
+                  border: 2px solid var(--main-orange);
+                  border-radius: 5px;
+            }
+
+            .add-to-cart-btn {
+                  width: 100%;
+                  padding: 15px;
+                  background: var(--main-orange);
+                  color: white;
+                  border: none;
+                  border-radius: 8px;
+                  font-size: 18px;
+                  font-weight: bold;
+                  cursor: pointer;
+                  margin-top: 20px;
+                  transition: all 0.3s;
+            }
+
+            .add-to-cart-btn:hover {
+                  background: var(--drck-orange);
+                  transform: translateY(-2px);
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .product-info {
+                  margin: 15px 0;
+                  padding: 10px;
+                  background: #f8f9fa;
+                  border-radius: 5px;
+                  text-align: center;
+            }
+
+            .product-info .price {
+                  font-size: 24px;
+                  font-weight: bold;
+                  color: var(--main-orange);
+            }
+
+            .test-info {
+                  background: #f0f8ff;
+                  padding: 20px;
+                  margin: 20px;
+                  border-radius: 8px;
+                  border-left: 4px solid var(--main-orange);
+            }
+
+            .test-info h2 {
+                  color: var(--main-orange);
+                  margin-bottom: 10px;
+            }
+
+            .test-info code {
+                  background: #fff;
+                  padding: 2px 6px;
+                  border-radius: 3px;
+                  color: #e74c3c;
+            }
+
+            .nav {
+                  height: 90px;
+                  display: flex;
+                  justify-content: end;
+                  padding-right: 50px;
+                  align-items: center;
+            }
+
+            .openCart-btn {
+                  padding: 10px 20px;
+                  font-size: 16px;
+                  cursor: pointer;
+            }
+
+            .sel-opt {
+                  height: 50px;
+            }
+
+             .addbtn {
+                   margin: 20px;
+             }
+
+             /* Tab 切換樣式 */
+             .cart-tabs {
+                   display: flex;
+                   gap: 20px;
+             }
+
+             .cart-tab {
+                   padding: 5px 10px;
+                   border-radius: 8px;
+                   transition: all 0.3s;
+                   opacity: 0.5;
+             }
+
+             .cart-tab:hover {
+                   opacity: 0.8;
+                   background: var(--product-pink-cover);
+             }
+
+             .cart-tab.active {
+                   opacity: 1;
+                   background: var(--product-pink-light);
+             }
+
+             .cart-view {
+                   display: none;
+             }
+
+             .cart-view.active {
+                   display: block;
+             }
+
+             .favorite-item .add-to-cart-from-fav {
+                   background: var(--main-orange);
+                   color: white;
+                   border: none;
+                   border-radius: 5px;
+                   cursor: pointer;
+                   transition: all 0.3s;
+             }
+
+             .favorite-item .add-to-cart-from-fav:hover {
+                   background: var(--drck-orange);
+                   transform: translateY(-2px);
+             }
+       </style>
+</head>
+
+<body>
+      <div class="nav">
+            <button class="openCart-btn">🛒 Cart</button>
+      </div>
+      <!-- 
+      ====================================================================
+      📝 套用說明 1：加入我的最愛
+      ====================================================================
+      
+      使用方式：
+      1. 直接在按鈕上加上 onclick="addToFavorites(productId, name, size)"
+      2. 不需要特定的 class（任何 HTML 元素都可以）
+      
+      範例：
+      <button onclick="addToFavorites(1, '檸檬能量飲', '6')">❤️ 加入最愛</button>
+      
+      參數說明：
+      - productId: 商品 ID (數字)
+      - name: 商品名稱 (字串)
+      - size: 規格 '6' 或 '24' (字串)
+      
+      效果：
+      ✅ 購物車自動滑出
+      ✅ 自動切換到「我的最愛」Tab ❤️
+      ✅ 商品出現在我的最愛中
+      ==================================================================== 
+      -->
+      <div class="addbtn">
+            <h3>加入我的最愛</h3>
+            
+            <button onclick="addToFavorites(1, '檸檬能量飲', '6')">
+                  ❤️ 檸檬 6入
+            </button>
+            <button onclick="addToFavorites(2, '檸檬能量飲', '24')">
+                  ❤️ 檸檬 24入
+            </button>
+            <button onclick="addToFavorites(3, '葡萄能量飲', '6')">
+                  ❤️ 葡萄 6入
+            </button>
+            <button onclick="addToFavorites(4, '葡萄能量飲', '24')">
+                  ❤️ 葡萄 24入
+            </button>
+            <button onclick="addToFavorites(5, '草莓能量飲', '6')">
+                  ❤️ 草莓 6入
+            </button>
+            <button onclick="addToFavorites(6, '草莓能量飲', '24')">
+                  ❤️ 草莓 24入
+            </button>
+      </div>
+      
+      <!-- 
+      ====================================================================
+      📝 套用說明 2：直接加入一份到購物車
+      ====================================================================
+      
+      使用方式：
+      1. 直接在按鈕上加上 onclick="addToCart(productId, name, size, quantity)"
+      2. 不需要特定的 class（任何 HTML 元素都可以）
+      
+      範例：
+      <button onclick="addToCart(1, '檸檬能量飲', '6', 1)">🛒 加入購物車</button>
+      <button onclick="addToCart(2, '檸檬能量飲', '24', 5)">🛒 買 5 份</button>
+      
+      參數說明：
+      - productId: 商品 ID (數字)
+      - name: 商品名稱 (字串)
+      - size: 規格 '6' 或 '24' (字串)
+      - quantity: 數量 (數字)
+      
+      效果：
+      ✅ 購物車自動滑出
+      ✅ 自動切換到「購物車」Tab 🛒
+      ✅ 商品以指定數量加入購物車
+      ==================================================================== 
+      -->
+      <div class="addbtn">
+            <h3>直接加入購物車</h3>
+            
+            <button onclick="addToCart(1, '檸檬能量飲', '6', 1)">
+                  🛒 檸檬 6入 x1
+            </button>
+            <button onclick="addToCart(2, '檸檬能量飲', '24', 2)">
+                  🛒 檸檬 24入 x2
+            </button>
+            <button onclick="addToCart(3, '葡萄能量飲', '6', 3)">
+                  🛒 葡萄 6入 x3
+            </button>
+            <button onclick="addToCart(4, '葡萄能量飲', '24', 1)">
+                  🛒 葡萄 24入 x1
+            </button>
+            <button onclick="addToCart(5, '草莓能量飲', '6', 5)">
+                  🛒 草莓 6入 x5
+            </button>
+            <button onclick="addToCart(6, '草莓能量飲', '24', 1)">
+                  🛒 草莓 24入 x1
+            </button>
+      </div>
+      <div class="test-info">
+            <h2>🎯 互動式商品選擇器</h2>
+            <p>這是使用 <code>shoppingCart_v2.js</code> 的互動測試頁面</p>
+            <p>特色：</p>
+            <ul>
+                  <li>✅ 下拉選單選擇商品名稱和規格</li>
+                  <li>✅ +/- 按鈕調整數量</li>
+                  <li>✅ 從 API 動態獲取商品資訊和價格</li>
+                  <li>✅ 自動檢查庫存</li>
+            </ul>
+      </div>
+
+      <!-- 
+      ====================================================================
+      📝 套用說明 3：將 addCart 的商品加入到購物車 (互動式選擇器)
+      ====================================================================
+      
+      這是最複雜的方式，適合讓用戶「自己選擇」商品、規格、數量
+      
+      必要結構：
+      1. 外層容器必須有 class="addCart"
+      2. 容器必須有 data-product-id="初始商品ID"
+      3. 商品選擇必須有 class="item-name-select"
+      4. 規格選擇必須有 class="size-select"
+      5. 數量輸入必須有 class="qty-input"
+      6. 加入購物車按鈕必須有 class="openCart-btn"
+      
+      範例：
+      <div class="addCart" data-product-id="1">
+          <select class="item-name-select">...</select>
+          <select class="size-select">...</select>
+          <input class="qty-input" value="1">
+          <button class="openCart-btn">加入購物車</button>
+      </div>
+      
+      效果：
+      ✅ 按鈕會自動偵測它在 .addCart 容器中
+      ✅ 自動讀取用戶選擇的商品、規格、數量
+      ✅ 加入購物車並自動打開
+      
+      ⚠️ 注意：需要額外的 JavaScript 處理商品 ID 對應
+      ==================================================================== 
+      -->
+      
+      <!-- 互動式商品選擇器 -->
+      <div class="addCart" data-product-id="2">
+            <h3>🛒 選擇商品</h3>
+
+            <!-- 商品名稱選擇 -->
+            <div class="product-selector">
+                  <label>商品名稱：</label>
+                  <select class="item-name-select sel-opt">
+                        <option value="檸檬能量飲">檸檬能量飲</option>
+                        <option value="葡萄能量飲">葡萄能量飲</option>
+                        <option value="草莓能量飲">草莓能量飲</option>
+                  </select>
+            </div>
+
+            <!-- 規格選擇 -->
+            <div class="product-selector">
+                  <label>商品規格：</label>
+                  <select class="size-select sel-opt">
+                        <option value="6">6 x 355ml</option>
+                        <option value="24">24 x 355ml</option>
+                  </select>
+            </div>
+
+            <!-- 價格顯示 -->
+            <div class="product-info">
+                  <div>單價：<span class="price" id="current-price">$499</span></div>
+                  <div style="color: #888; font-size: 14px; margin-top: 5px;">
+                        商品ID: <span id="current-product-id">2</span>
+                  </div>
+            </div>
+
+            <!-- 數量控制 -->
+            <div class="quantity-control">
+                  <label>數量：</label>
+                  <div class="quantity-box">
+                        <button class="qty-btn minus-btn">−</button>
+                        <input type="number" class="qty-input" value="1" min="1" max="99">
+                        <button class="qty-btn plus-btn">+</button>
+                  </div>
+            </div>
+
+            <!-- 加入購物車按鈕 -->
+            <button class="add-to-cart-btn openCart-btn">🛒 加入購物車</button>
+      </div>
+
+
+
+      <div class="test-info" style="background: #fff3cd; border-left-color: #ff9800;">
+            <h2>🔧 開發者工具</h2>
+            <p>按 <code>F12</code> 打開瀏覽器開發者工具，可以看到：</p>
+            <ul>
+                  <li>📡 Network 標籤：查看 API 請求</li>
+                  <li>💾 Application 標籤 → Session Storage：查看購物車資料</li>
+                  <li>📝 Console 標籤：查看加入購物車的訊息</li>
+            </ul>
+      </div>
+
+      <!-- 
+      ====================================================================
+      ✅ 所有購物車功能已整合到 shoppingCart_v2.js
+      ====================================================================
+      
+      現在不需要在每個頁面寫額外的 script！
+      
+      只要引入 shoppingCart_v2.js，以下功能會自動啟用：
+      1. ✅ onclick="addToFavorites(...)" - 加入我的最愛
+      2. ✅ onclick="addToCart(...)" - 加入購物車
+      3. ✅ class="openCart-btn" - 打開購物車
+      4. ✅ .addCart 互動式選擇器 - 自動初始化
+      
+      跨頁面使用：
+      只要每個頁面都引入 <script src="./js/shoppingCart_v2.js"></script>
+      所有功能都會在所有頁面正常運作！
+      ==================================================================== 
+      -->
+
+ </body>
+
+</html>
