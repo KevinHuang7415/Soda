@@ -12,11 +12,29 @@
 
 
     <style>
-        .checkouts-container {}
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            height: 100%;
+        }
+
+        .fontSize14 {
+            font-size: 14px;
+        }
+
+        .fontGray {
+            color: var(--main-gray);
+        }
 
         .checkouts-header {
             border-bottom: 1px solid var(--main-gray-drck);
-            padding: 0 200px;
+            padding: 0 250px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -68,11 +86,10 @@
         }
 
         .order-list {
-            padding: 20px 200px 20px 20px;
+            position: sticky;
+            top: 0;
+            padding: 50px 250px 20px 50px;
             width: 50vw;
-            height: 100vh;
-            position: relative;
-            z-index: 1;
             background: var(--light-yellow);
             overflow: hidden;
             opacity: 1;
@@ -121,8 +138,6 @@
             color: var(--main-black);
         }
 
-        .order-item-subtotal {}
-
         .order-item-img {
             width: 60px;
             height: 60px;
@@ -162,21 +177,24 @@
             height: 25px;
         }
 
+        .order-item-sel-box {
+            margin-top: 10px;
+        }
+
         .gift-box {
             display: flex;
             justify-content: space-between;
         }
 
-        .gift-text {
+        .input-box {
             border: 1px solid var(--main-gray-drck);
             border-radius: 5px;
             width: 350px;
             font-size: 16px;
-            line-height: 30px;
             padding-left: 10px;
         }
 
-        .gift-text:focus {
+        .input-box:focus {
             /* 改變邊框顏色 */
             border-color: var(--main-orange);
             /* 移除預設的藍色 outline */
@@ -205,7 +223,7 @@
             display: flex;
             justify-content: space-between;
             font-size: 12px;
-            padding: 3px 10px;
+            padding: 5px 10px;
         }
 
         .total-box {
@@ -215,17 +233,21 @@
         }
 
         .checkouts-main {
-            width: 100vw;
+            min-height: 100vh;
+            position: relative;
             display: flex;
             flex-direction: row-reverse;
         }
 
-
-
         .pay-container {
             width: 50vw;
-            padding: 20px 20px 20px 200px;
+            padding: 50px 50px 20px 250px;
+            margin-bottom: 50px;
+        }
 
+        .pay-container-title {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         .pay-way-box {
@@ -240,9 +262,14 @@
         }
 
         .pay-way-btn {
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            line-height: 45px;
             margin-bottom: 20px;
             background: var(--main-orange);
-            width: 150px;
+            width: 200px;
             height: 45px;
             border-radius: 10px;
             cursor: pointer;
@@ -252,6 +279,10 @@
         .pay-way-btn:hover {
             background: var(--main-color);
             transform: translateY(3px);
+        }
+
+        .pay-now-btn {
+            width: 100%;
         }
 
         .applePay {
@@ -266,13 +297,18 @@
             background: var(--product-purple-light);
         }
 
+        hr {
+            margin: 30px 0;
+            color: var(--main-gray-drck);
+        }
+
         /* or分隔線 */
         .or-divider {
             display: flex;
             align-items: center;
             gap: 12px;
             /* 字與線的間距 */
-            margin: 16px 0;
+            margin: 30px 0;
             /* 與上下內容距離 */
         }
 
@@ -294,20 +330,117 @@
             /* 避免換行 */
         }
 
-        /* 1) 全站改為 border-box，避免 padding/border 把寬度撐爆 */
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
+        .form-box {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
         }
 
-        /* 2) 讓頁面不會因 1~2px 計算誤差出現水平捲軸（保險）*/
-        html,
-        body {
-            overflow-x: hidden;
+        .pay-container h3 {
+            font-size: 28px;
+            margin-bottom: 10px;
         }
+
+        .contact-box-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+
+        }
+
+        .contact-input {
+            height: 50px;
+            line-height: 2rem;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .contact-box-title a {
+            color: var(--main-orange);
+        }
+
+        .contact-box-title a:hover {
+            color: var(--drck-orange);
+        }
+
+        .contact-box-emailBox {
+            display: flex;
+            flex-direction: column;
+
+        }
+
+        .select-box {
+            margin: 5px 0;
+            border-radius: 5px;
+            height: 50px;
+        }
+
+        .select-box:invalid {
+            color: var(--main-gray);
+            /* 當還沒選時，顯示灰色 */
+        }
+
+        .city-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .city-container select {
+            width: 150px;
+        }
+
+        .city-container input {
+            width: 100px;
+        }
+
+        .card-expiry {
+            display: flex;
+            gap: 20px;
+        }
+
+        .creditCard-box {
+            margin-top: 20px;
+            background: var(--main-gray-light);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .disclaimer-box {
+            margin-top: 20px;
+
+        }
+
+        .disclaimer-box a {
+            /* text-decoration: none; */
+            color: var(--main-orange);
+            margin-right: 20px;
+        }
+
+
 
         /* 3) RWD 區塊寬度用 % 取代 vw（讓它吃父層可用寬度）*/
+        @media (max-width: 1500px) {
+            .applePay {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .checkouts-header {
+                padding: 0 20px;
+            }
+
+            .order-list {
+                padding: 50px 20px 20px 50px;
+            }
+
+            .pay-container {
+                padding: 50px 50px 20px 20px;
+
+            }
+        }
+
         @media (max-width: 1140px) {
             .checkouts-header {
                 padding: 0 20px;
@@ -320,10 +453,8 @@
 
             .checkouts-main {
                 display: block;
-                /* 不要用 100vw，交給父層寬度，自然就是滿版 */
                 width: 100%;
-                /* 可選：移除這裡的邊框，或保留都行 */
-                /* border: none; */
+
             }
 
             .order-list,
@@ -331,21 +462,15 @@
                 height: 100%;
                 padding: 20px;
                 width: 100%;
-
-                /* 取代 100vw */
-                /* 已用 border-box，不會再被 padding 撐爆 */
             }
 
             .pay-container {
                 display: block;
             }
 
-            /* 4) 避免固定 350px 撐爆小螢幕 */
             .gift-box {
                 gap: 10px;
-                /* 讓按鈕和輸入框不用硬貼 */
                 flex-wrap: wrap;
-                /* 小螢幕可換行 */
             }
 
 
@@ -360,9 +485,7 @@
                 justify-content: space-between;
             }
 
-            .applePay {
-                width: 100%;
-            }
+
 
             .googlePay {
                 width: 45%;
@@ -389,87 +512,161 @@
 
 <body>
     <div class="checkouts-header">
-        <a href="index.html"><img class="logo" src="./images/logo.png" alt="logo" title="返回首頁"></a>
-        <a href="prodoct.html"><img src="./images/icon/8666616_shopping_cart_icon.svg" alt="shoppingCar"
-                title="返回商品頁面"></a>
+        <a href="./index.html"><img class="logo" src="./images/logo.png" alt="logo" title="返回首頁"></a>
+        <a href="./prodoct.html" class="backPd-btn"><img src="./images/icon/4781813_bag_buy_cart_market_shop_icon.png"
+                alt="shoppingCar" title="返回商品頁面"></a>
     </div>
-
-    <div class="shopping-list">
+    <div class="checkouts-main">
         <div class="list-title-box">
             <div class="list-title">
-                Order summary
+                訂單摘要
                 <img src="./images/icon/8674526_ic_fluent_chevron_down_regular_icon.svg" alt="">
             </div>
             <div class="list-title-sum">
                 <h5>$2,335</h5>
             </div>
         </div>
-        <div class="checkouts-main">
-            <div class="order-list ">
-                <div class="order-item-box">
-                    <div class="order-item-img" id="order-item-img" name="order-item-img">
-                        <span class="order-item-quantity">6</span>
-                        <h2>12</h2>
-                        <img src="./images/lemon-lime_mockup.png" alt="Lemon">
-                    </div>
-                    <div class="order-item-info">
-                        <div class="order-item-sel-box">
-                            <div class="order-item-name">
-                                Lemon
-                            </div>
-                            <div class="order-item-size">
-                                <p>
-                                    12 x 355ml
-                                </p>
-                            </div>
+        <div class="order-list ">
+            <div class="order-item-box">
+                <div class="order-item-img" id="order-item-img" name="order-item-img">
+                    <span class="order-item-quantity">6</span>
+                    <h2>12</h2>
+                    <img src="./images/lemon-lime_mockup.png" alt="Lemon">
+                </div>
+                <div class="order-item-info">
+                    <div class="order-item-sel-box">
+                        <div class="order-item-name">
+                            檸檬能量飲
                         </div>
-                        <div class="order-item-subtotal">$2,994</div>
+                        <div class="order-item-size">
+                            <p>
+                                12 x 355ml
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <form action="#" method="get" class="gift-box">
-                    <input type="text" placeholder="Gift card or discount code" class="gift-text">
-                    <button type="submit" class="gift-btn">Apply</button>
-                </form>
-                <div class="discount-box">
-                    <p>Discount</p>
-                    <div class="discount-item">
-                        <p>Subtotal · <span>6</span> items</p>
-                        <p>$2,994</p>
-                    </div>
-                    <div class="discount-item">
-                        <p>Christmas discounts 88%</p>
-                        <p>$2,635</p>
-                    </div>
-                    <div class="discount-item">
-                        <p>New friend discounts</p>
-                        <p>-$100</p>
-                    </div>
-                    <div class="discount-item">
-                        <p>Gift card：<span>SODA200</span></p>
-                        <p>-$200</p>
-                    </div>
-                </div>
-                <div class="total-box">
-                    <h4>Total</h4>
-                    <h5>$2,335</h5>
+                    <div class="order-item-subtotal">$2,994</div>
                 </div>
             </div>
-            <div class="pay-container">
-
-                <div class="pay-way-box">
-                    <img class="pay-way-btn applePay" src="./images/icon/8666205_apple_pay_icon_white.png"
-                        alt="applePay">
-                    <img class="pay-way-btn googlePay" src="./images/icon/8546747_google_pay_icon_white.png"
-                        alt="googlePay">
-                    <img class="pay-way-btn amazonPay" src="./images/icon/8666126_amazon_pay_icon_white.png"
-                        alt="amazonPay">
+            <form action="#" method="get" class="gift-box">
+                <input type="text" placeholder="禮物卡或是折扣碼" class="input-box gift-box">
+                <button type="submit" class="gift-btn">使用</button>
+            </form>
+            <div class="discount-box">
+                <p>折扣</p>
+                <div class="discount-item">
+                    <p>小計 · <span>6</span> 件</p>
+                    <p>$2,994</p>
                 </div>
-
-                <div class="or-divider"><span>OR</span></div>
+                <div class="discount-item">
+                    <p>歡慶聖誕 88%</p>
+                    <p>$2,635</p>
+                </div>
+                <div class="discount-item">
+                    <p>登入新好友折價</p>
+                    <p>-$100</p>
+                </div>
+                <div class="discount-item">
+                    <p>使用優惠：<span>SODA200</span></p>
+                    <p>-$200</p>
+                </div>
             </div>
+            <div class="total-box">
+                <h4>總計</h4>
+                <h5>$2,335</h5>
+            </div>
+        </div>
+        <div class="pay-container">
+            <p class="pay-container-title fontSize14 fontGray">快速結帳</p>
+            <div class="pay-way-box">
+                <img class="pay-way-btn applePay" src="./images/icon/8666205_apple_pay_icon_white.png" alt="applePay">
+                <img class="pay-way-btn googlePay" src="./images/icon/8546747_google_pay_icon_white.png"
+                    alt="googlePay">
+                <img class="pay-way-btn amazonPay" src="./images/icon/8666126_amazon_pay_icon_white.png"
+                    alt="amazonPay">
+            </div>
+            <p class="fontSize14 fontGray">繼續付款即表示您同意本頁列出的未來費用和取消政策。</p>
+            <div class="or-divider"><span>或</span></div>
+            <div class="form-box">
+                <div class="contact-box">
+                    <div class="contact-box-title">
+                        <h3>訂閱</h3>
+                        <a href="http://">登入</a>
+                    </div>
+                    <div class="contact-box-emailBox">
+                        <input class="input-box contact-input" type="email" id="email" placeholder="abc123@gmail.com">
+                        <label for="sendemail">
+                            <input type="checkbox" name="interest[]" id="sendemail" value="透過電子郵件向我發送新聞和優惠訊息" checked>
+                            <span class="fontSize14">透過電子郵件向我發送新聞和優惠訊息</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="delivery-box">
+                    <h3>收件資料</h3>
+                    <input class="input-box contact-input" type="text" id="deliveryFirstName" placeholder="收件人姓">
+                    <input class="input-box contact-input" type="text" id="deliveryLaName" placeholder="收件人名">
+                    <input class="input-box contact-input" type="tel" id="deliveryTel" placeholder="聯絡電話">
+                    <div class="address-box">
+                        <div class="city-container">
+                            <div class="city-box">
+                                <select id="city" class="select-box input-box">
+                                    <option value="" selected disabled>中華民國縣市</option>
+                                </select>
+                            </div>
+                            <div class="dustruct-box">
+                                <select id="district" class="select-box input-box">
+                                    <option value="" selected disabled>請先選擇縣市</option>
+                                </select>
+                            </div>
+                            <input id="zipcode-input" class="select-box input-box zipcode-input" type="text" readonly
+                                placeholder="自動帶入" title="郵遞區號">
+                        </div>
+                        <input class="input-box contact-input" type="text" id="addressName" placeholder="收件人地址">
+                    </div>
+                </div>
+                <div class="paymentMethod-box">
+                    <h3>付款方式</h3>
+                    <p class="fontGray fontSize14">所有交易都是安全且加密的。</p>
+                    <div class="creditCard-box">
+                        <label>
+                            <input class="input-box contact-input" type="text" id="cardNum" inputmode="numeric"
+                                maxlength="19" placeholder="信用卡號 (**** **** **** ****)" required>
+                        </label>
 
+                        <div class="card-expiry">
+                            <select id="cardMonth" class="select-box input-box" required>
+                                <option value="" selected disabled>月份</option>
+                            </select>
+                            <select id="cardYear" class="select-box input-box" required>
+                                <option value="" selected disabled>年份</option>
+                            </select>
+                        </div>
+
+                        <label>
+                            <input class="input-box contact-input" type="text" id="cvv" inputmode="numeric"
+                                maxlength="4" placeholder="CVV" required>
+                        </label>
+
+                        <label>
+                            <input class="input-box contact-input" type="text" id="nameOnCard"
+                                placeholder="持卡人姓名 (與卡片相同)" required>
+                        </label>
+                    </div>
+
+                </div>
+                <div class="pay-way-btn pay-now-btn">立即付款</div>
+
+            </div>
+            <hr>
+            <div class="disclaimer-box">
+                <a href="">退款政策</a>
+                <a href="">隱私權政策</a>
+                <a href="">服務條款</a>
+                <a href="">取消</a>
+            </div>
         </div>
     </div>
+
+
 
 
     <script>
@@ -510,10 +707,142 @@
             mq.addEventListener('change', syncPanel);
         });
 
+        // === 全台縣市與郵遞區號資料 ===
+        const taiwanZipData = {
+            "台北市": {
+                "中正區": "100", "大同區": "103", "中山區": "104", "松山區": "105",
+                "大安區": "106", "萬華區": "108", "信義區": "110", "士林區": "111",
+                "北投區": "112", "內湖區": "114", "南港區": "115", "文山區": "116"
+            },
+            "新北市": {
+                "萬里區": "207", "金山區": "208", "板橋區": "220", "汐止區": "221", "深坑區": "222",
+                "石碇區": "223", "瑞芳區": "224", "平溪區": "226", "雙溪區": "227", "貢寮區": "228",
+                "新店區": "231", "坪林區": "232", "烏來區": "233", "永和區": "234", "中和區": "235",
+                "土城區": "236", "三峽區": "237", "樹林區": "238", "鶯歌區": "239", "三重區": "241",
+                "新莊區": "242", "泰山區": "243", "林口區": "244", "蘆洲區": "247", "五股區": "248",
+                "八里區": "249", "淡水區": "251", "三芝區": "252", "石門區": "253"
+            },
+            "桃園市": {
+                "中壢區": "320", "平鎮區": "324", "龍潭區": "325", "楊梅區": "326", "新屋區": "327",
+                "觀音區": "328", "桃園區": "330", "龜山區": "333", "八德區": "334", "大溪區": "335",
+                "復興區": "336", "大園區": "337", "蘆竹區": "338"
+            },
+            "台中市": {
+                "中區": "400", "東區": "401", "南區": "402", "西區": "403", "北區": "404",
+                "北屯區": "406", "西屯區": "407", "南屯區": "408", "太平區": "411", "大里區": "412",
+                "霧峰區": "413", "烏日區": "414", "豐原區": "420", "后里區": "421", "東勢區": "423",
+                "石岡區": "422", "新社區": "426", "潭子區": "427", "大雅區": "428", "神岡區": "429",
+                "大肚區": "432", "沙鹿區": "433", "龍井區": "434", "梧棲區": "435", "清水區": "436",
+                "大甲區": "437", "外埔區": "438", "大安區": "439"
+            },
+            "台南市": {
+                "中西區": "700", "東區": "701", "南區": "702", "北區": "704", "安平區": "708",
+                "安南區": "709", "永康區": "710", "歸仁區": "711", "新化區": "712", "左鎮區": "713",
+                "玉井區": "714", "楠西區": "715", "南化區": "716", "仁德區": "717", "關廟區": "718",
+                "龍崎區": "719", "官田區": "720", "麻豆區": "721", "佳里區": "722", "西港區": "723",
+                "七股區": "724", "將軍區": "725", "學甲區": "726", "北門區": "727", "新營區": "730",
+                "後壁區": "731", "白河區": "732", "東山區": "733", "六甲區": "734", "下營區": "735",
+                "柳營區": "736", "鹽水區": "737", "善化區": "741", "大內區": "742", "山上區": "743",
+                "新市區": "744", "安定區": "745"
+            },
+            "高雄市": {
+                "新興區": "800", "前金區": "801", "苓雅區": "802", "鹽埕區": "803", "鼓山區": "804",
+                "旗津區": "805", "前鎮區": "806", "三民區": "807", "楠梓區": "811", "小港區": "812",
+                "左營區": "813", "仁武區": "814", "大社區": "815", "岡山區": "820", "路竹區": "821",
+                "阿蓮區": "822", "田寮區": "823", "燕巢區": "824", "橋頭區": "825", "梓官區": "826",
+                "彌陀區": "827", "永安區": "828", "湖內區": "829", "鳳山區": "830", "大寮區": "831",
+                "林園區": "832", "鳥松區": "833", "大樹區": "840", "旗山區": "842", "美濃區": "843",
+                "六龜區": "844", "甲仙區": "847", "杉林區": "846", "內門區": "845", "茄萣區": "852"
+            },
+            "宜蘭縣": {
+                "宜蘭市": "260", "羅東鎮": "265", "蘇澳鎮": "270", "頭城鎮": "261", "礁溪鄉": "262",
+                "壯圍鄉": "263", "員山鄉": "264", "冬山鄉": "269", "五結鄉": "268", "三星鄉": "266",
+                "大同鄉": "267", "南澳鄉": "272"
+            },
+            "花蓮縣": {
+                "花蓮市": "970", "鳳林鎮": "975", "玉里鎮": "981", "新城鄉": "971", "吉安鄉": "973",
+                "壽豐鄉": "974", "光復鄉": "976", "豐濱鄉": "977", "瑞穗鄉": "978", "富里鄉": "983",
+                "秀林鄉": "972", "萬榮鄉": "979", "卓溪鄉": "982"
+            },
+            "台東縣": {
+                "台東市": "950", "成功鎮": "961", "關山鎮": "956", "卑南鄉": "954", "鹿野鄉": "955",
+                "池上鄉": "958", "東河鄉": "959", "長濱鄉": "962", "太麻里鄉": "963", "大武鄉": "965",
+                "綠島鄉": "951", "延平鄉": "953", "海端鄉": "957", "達仁鄉": "966", "金峰鄉": "964",
+                "蘭嶼鄉": "952"
+            },
+            "屏東縣": {
+                "屏東市": "900", "潮州鎮": "920", "東港鎮": "928", "恆春鎮": "946", "萬丹鄉": "913",
+                "內埔鄉": "912", "麟洛鄉": "909", "竹田鄉": "911", "長治鄉": "908", "九如鄉": "904",
+                "里港鄉": "905", "鹽埔鄉": "907", "高樹鄉": "906", "萬巒鄉": "923", "新埤鄉": "925",
+                "枋寮鄉": "940", "枋山鄉": "941", "三地門鄉": "901", "瑪家鄉": "903"
+            },
+            "澎湖縣": { "馬公市": "880", "湖西鄉": "885", "白沙鄉": "884", "西嶼鄉": "881", "望安鄉": "882", "七美鄉": "883" },
+            "金門縣": { "金城鎮": "893", "金沙鎮": "890", "金湖鎮": "891", "金寧鄉": "892", "烈嶼鄉": "894", "烏坵鄉": "896" },
+            "連江縣": { "南竿鄉": "209", "北竿鄉": "210", "莒光鄉": "211", "東引鄉": "212" }
+        };
+
+        const citySelect = document.getElementById("city");
+        const districtSelect = document.getElementById("district");
+        const zipcodeInput = document.getElementById("zipcode-input");
+
+        // === 初始化縣市選單 ===
+        Object.keys(taiwanZipData).forEach(city => {
+            const option = document.createElement("option");
+            option.value = city;
+            option.textContent = city;
+            citySelect.appendChild(option);
+        });
+
+        // === 當縣市變更時，更新區域選單 ===
+        citySelect.addEventListener("change", () => {
+            const selectedCity = citySelect.value;
+            const districts = Object.keys(taiwanZipData[selectedCity]);
+
+            // 重置區域下拉選單
+            districtSelect.innerHTML = '<option value="" selected disabled>請選擇區域</option>';
+
+            // 動態生成各區
+            districts.forEach(d => {
+                const opt = document.createElement("option");
+                opt.value = d;
+                opt.textContent = d;
+                districtSelect.appendChild(opt);
+            });
+
+            // 清空郵遞區號
+            zipcodeInput.value = "";
+        });
+
+        // === 當選擇區域時，自動帶出郵遞區號 ===
+        districtSelect.addEventListener("change", () => {
+            const city = citySelect.value;
+            const district = districtSelect.value;
+            const zip = taiwanZipData[city]?.[district];
+
+            console.log("查到郵遞區號：", zip); // ✅ 可以確認有抓到
+
+            if (zip) {
+                zipcodeInput.value = zip; // ✅ 寫入 input
+            } else {
+                zipcodeInput.value = "沒有";
+            }
+        });
+        // 自動生成月份 (01–12)
+        const monthSelect = document.getElementById("cardMonth");
+        for (let i = 1; i <= 12; i++) {
+            const month = i.toString().padStart(2, "0");
+            monthSelect.innerHTML += `<option value="${month}">${month}</option>`;
+        }
+
+        // 自動生成年份 (今年到 +10年)
+        const yearSelect = document.getElementById("cardYear");
+        const currentYear = new Date().getFullYear();
+        for (let i = 0; i <= 10; i++) {
+            const year = currentYear + i;
+            yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
+        }
+
     </script>
-
-
-
 </body>
 
 </html>

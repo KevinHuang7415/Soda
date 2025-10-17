@@ -2,12 +2,13 @@
     /* 文字設定 */
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Zalando+Sans+SemiExpanded:ital,wght@0,200..900;1,200..900&display=swap');
     font-family: "Zalando Sans SemiExpanded", sans-serif;
-
+    
     /* 主樣式設定 */
     vertical-align: top;
     box-sizing: border-box;
     list-style: none;
     text-decoration: none;
+ 
 
     /* 顏色設定 */
     --main-black: #333;
@@ -16,6 +17,7 @@
 
     --main-gray-light: rgb(245, 245, 245);
     --main-gray-drck: rgb(223, 223, 223);
+    --main-gray: #888;
 
     --main-yellow: #FEE832;
     --light-yellow: #fff7e6;
