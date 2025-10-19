@@ -10,7 +10,7 @@ function injectshoppingCartHTML() {
             <div class="cart-title-box">
                 <p class="cart-title">Cart</p>
                 <div class="btn close-btn closeCart-btn" id="closeCart-btn">
-                    <img class="close-btn-img" src="./images/icon/211651_close_round_icon.svg" alt="close">
+                    <img class="close-btn-img" src="../images/icon/211651_close_round_icon.svg" alt="close">
                 </div>
             </div>
             <div id="cart-items"></div>
@@ -41,9 +41,9 @@ sessionStorage.setItem('cart', JSON.stringify(fakeCartData));
 // --- 價格與圖片設定 ---
 const PRICE_MAP = { '4': 199, '12': 499 };
 const VARIANT_MAP = {
-    Lemon: { bg: 'var(--product-green-light)', img: './images/lemon-lime_mockup.png', alt: 'Lemon' },
-    Grape: { bg: 'var(--product-purple-mid)', img: './images/grape_mockup.png', alt: 'Grape' },
-    Strawberry: { bg: 'var(--product-pink-light)', img: './images/strawberry-lemonade_mockup.png', alt: 'Strawberry' }
+    Lemon: { bg: 'var(--product-green-light)', img: '../images/lemon-lime_mockup.png', alt: 'Lemon' },
+    Grape: { bg: 'var(--product-purple-mid)', img: '../images/grape_mockup.png', alt: 'Grape' },
+    Strawberry: { bg: 'var(--product-pink-light)', img: '../images/strawberry-lemonade_mockup.png', alt: 'Strawberry' }
 };
 const PRODUCT_URLS = {
     Lemon: '/products/lemon',
@@ -79,14 +79,14 @@ function createItemBox({ name, size, qty }) {
                     </select>
                 </div>
                 <div class="btn close-btn item-close-btn">
-                    <img class="close-btn-img" src="./images/icon/211651_close_round_icon.svg" alt="remove">
+                    <img class="close-btn-img" src="../images/icon/211651_close_round_icon.svg" alt="remove">
                 </div>
             </div>
             <div class="cart-item-cout">
                 <ul>
-                    <li class="cout-btn subtraction"><img src="./images/icon/211863_minus_round_icon.svg" alt="-"></li>
+                    <li class="cout-btn subtraction"><img src="../images/icon/211863_minus_round_icon.svg" alt="-"></li>
                     <li><input type="number" class="cart-item-nmb" value="${qty}" min="0"></li>
-                    <li class="cout-btn Addition"><img src="./images/icon/211877_plus_round_icon.svg" alt="+"></li>
+                    <li class="cout-btn Addition"><img src="../images/icon/211877_plus_round_icon.svg" alt="+"></li>
                 </ul>
                 <div class="cart-item-sum">
                     $<span class="cart-item-price">${price}</span> x

@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>shoppingCart</title>
     <!-- Reset -->
-    <link rel="stylesheet" href="./css/Reset.css">
+    <link rel="stylesheet" href="../css/Reset.css">
     <!-- main_setting -->
-    <link rel="stylesheet" href="./css/main_setting.css">
+    <link rel="stylesheet" href="../css/main_setting.css">
     <!-- style.css -->
-     <link rel="stylesheet" href="./css/shoppingCart_style.css">
+     <link rel="stylesheet" href="../css/shoppingCart_style.css">
 
 </head>
 
@@ -22,14 +22,14 @@
                     Cart
                 </p>
                 <div class="btn close-btn closeCart-btn" id="closeCart-btn" name="closeCart-btn">
-                    <img class="close-btn-img" src="./images/icon/211651_close_round_icon.svg" alt="">
+                    <img class="close-btn-img" src="../images/icon/211651_close_round_icon.svg" alt="">
                 </div>
             </div>
             <!-- 購物車項目卡 -->
             <!-- <div class="item-box">
                 <div class="cart-item-img" id="cart-item-img" name="cart-item-img">
                     <h2>12</h2>
-                    <img src="./images/lemon-lime_mockup.png" alt="Lemon">
+                    <img src="../images/lemon-lime_mockup.png" alt="Lemon">
                 </div>
                 <div class="cart-item-info">
                     <div class="cart-item-sel-box">
@@ -49,7 +49,7 @@
                             </form>
                         </div>
                         <div class="btn close-btn item-close-btn" id="item-close-btn" name="item-close-btn">
-                            <img class="close-btn-img" src="./images/icon/211651_close_round_icon.svg" alt="項目關閉按鈕">
+                            <img class="close-btn-img" src="../images/icon/211651_close_round_icon.svg" alt="項目關閉按鈕">
                         </div>
                     </div>
 
@@ -70,14 +70,14 @@
                     <div class="cart-item-cout">
                         <ul>
                             <li class="cout-btn subtraction">
-                                <img src="./images/icon/211863_minus_round_icon.svg" alt="minus">
+                                <img src="../images/icon/211863_minus_round_icon.svg" alt="minus">
                             </li>
                             <li>
                                 <input type="number" class="cart-item-nmb" id="cart-item-nmb" name="cart-item-nmb"
                                     value="1" min="0">
                             </li>
                             <li class="cout-btn Addition">
-                                <img src="./images/icon/211877_plus_round_icon.svg" alt="plus">
+                                <img src="../images/icon/211877_plus_round_icon.svg" alt="plus">
                             </li>
                         </ul>
                         <div class="cart-item-sum">
@@ -122,9 +122,9 @@
         // 價格與圖片設定
         const PRICE_MAP = { '4': 199, '12': 499 };
         const VARIANT_MAP = {
-            Lemon: { bg: 'var(--product-green-light)', img: './images/lemon-lime_mockup.png', alt: 'Lemon' },
-            Grape: { bg: 'var(--product-purple-mid)', img: './images/grape_mockup.png', alt: 'Grape' },
-            Strawberry: { bg: 'var(--product-pink-light)', img: './images/strawberry-lemonade_mockup.png', alt: 'Strawberry' }
+            Lemon: { bg: 'var(--product-green-light)', img: '../images/lemon-lime_mockup.png', alt: 'Lemon' },
+            Grape: { bg: 'var(--product-purple-mid)', img: '../images/grape_mockup.png', alt: 'Grape' },
+            Strawberry: { bg: 'var(--product-pink-light)', img: '../images/strawberry-lemonade_mockup.png', alt: 'Strawberry' }
         };
 
         const cartContainer = document.getElementById('cart-items');
@@ -167,21 +167,21 @@
                             </form>
                         </div>
                         <div class="btn close-btn item-close-btn" id="item-close-btn" name="item-close-btn">
-                            <img class="close-btn-img" src="./images/icon/211651_close_round_icon.svg" alt="項目關閉按鈕">
+                            <img class="close-btn-img" src="../images/icon/211651_close_round_icon.svg" alt="項目關閉按鈕">
                         </div>
                     </div>
                     
                     <div class="cart-item-cout">
                         <ul>
                             <li class="cout-btn subtraction">
-                                <img src="./images/icon/211863_minus_round_icon.svg" alt="minus">
+                                <img src="../images/icon/211863_minus_round_icon.svg" alt="minus">
                             </li>
                             <li>
                                 <input type="number" class="cart-item-nmb" name="cart-item-nmb"
                                     value="${qty}" min="0">
                             </li>
                             <li class="cout-btn Addition">
-                                <img src="./images/icon/211877_plus_round_icon.svg" alt="plus">
+                                <img src="../images/icon/211877_plus_round_icon.svg" alt="plus">
                             </li>
                         </ul>
                         <div class="cart-item-sum">

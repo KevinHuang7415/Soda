@@ -1,12 +1,14 @@
-/* shoppingCart CSS */
 html,
 body {
     height: 100%;
     margin: 0;
     padding: 0;
     overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
+/* shoppingCart CSS */
 .shoppingCart {
     position: fixed;
     z-index: 9999;
@@ -257,7 +259,6 @@ input[type=number]:hover {
 }
 
 .payment-btn {
-    margin: 50px auto;
     clear: both;
     background-color: var(--light-orange);
 }
