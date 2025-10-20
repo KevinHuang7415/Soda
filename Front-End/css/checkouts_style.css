@@ -520,13 +520,7 @@ body {
     }
 }
 
-/* 偵測使用者系統若是深色模式 */
-@media(prefers-color-scheme: dark) {
-    body {
-        background-color: #333;
-        color: white;
-    }
-}
+
 
 /* 3) RWD 區塊寬度用 % 取代 vw（讓它吃父層可用寬度）*/
 @media (max-width: 1500px) {
@@ -649,5 +643,19 @@ body {
         width: 100%;
     }
 }
+/* 偵測使用者系統若是深色模式 */
+@media(prefers-color-scheme: dark) {
+    body {
+        background-color: #333;
+        color: white;
+    }
 
+    .order-list {
+        background: var(--drck-yellow);
+    }
+
+    .list-title-box{
+        background: gray;
+    }
+}
 /* checkouts.CSS  End*/
