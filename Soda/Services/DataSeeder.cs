@@ -52,6 +52,7 @@ namespace Soda.Services
                         FirstName = adminFirstName,
                         LastName = adminLastName,
                         Role = UserRole.Admin,
+                        IsEmailVerified = true,
                         CreatedAt = DateTime.UtcNow.ToTaipeiTimeString()
                     };
 

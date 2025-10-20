@@ -69,7 +69,7 @@ namespace Soda.Controllers
             if (!success)
                 return NotFound();
 
-            return NoContent();
+            return Ok();
         }
 
         [HttpDelete("{id}")]
@@ -91,7 +91,7 @@ namespace Soda.Controllers
             if (!success)
                 return NotFound();
 
-            return NoContent();
+            return Ok();
         }
 
         [HttpPost("change-password")]
