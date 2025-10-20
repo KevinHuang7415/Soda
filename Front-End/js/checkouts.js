@@ -203,50 +203,41 @@
             };
         }
 
-        // 檢查用戶登入狀態（優化版）
+        // 檢查用戶登入狀態（使用 auth-helper.js 的函數）
         function checkUserLoginStatus() {
             try {
-                // 從 localStorage 或 sessionStorage 檢查登入狀態
-                const loginData = localStorage.getItem('userLoginData') || sessionStorage.getItem('userLoginData');
-
-                if (loginData) {
-                    const userData = JSON.parse(loginData);
-
-                    // 驗證數據完整性
-                    if (!userData || typeof userData !== 'object' || !userData.loginTime) {
-                        throw new Error('無效的登入數據');
-                    }
-
-                    // 檢查登入是否過期（例如：24小時）
-                    const loginTime = userData.loginTime;
-                    const currentTime = Date.now();
-                    const twentyFourHours = 24 * 60 * 60 * 1000;
-
-                    if (currentTime - loginTime < twentyFourHours) {
-                        AppState.isUserLoggedIn = true;
-                        AppState.userInfo = userData;
-                        console.log('用戶已登入:', userData);
-                        return true;
-                    } else {
-                        // 登入已過期，清除資料
-                        this.clearLoginData();
-                        return false;
-                    }
-                }
-
-                // 也可以從 cookie 檢查
-                const authToken = getCookie('authToken');
-                if (authToken && authToken.length > 0) {
-                    // 這裡可以驗證 token 的有效性
+                // 使用 auth-helper.js 提供的 isLoggedIn() 函數
+                if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+                    const user = getCurrentUser();
                     AppState.isUserLoggedIn = true;
-                    AppState.userInfo = { token: authToken };
+                    AppState.userInfo = user;
+                    console.log('用戶已登入:', user);
                     return true;
                 }
 
+                // 備用：檢查 localStorage 中的 user 和 token
+                const token = localStorage.getItem('token');
+                const userJson = localStorage.getItem('user');
+                
+                if (token && userJson) {
+                    try {
+                        const userData = JSON.parse(userJson);
+                        AppState.isUserLoggedIn = true;
+                        AppState.userInfo = userData;
+                        console.log('用戶已登入（備用檢查）:', userData);
+                        return true;
+                    } catch (e) {
+                        console.error('解析使用者資料失敗:', e);
+                    }
+                }
+
+                AppState.isUserLoggedIn = false;
+                AppState.userInfo = null;
                 return false;
             } catch (error) {
                 console.error('檢查登入狀態失敗:', error);
-                this.clearLoginData();
+                AppState.isUserLoggedIn = false;
+                AppState.userInfo = null;
                 return false;
             }
         }
@@ -588,15 +579,18 @@
             }
 
             // 檢查登入要求
-            if (discount.requiresLogin && !isUserLoggedIn) {
+            if (discount.requiresLogin && !AppState.isUserLoggedIn) {
                 pauseMarquee();
                 const shouldLogin = confirm('此優惠需要登入才能使用！\n\n點擊「確定」前往登入頁面，或點擊「取消」繼續購物。');
                 if (shouldLogin) {
                     // 保存當前折扣狀態
                     saveDiscountState();
 
+                    // 記錄當前頁面，登入後返回
+                    localStorage.setItem('redirectAfterLogin', './checkouts.html' + window.location.search);
+
                     // 重定向到登入頁面
-                    window.location.href = '../part1,part5/登入資訊/login.html?returnUrl=' + encodeURIComponent(window.location.href);
+                    window.location.href = './login.html';
                 } else {
                     resumeMarquee();
                 }
@@ -799,7 +793,7 @@
 
                 // 檢查登入要求
                 if (discount && discount.requiresLogin) {
-                    if (!isUserLoggedIn) {
+                    if (!AppState.isUserLoggedIn) {
                         console.log(`優惠券 ${code} 需要登入，目前未登入`);
                         return {
                             ...discount,
@@ -860,7 +854,7 @@
                 // 檢查是否已經使用過
                 if (!appliedDiscounts.find(d => d.id === discount.id)) {
                     // 檢查是否需要登入
-                    if (discount.requiresLogin && !isUserLoggedIn) {
+                    if (discount.requiresLogin && !AppState.isUserLoggedIn) {
 
                         console.log('跳過需要登入的優惠:', discount.name);
                         return;
@@ -1081,4 +1075,243 @@
         for (let i = 0; i <= 10; i++) {
             const year = currentYear + i;
             yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
+        }
+
+        // ==================== 訂單提交功能 ====================
+
+        // 綁定立即付款按鈕
+        const payNowBtn = document.querySelector('.pay-now-btn');
+        if (payNowBtn) {
+            payNowBtn.addEventListener('click', handleOrderSubmit);
+        }
+
+        // 處理訂單提交
+        async function handleOrderSubmit(event) {
+            event.preventDefault();
+
+            // 1. 驗證表單
+            if (!validateOrderForm()) {
+                return;
+            }
+
+            // 2. 收集訂單資料
+            const orderData = collectOrderData();
+
+            // 3. 顯示確認訊息
+            if (!confirm('確定要送出訂單嗎？')) {
+                return;
+            }
+
+            // 4. 送出訂單到後端
+            try {
+                pauseMarquee();
+                const response = await submitOrder(orderData);
+                
+                if (response.success) {
+                    alert(`訂單建立成功！\n訂單編號：${response.orderId}\n\n感謝您的訂購！`);
+                    
+                    // 清除購物車資料
+                    localStorage.removeItem('cartData');
+                    clearDiscountState();
+                    
+                    // 導向訂單完成頁面或首頁
+                    window.location.href = './indexPart234.html';
+                } else {
+                    alert('訂單建立失敗：' + response.message);
+                }
+                resumeMarquee();
+            } catch (error) {
+                console.error('送出訂單時發生錯誤:', error);
+                alert('送出訂單時發生錯誤：' + error.message);
+                resumeMarquee();
+            }
+        }
+
+        // 驗證訂單表單
+        function validateOrderForm() {
+            const email = document.getElementById('email').value.trim();
+            const firstName = document.getElementById('deliveryFirstName').value.trim();
+            const lastName = document.getElementById('deliveryLaName').value.trim();
+            const tel = document.getElementById('deliveryTel').value.trim();
+            const city = document.getElementById('city').value;
+            const district = document.getElementById('district').value;
+            const address = document.getElementById('addressName').value.trim();
+            const cardNum = document.getElementById('cardNum').value.trim();
+            const cardMonth = document.getElementById('cardMonth').value;
+            const cardYear = document.getElementById('cardYear').value;
+            const cvv = document.getElementById('cvv').value.trim();
+            const nameOnCard = document.getElementById('nameOnCard').value.trim();
+
+            // 驗證電子郵件
+            if (!email || !isValidEmail(email)) {
+                alert('請輸入有效的電子郵件地址');
+                document.getElementById('email').focus();
+                return false;
+            }
+
+            // 驗證收件人資料
+            if (!firstName || !lastName) {
+                alert('請輸入收件人姓名');
+                document.getElementById('deliveryFirstName').focus();
+                return false;
+            }
+
+            if (!tel || !isValidPhone(tel)) {
+                alert('請輸入有效的聯絡電話');
+                document.getElementById('deliveryTel').focus();
+                return false;
+            }
+
+            // 驗證地址
+            if (!city || !district || !address) {
+                alert('請完整填寫收件地址');
+                return false;
+            }
+
+            // 驗證信用卡資訊
+            if (!cardNum || cardNum.length < 15) {
+                alert('請輸入有效的信用卡號碼');
+                document.getElementById('cardNum').focus();
+                return false;
+            }
+
+            if (!cardMonth || !cardYear) {
+                alert('請選擇信用卡有效期限');
+                return false;
+            }
+
+            if (!cvv || cvv.length < 3) {
+                alert('請輸入有效的 CVV 安全碼');
+                document.getElementById('cvv').focus();
+                return false;
+            }
+
+            if (!nameOnCard) {
+                alert('請輸入持卡人姓名');
+                document.getElementById('nameOnCard').focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        // 驗證電子郵件格式
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // 驗證電話格式
+        function isValidPhone(phone) {
+            const phoneRegex = /^09\d{8}$/;
+            return phoneRegex.test(phone);
+        }
+
+        // 收集訂單資料
+        function collectOrderData() {
+            // 取得使用者資訊
+            const userJson = localStorage.getItem('user');
+            const user = userJson ? JSON.parse(userJson) : null;
+            const userId = user?.id || 0;
+
+            // 取得購物車資料
+            const cartData = getCartDataFromURL();
+            let productList = '';
+            let orderItems = '';
+
+            if (cartData && cartData.cart) {
+                // 產品列表（簡單字串格式）
+                productList = cartData.cart.map(item => 
+                    `${item.name} (${item.size}) x${item.qty}`
+                ).join(', ');
+
+                // 訂單項目（JSON 格式）
+                orderItems = JSON.stringify(cartData.cart);
+            }
+
+            // 收集表單資料
+            const email = document.getElementById('email').value.trim();
+            const firstName = document.getElementById('deliveryFirstName').value.trim();
+            const lastName = document.getElementById('deliveryLaName').value.trim();
+            const tel = document.getElementById('deliveryTel').value.trim();
+            const city = document.getElementById('city').value;
+            const district = document.getElementById('district').value;
+            const zipcode = document.getElementById('zipcode-input').value;
+            const address = document.getElementById('addressName').value.trim();
+            const sendEmail = document.getElementById('sendemail').checked;
+
+            // 組合完整地址
+            const fullAddress = `${zipcode} ${city}${district}${address}`;
+
+            // 收件人名稱
+            const receiverName = `${firstName} ${lastName}`;
+
+            // 計算最終金額（含折扣）
+            const totalDiscount = calculateDiscounts();
+            const finalAmount = subtotal - totalDiscount;
+
+            // 備註（包含優惠券資訊）
+            let notes = `Email: ${email}, Tel: ${tel}`;
+            if (sendEmail) {
+                notes += ', 訂閱電子報';
+            }
+            if (appliedDiscounts.length > 0) {
+                const discountInfo = appliedDiscounts
+                    .filter(d => !d.isInvalid && !d.isReplaced)
+                    .map(d => d.code || d.name)
+                    .join(', ');
+                notes += `, 使用優惠: ${discountInfo}`;
+            }
+
+            // 組合訂單資料
+            return {
+                userID: userId,
+                productList: productList,
+                totalAmount: finalAmount,
+                paymentMethod: 'Credit Card',
+                shippingAddress: fullAddress,
+                receiverName: receiverName,
+                orderItems: orderItems,
+                notes: notes
+            };
+        }
+
+        // 送出訂單到後端
+        async function submitOrder(orderData) {
+            try {
+                // 使用 axios 或 fetch 發送請求
+                const response = await fetch('https://localhost:7085/api/Orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // 如果需要認證，加上 token
+                        'Authorization': 'Bearer ' + (localStorage.getItem('token') || '')
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('API 請求失敗:', error);
+                throw error;
+            }
+        }
+
+        // 輔助函數：暫停跑馬燈（如果沒有定義的話）
+        function pauseMarquee() {
+            if (marqueeInstance && typeof marqueeInstance.pause === 'function') {
+                marqueeInstance.pause();
+            }
+        }
+
+        // 輔助函數：恢復跑馬燈（如果沒有定義的話）
+        function resumeMarquee() {
+            if (marqueeInstance && typeof marqueeInstance.resume === 'function') {
+                marqueeInstance.resume();
+            }
         }

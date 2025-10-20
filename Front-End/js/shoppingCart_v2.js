@@ -4,7 +4,7 @@
 // ================================
 
 // --- 配置設定 ---
-const API_BASE_URL = 'https://localhost:7144/api';
+const API_BASE_URL = 'https://localhost:7085/api';
 let productsCache = null; // 快取商品資料
 let productNamesCache = null; // 快取商品名稱列表
 let productSizesCache = {}; // 快取每個商品的規格列表
@@ -184,6 +184,16 @@ function createFavoriteItemBox(favItem) {
     const productNames = productNamesCache || [name];
     const productSizes = productSizesCache[name] || [size];
 
+    // 圖片路徑映射（fallback）
+    const imageMap = {
+        '檸檬能量飲': './images/lemon-lime_mockup.png',
+        '葡萄能量飲': './images/grape_mockup.png',
+        '草莓能量飲': './images/strawberry-lemonade_mockup.png'
+    };
+    
+    // 確保圖片路徑有效
+    const validImageUrl = imageUrl || imageMap[name] || './images/lemon-lime_mockup.png';
+
     const box = document.createElement('div');
     box.className = 'item-box favorite-item';
     box.dataset.productId = productId;
@@ -193,16 +203,16 @@ function createFavoriteItemBox(favItem) {
         `<option value="${pName}"${pName === name ? ' selected' : ''}>${pName}</option>`
     ).join('');
 
-    // 生成規格選項
+    // 生成規格選項（只顯示數字）
     const sizeOptions = productSizes.map(pSize =>
-        `<option value="${pSize}"${pSize === size ? ' selected' : ''}>${pSize} x 355ml</option>`
+        `<option value="${pSize}"${pSize === size ? ' selected' : ''}>${pSize}</option>`
     ).join('');
 
     box.innerHTML = `
         <div class="cart-item-img" style="background-color:${bg}">
             <h2>${size}</h2>
             <a href="/products/${productId}" target="_blank">
-                <img src="${imageUrl}" alt="${name}">     
+                <img src="${validImageUrl}" alt="${name}" onerror="this.src='${imageMap[name] || './images/lemon-lime_mockup.png'}'">     
             </a>
         </div>
         <div class="cart-item-info">
@@ -249,6 +259,16 @@ function createItemBox(cartItem) {
     const productNames = productNamesCache || [name];
     const productSizes = productSizesCache[name] || [size];
 
+    // 圖片路徑映射（fallback）
+    const imageMap = {
+        '檸檬能量飲': './images/lemon-lime_mockup.png',
+        '葡萄能量飲': './images/grape_mockup.png',
+        '草莓能量飲': './images/strawberry-lemonade_mockup.png'
+    };
+    
+    // 確保圖片路徑有效
+    const validImageUrl = imageUrl || imageMap[name] || './images/lemon-lime_mockup.png';
+
     const box = document.createElement('div');
     box.className = 'item-box';
     box.dataset.productId = productId; // 儲存商品 ID
@@ -258,16 +278,16 @@ function createItemBox(cartItem) {
         `<option value="${pName}"${pName === name ? ' selected' : ''}>${pName}</option>`
     ).join('');
 
-    // 生成規格選項
+    // 生成規格選項（只顯示數字）
     const sizeOptions = productSizes.map(pSize =>
-        `<option value="${pSize}"${pSize === size ? ' selected' : ''}>${pSize} x 355ml</option>`
+        `<option value="${pSize}"${pSize === size ? ' selected' : ''}>${pSize}</option>`
     ).join('');
 
     box.innerHTML = `
         <div class="cart-item-img" style="background-color:${bg}">
             <h2>${size}</h2>
             <a href="/products/${productId}" target="_blank">
-                <img src="${imageUrl}" alt="${name}">     
+                <img src="${validImageUrl}" alt="${name}" onerror="this.src='${imageMap[name] || './images/lemon-lime_mockup.png'}'">     
             </a>
         </div>
         <div class="cart-item-info">
@@ -486,9 +506,24 @@ async function updateItemProduct(box, newName, newSize) {
     const newProduct = products.find(p => p.name === newName && p.size === newSize);
 
     if (newProduct) {
+        // 圖片路徑映射（fallback）
+        const imageMap = {
+            '檸檬能量飲': './images/lemon-lime_mockup.png',
+            '葡萄能量飲': './images/grape_mockup.png',
+            '草莓能量飲': './images/strawberry-lemonade_mockup.png'
+        };
+
+        // 確保圖片路徑有效
+        const imageUrl = newProduct.imageUrl || imageMap[newProduct.name] || './images/lemon-lime_mockup.png';
+
         // 更新顯示
-        img.src = newProduct.imageUrl;
+        img.src = imageUrl;
         img.alt = newProduct.name;
+        img.onerror = function() {
+            // 如果圖片載入失敗，使用備用圖片
+            this.src = imageMap[newProduct.name] || './images/lemon-lime_mockup.png';
+            console.warn(`圖片載入失敗，使用備用圖片: ${newProduct.name}`);
+        };
         imgWrap.style.backgroundColor = getProductBackground(newProduct.name);
         sizeLabel.textContent = newProduct.size;
         priceDisplay.textContent = newProduct.price;
@@ -506,13 +541,21 @@ async function updateItemProduct(box, newName, newSize) {
                 size: newProduct.size,
                 qty: parseInt(qtyInput.value),
                 price: newProduct.price,
-                imageUrl: newProduct.imageUrl
+                imageUrl: imageUrl
             };
             sessionStorage.setItem('cart', JSON.stringify(cart));
         }
 
         // 更新小計
         updateSubtotal();
+        
+        console.log(`已更新商品: ${newProduct.name} ${newProduct.size}`, {
+            imageUrl: imageUrl,
+            price: newProduct.price,
+            productId: newProduct.id
+        });
+    } else {
+        console.error(`找不到商品: ${newName} ${newSize}`);
     }
 }
 
@@ -614,12 +657,33 @@ async function updateFavoriteItemProduct(box, oldProductId, newName, newSize, ne
     const img = box.querySelector('.cart-item-img img');
     const sizeH2 = box.querySelector('.cart-item-img h2');
 
+    // 圖片路徑映射（fallback）
+    const imageMap = {
+        '檸檬能量飲': './images/lemon-lime_mockup.png',
+        '葡萄能量飲': './images/grape_mockup.png',
+        '草莓能量飲': './images/strawberry-lemonade_mockup.png'
+    };
+
+    // 確保圖片路徑有效
+    const imageUrl = productInfo.imageUrl || imageMap[newName] || './images/lemon-lime_mockup.png';
+
     priceSpan.textContent = productInfo.price;
     imgDiv.style.backgroundColor = bg;
-    img.src = productInfo.imageUrl;
+    img.src = imageUrl;
     img.alt = newName;
+    img.onerror = function() {
+        // 如果圖片載入失敗，使用備用圖片
+        this.src = imageMap[newName] || './images/lemon-lime_mockup.png';
+        console.warn(`圖片載入失敗，使用備用圖片: ${newName}`);
+    };
     sizeH2.textContent = newSize;
     box.dataset.productId = productInfo.id;
+    
+    console.log(`已更新我的最愛商品: ${newName} ${newSize}`, {
+        imageUrl: imageUrl,
+        price: productInfo.price,
+        productId: productInfo.id
+    });
 }
 
 // --- 加入商品到我的最愛 ---

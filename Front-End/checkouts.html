@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="./css/main_setting.css">
     <!-- CSS -->
     <link rel="stylesheet" href="./css/checkouts_style.css">
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- 身份驗證輔助函數 -->
+    <script src="./js/auth-helper.js"></script>
 </head>
 
 <body>
@@ -90,7 +94,7 @@
                 <div class="contact-box">
                     <div class="contact-box-title">
                         <h3>訂閱</h3>
-                        <a href="../part1,part5/登入資訊/login.html">登入</a>
+                        <a href="./login.html" id="login-status-link">登入</a>
                     </div>
                     <div class="contact-box-emailBox">
                         <input class="input-box contact-input" type="email" id="email" placeholder="abc123@gmail.com">
@@ -166,6 +170,62 @@
     </div>
 
     <script src="./js/checkouts.js"></script>
+    <script>
+        // 檢查登入狀態（結帳頁必須登入）
+        if (!requireLogin(true)) {
+            // 未登入會自動導向登入頁，登入後返回此頁
+        } else {
+            // 已登入，初始化使用者資料
+            initializeUserData();
+        }
+
+        // 初始化使用者資料
+        function initializeUserData() {
+            const user = getCurrentUser();
+            
+            if (!user) return;
+
+            // 1. 更新登入狀態顯示
+            const loginStatusLink = document.getElementById('login-status-link');
+            if (loginStatusLink) {
+                loginStatusLink.textContent = `Hi, ${user.username || user.email}`;
+                loginStatusLink.href = 'javascript:void(0);';
+                loginStatusLink.style.cursor = 'default';
+                loginStatusLink.style.color = 'var(--main-green)';
+                loginStatusLink.title = '已登入';
+            }
+
+            // 2. 自動填入 Email
+            const emailInput = document.getElementById('email');
+            if (emailInput && user.email) {
+                emailInput.value = user.email;
+                emailInput.readOnly = true; // 已登入使用者不能修改 email
+                emailInput.style.backgroundColor = '#f5f5f5';
+            }
+
+            // 3. 自動填入姓名（如果有的話）
+            const firstNameInput = document.getElementById('deliveryFirstName');
+            const lastNameInput = document.getElementById('deliveryLaName');
+            
+            if (user.lastName && firstNameInput) {
+                firstNameInput.value = user.lastName;
+            }
+            
+            if (user.firstName && lastNameInput) {
+                lastNameInput.value = user.firstName;
+            }
+
+            // 4. 自動填入地址（如果有的話）
+            if (user.address) {
+                const addressInput = document.getElementById('addressName');
+                if (addressInput) {
+                    addressInput.value = user.address;
+                }
+            }
+
+            console.log('已自動填入使用者資料:', user);
+        }
+    </script>
 </body>
 
 </html>
