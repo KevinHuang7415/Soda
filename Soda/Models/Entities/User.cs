@@ -33,13 +33,25 @@ namespace Soda.Models.Entities
         [MaxLength(200)]
         public string? Address { get; set; }
 
+        [Phone]
+        [StringLength(20)]
+        public string? PhoneNumber { get; set; }
+
         public UserRole Role { get; set; } = UserRole.User;
 
         public bool IsActive { get; set; } = true;
 
-        [Phone]
-        [StringLength(20)]
-        public string? PhoneNumber { get; set; }
+        public bool IsEmailVerified { get; set; } = false;
+
+        [MaxLength(100)]
+        public string? EmailVerificationToken { get; set; }
+
+        public DateTime? EmailVerificationTokenExpiry { get; set; }
+
+        [MaxLength(100)]
+        public string? PasswordResetToken { get; set; }
+
+        public DateTime? PasswordResetTokenExpiry { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow.ToTaipeiTimeString();
 

@@ -115,5 +115,82 @@ namespace Soda.Controllers
                 });
             }
         }
+
+        [HttpGet("verify-email")]
+        [AllowAnonymous]
+        public async Task<ActionResult<AuthResponse>> VerifyEmail([FromQuery] string token)
+        {
+            if (string.IsNullOrEmpty(token))
+                return BadRequest(new AuthResponse { Success = false, Message = "Token 不可為空" });
+
+            var response = await _authService.VerifyEmailAsync(token);
+
+            if (!response.Success)
+                return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        [HttpPost("resend-verification")]
+        [AllowAnonymous]
+        public async Task<ActionResult<AuthResponse>> ResendVerification([FromBody] ResendVerificationRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = await _authService.ResendVerificationEmailAsync(request.Email);
+
+            if (!response.Success)
+                return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        [HttpPost("forgot-password")]
+        [AllowAnonymous]
+        public async Task<ActionResult<PasswordResetResponse>> ForgotPassword([FromBody] ForgotPasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = await _authService.ForgotPasswordAsync(request.Email);
+
+            // 即使失敗也返回 200（安全考量，不透露用戶是否存在）
+            return Ok(response);
+        }
+
+        [HttpGet("validate-reset-token")]
+        [AllowAnonymous]
+        public async Task<ActionResult<PasswordResetResponse>> ValidateResetToken([FromQuery] string token)
+        {
+            if (string.IsNullOrEmpty(token))
+                return BadRequest(new PasswordResetResponse
+                {
+                    Success = false,
+                    Message = "Token 不可為空"
+                });
+
+            var response = await _authService.ValidateResetTokenAsync(token);
+
+            if (!response.Success)
+                return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        public async Task<ActionResult<PasswordResetResponse>> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = await _authService.ResetPasswordAsync(request);
+
+            if (!response.Success)
+                return BadRequest(response);
+
+            return Ok(response);
+        }
     }
 }
