@@ -32,7 +32,7 @@ namespace Soda.Services
                     Token = token,
                     UserId = userId,
                     RevokedAt = DateTime.UtcNow.ToTaipeiTimeString(),
-                    ExpiresAt = expiresAt,
+                    ExpiresAt = expiresAt.ToTaipeiTimeString(),
                     Reason = reason
                 };
 
