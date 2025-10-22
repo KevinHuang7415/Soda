@@ -50,6 +50,205 @@
             font-weight: bold;
         }
 
+        /* navbar */
+        .hidden {
+            display: none;
+        }
+
+        .show {
+            display: block;
+        }
+
+        /* 第一部分 */
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+
+        .part1 {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            /* 統一使用 100vh */
+            background-color: #FEE832;
+            display: flex;
+            min-height: none;
+        }
+
+        /* 導覽列 */
+        .navbar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            background: linear-gradient(to bottom, #ffffff, rgba(245, 245, 2, 0.137));
+            position: absolute;
+            width: 100%;
+            z-index: 2;
+        }
+
+        .nav-item {
+            margin-right: 1vw;
+            position: relative;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.6vw;
+        }
+
+        .nav-item-style {
+            background-color: #f0f0f0;
+            border: 0.05vw solid #000;
+            padding: 0.4vw 0.4vw 0 0.4vw;
+            border-radius: 20px;
+        }
+
+        .nav-item img {
+            min-width: 1.5vw;
+            min-height: 1.5vw;
+            width: 2vw;
+            height: 2vw;
+        }
+
+        /* 下拉 DIV */
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border-radius: 0.5vw;
+            box-shadow: 0 0.3vw 1vw rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transform: translateY(-1vw);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 11;
+        }
+
+        .dropdown.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .dropdown-item {
+            padding: 0.8vw 1.2vw;
+            font-size: 0.9vw;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: #f0f0f0;
+        }
+
+        .separateRight {
+            margin-right: 3vw;
+        }
+
+        .separateLeft {
+            padding-left: 3vw;
+        }
+
+        .navbar ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .sign {
+            line-height: 12px;
+            font-size: small;
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        /* ======768px以下導覽列下拉選單========  */
+        .container {
+            cursor: pointer;
+        }
+
+        .bar1,
+        .bar2,
+        .bar3 {
+            width: 20px;
+            height: 1px;
+            background-color: #333;
+            margin: 5px 10px 0 0;
+            transition: 0.4s;
+        }
+
+        .change .bar1 {
+            -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+            transform: rotate(-45deg) translate(-9px, 6px);
+        }
+
+        .change .bar2 {
+            opacity: 0;
+        }
+
+        .change .bar3 {
+            -webkit-transform: rotate(45deg) translate(-8px, -8px);
+            transform: rotate(45deg) translate(-8px, -8px);
+        }
+
+
+        .overlay {
+            height: 0%;
+            width: 100%;
+            position: fixed;
+            z-index: 10;
+            top: 0;
+            left: 0;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow-y: hidden;
+            transition: 0.5s;
+        }
+
+        .overlay-content {
+            position: relative;
+            top: 25%;
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .overlay a {
+            padding: 8px;
+            text-decoration: none;
+            font-size: 36px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .overlay a:hover,
+        .overlay a:focus {
+            color: #f1f1f1;
+        }
+
+        .overlay .closebtn {
+            position: absolute;
+            top: 20px;
+            right: 45px;
+            font-size: 60px;
+        }
+
+        @media screen and (max-height: 450px) {
+            .overlay {
+                overflow-y: auto;
+            }
+
+            .overlay a {
+                font-size: 20px
+            }
+
+            .overlay .closebtn {
+                font-size: 40px;
+                top: 15px;
+                right: 35px;
+            }
+        }
+
+
         /* -------------------------------------------------
    左右兩欄（佔滿畫面上 100% 高）
 ------------------------------------------------- */
@@ -215,6 +414,25 @@
             .card:focus {
                 z-index: 10;
             }
+            .show {
+                display: none;
+            }
+
+            .container {
+                display: inline-block;
+            }
+
+            .dropdown-content {
+                position: absolute;
+                top: 60px;
+                /* 可依你的導覽列高度調整 */
+                right: 10px;
+                display: none;
+            }
+
+            .dropdown-content.show {
+                display: block;
+            }
         }
 
     </style>
@@ -223,6 +441,54 @@
 </head>
 
 <body>
+    <div class="part1">
+        <!-- 導覽列 -->
+        <div class="navbar navbar-default mobile-nav-wrap">
+            <img class="separateLeft" src="./images/soda_title.png" alt="SODA標題" style="height:6vw; margin-right:auto;">
+            <ul>
+                <li>
+                    <div class="nav-item nav-item-style" id="about"><a href="./about.html">關於我們</a></div>
+                </li>
+                <li>
+                    <div class="nav-item nav-item-style" id="shop"><a href="./product.html">商品</a></div>
+                </li>
+                <li>
+                    <div class="nav-item nav-item-style" id="userbtn"><a href="./login.html"><img
+                                src="./images/user.svg" alt=""></a></div>
+                </li>
+                <li>
+                    <div class="show">
+                        <div class="nav-item nav-item-style separateRight" id="shoppingCarBtn">
+                            <a href="javascript:void(0);" onclick="toggleCart(); return false;"><img
+                                    src="./images/shopping-cart.svg" alt=""></a>
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                4+
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="container hidden dropbtn" onclick="openNav()">
+                        <div class="bar1"></div>
+                        <div class="bar2"></div>
+                        <div class="bar3"></div>
+                    </div>
+                </li>
+            </ul>
+
+            <!-- 下拉選單 -->
+            <div id="myNav" class="overlay">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                <div class="overlay-content">
+                    <a href="./about.html">關於我們</a>
+                    <a href="./product.html">商品</a>
+                    <a href="./login.html">登入</a>
+                    <a href="javascript:void(0);" onclick="toggleCart(); return false;">購物車</a>
+                </div>
+            </div>
+        </div>
     <!-- ---------- 上半部：左 / 右 ---------- -->
     <div class="product">
 
@@ -268,43 +534,43 @@
         <div class="right">
             <div class="details">
                 <h2 class="fontB">Lemon</h2>
-                <h3 class="fontB"><span>$599</span> Energizing infusion</h3>
+                <h3 class="fontB">Energizing infusion</h3>
 
                 <table>
                     <thead>
                         <tr>
-                            <th colspan="2">Content</th>
-                            <th colspan="2">Daily Value</th>
+                            <th colspan="2">內容物</th>
+                            <th colspan="2">一天攝取量</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Calories</td>
+                            <td>卡路里</td>
                             <td class="right-line">60</td>
                             <td colspan="2"></td>
                         </tr>
                         <tr>
-                            <td>Carbohydrates</td>
+                            <td>碳水化合物</td>
                             <td class="right-line">15g</td>
                             <td colspan="2">14%</td>
                         </tr>
                         <tr>
-                            <td>Sugars</td>
+                            <td>糖</td>
                             <td class="right-line">14g</td>
                             <td colspan="2"></td>
                         </tr>
                         <tr>
-                            <td>Sodium</td>
+                            <td>鈉</td>
                             <td class="right-line">15mg</td>
                             <td colspan="2">1%</td>
                         </tr>
                         <tr>
-                            <td>Potassium</td>
+                            <td>鉀</td>
                             <td class="right-line">10mg</td>
                             <td colspan="2">1%</td>
                         </tr>
                         <tr>
-                            <td>Calcium</td>
+                            <td>鈣</td>
                             <td class="right-line">10mg</td>
                             <td colspan="2">1%</td>
                         </tr>
@@ -346,7 +612,7 @@
         const productData = {
             lemon: {
                 name: "檸檬",
-                price: "$599",
+                price: "$199",
                 description: "清爽酸甜，一口喚醒夏日活力。",
                 nutrition: {
                     calories: 60,
@@ -357,7 +623,7 @@
                     calcium: 10
                 },
                 dailyValue: {
-                    carbohydrates: 14,
+                    carbohydrates: 15,
                     sodium: 1,
                     potassium: 1,
                     calcium: 1
@@ -365,7 +631,7 @@
             },
             grape: {
                 name: "葡萄",
-                price: "$599",
+                price: "$199",
                 description: "飽滿果香，氣泡中藏著微醺的浪漫。",
                 nutrition: {
                     calories: 55,
@@ -376,7 +642,7 @@
                     calcium: 8
                 },
                 dailyValue: {
-                    carbohydrates: 12,
+                    carbohydrates: 15,
                     sodium: 1,
                     potassium: 1,
                     calcium: 1
@@ -384,7 +650,7 @@
             },
             strawberry: {
                 name: "草莓",
-                price: "$599",
+                price: "$199",
                 description: "粉嫩香甜，每一口都是戀愛的感覺",
                 nutrition: {
                     calories: 65,
@@ -410,8 +676,7 @@
 
             // 更新標題和價格
             document.querySelector('.details h2').textContent = product.name;
-            document.querySelector('.details h3 span').textContent = product.price;
-            document.querySelector('.details h3').innerHTML = `<span>${product.price}</span> ${product.description}`;
+            document.querySelector('.details h3').innerHTML = `${product.description}`;
 
             // 更新營養成分表格
             const tbody = document.querySelector('table tbody');
@@ -501,6 +766,14 @@
             selectedAttraction: 0.05,
             freeScrollFriction: .1
         });
+
+        function openNav() {
+                document.getElementById("myNav").style.height = "100%";
+            }
+
+            function closeNav() {
+                document.getElementById("myNav").style.height = "0%";
+            }
     </script>
 </body>
 
