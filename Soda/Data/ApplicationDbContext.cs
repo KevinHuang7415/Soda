@@ -55,21 +55,21 @@ namespace Soda.Data
             modelBuilder.Entity<RevokedToken>()
                 .HasIndex(rt => rt.ExpiresAt);
 
-            //modelBuilder.Entity<Product>().HasData(
-            //    new Product { Id = 1, Name = "紅茶", Price = 25, Stock = 100 , ImageUrl="test.com",Size="4*355"},
-            //    new Product { Id = 2, Name = "紅茶", Price = 30, Stock = 80, ImageUrl = "test.com", Size = "12*355" },
-            //    new Product { Id = 3, Name = "綠茶", Price = 35, Stock = 60, ImageUrl = "test.com", Size = "4*355" },
-            //    new Product { Id = 4, Name = "綠茶", Price = 35, Stock = 60, ImageUrl = "test.com", Size = "12*355" },
-            //    new Product { Id = 5, Name = "清茶", Price = 40, Stock = 60, ImageUrl = "test.com", Size = "4*355" },
-            //    new Product { Id = 6, Name = "清茶", Price = 35, Stock = 60, ImageUrl = "test.com", Size = "12*355" }
-            //);
+            modelBuilder.Entity<Product>().HasData(
+                new Product { Id = 1, Name = "紅茶", Price = 25, Stock = 100, ImageUrl = "test.com", Size = "4*355" },
+                new Product { Id = 2, Name = "紅茶", Price = 30, Stock = 80, ImageUrl = "test.com", Size = "12*355" },
+                new Product { Id = 3, Name = "綠茶", Price = 35, Stock = 60, ImageUrl = "test.com", Size = "4*355" },
+                new Product { Id = 4, Name = "綠茶", Price = 35, Stock = 60, ImageUrl = "test.com", Size = "12*355" },
+                new Product { Id = 5, Name = "清茶", Price = 40, Stock = 60, ImageUrl = "test.com", Size = "4*355" },
+                new Product { Id = 6, Name = "清茶", Price = 35, Stock = 60, ImageUrl = "test.com", Size = "12*355" }
+            );
 
-            
 
-            //modelBuilder.Entity<Coupon>().HasData(
-            //    new Coupon { Id = 1, Code = "DISCOUNT10", Discount = 60, DiscountType = "P", Status = "active" },
-            //    new Coupon { Id = 2, Code = "DISCOUNT20", Discount = 600, DiscountType = "A", Status = "active" }
-            //);
+
+            modelBuilder.Entity<Coupon>().HasData(
+                new Coupon { Id = 1, Code = "DISCOUNT10", Discount = 60, DiscountType = "P", Status = "active" },
+                new Coupon { Id = 2, Code = "DISCOUNT20", Discount = 600, DiscountType = "A", Status = "active" }
+            );
 
 
         }
