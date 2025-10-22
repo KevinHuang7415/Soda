@@ -1060,3 +1060,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
+// 將函數暴露為全域函數，供 HTML onclick 事件使用
+window.addToCart = addToCart;
+window.addToFavorites = addToFavorites;
+window.toggleCart = toggleCart;
+
