@@ -69,7 +69,7 @@
     @font-face {
       font-family: "FakePearl-regular";
       /* 自訂名稱 */
-      src: url("./fonts/FakePearl-regular.ttf") format("truetype");
+      src: url("../fonts/FakePearl-regular.ttf") format("truetype");
       /* 字體檔路徑 */
       font-weight: normal;
       font-style: normal;
@@ -110,19 +110,19 @@
       <label for="UserName">使用者名稱</label>
       <input type="text" id="UserName" placeholder="test">
 
-      <label for="FirstName">姓氏</label>
+      <!-- <label for="FirstName">姓氏</label>
       <input type="text" id="FirstName" placeholder="王">
 
       <label for="LastName">名字</label>
-      <input type="text" id="LastName" placeholder="小明">
+      <input type="text" id="LastName" placeholder="小明"> -->
 
       <label for="Email">電子郵箱</label>
       <input type="email" id="Email" placeholder="abc123@gmail.com">
 
       <label for="Password">密碼</label>
       <input type="password" id="Password" placeholder="XXXX - XXXX">
-      <label for="Password">Address</label>
-      <input type="text" id="Address" placeholder="XXXX - XXXX">
+      <!-- <label for="Password">Address</label>
+      <input type="text" id="Address" placeholder="XXXX - XXXX"> -->
 
       <button type="button" class="btn btn-l alc" onclick="register()">註冊</button>
     </form>
@@ -140,12 +140,12 @@
 
   function register() {
     const UserName = document.getElementById('UserName').value.trim();
-    const FirstName = document.getElementById('FirstName').value.trim();
-    const LastName = document.getElementById('LastName').value.trim();
+    // const FirstName = document.getElementById('FirstName').value.trim();
+    // const LastName = document.getElementById('LastName').value.trim();
     const Email = document.getElementById('Email').value.trim();
     const Password = document.getElementById('Password').value.trim();
-    const Address = document.getElementById('Address').value.trim();
-    if (!UserName || !FirstName || !LastName || !Email || !Password) {
+    // const Address = document.getElementById('Address').value.trim();
+    if (!UserName || !Email || !Password) {
       showMessage('請輸入完整內容');
       return;
     }
@@ -156,11 +156,11 @@
     }
     axios.post('https://localhost:7085/api/Auth/register', {
       Username: UserName,
-      FirstName: FirstName,
-      LastName: LastName,
+      // FirstName: FirstName,
+      // LastName: LastName,
       Email: Email,
-      Password: Password,
-      Address: Address
+      Password: Password
+      // Address: Address
     })
       .then(res => {
         showMessage(res.data.message, 'success');

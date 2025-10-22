@@ -119,6 +119,7 @@
 
 
   <script>
+
     const account = document.querySelector('.account');
     const password = document.querySelector('.password');
     const formAcc = document.getElementById('formAcc');
@@ -126,69 +127,53 @@
     // 監聽表單提交事件
     formAcc.addEventListener('submit', function (e) {
       e.preventDefault(); // 阻止表單默認提交行為
-      callSingIn();
-    })
+      callSignIn();
+    });
 
-    function callSingIn() {
+    function callSignIn() {
       // 驗證輸入
-      if (account.value == "" || password.value == "") {
+      if (account.value === "" || password.value === "") {
         alert("請填寫正確資訊");
         return;
       }
-
-      // 準備資料（欄位名稱要與後端 API 一致）
-      let obj = {
-        usernameOrEmail: account.value,  // 使用後端期望的欄位名稱
+      const obj = {
+        usernameOrEmail: account.value,  
         password: password.value
       };
       console.log('發送資料:', obj);
-
-      // 發送登入請求
       axios.post('https://localhost:7085/api/Auth/login', obj)
         .then(function (response) {
           console.log('登入成功回應:', response.data);
-          
+
           if (response.data.success) {
-            // 儲存 token 和使用者資訊
-            if (response.data.token) {
-              localStorage.setItem('token', response.data.token);
-            }
-            if (response.data.user) {
-              localStorage.setItem('user', JSON.stringify(response.data.user));
-            }
-            
-            // 取得使用者名稱
-            const userName = response.data.user?.username || response.data.user?.email || '使用者';
-            
-            // 顯示登入成功訊息（帶使用者名稱）
-            alert(`${userName} 恭喜登入成功！`);
-            
+            const token = response.data.token;
+            const user = response.data.user;
+            localStorage.setItem('user', JSON.stringify({
+              id: user.id,
+              username: user.username,
+              email: user.email,
+              role: user.role,
+              token: token
+            }));
+
+            alert(`${user.username} 恭喜登入成功！`);
+
             // ========== 智能導向邏輯 ==========
-            // 1. 取得使用者角色
-            const userRole = response.data.user?.role || 'User';
-            
-            // 2. 取得來源頁面（如果有記錄的話）
+            const userRole = user.role || 'User';
             const redirectUrl = localStorage.getItem('redirectAfterLogin');
-            
-            // 3. 根據角色和來源決定導向
+
             if (userRole === 'Admin') {
-              // 管理員額外提示並在新視窗開啟後台
               if (confirm('現在將引導您前往管理者畫面')) {
-                // 在新視窗開啟 Dashboard
-                window.open('./Dashboard.html', '_blank');
-                // 當前頁面導向首頁
-                window.location.href = './indexPart234.html';
+                window.open('./Dashboard.html', '_blank'); // 新視窗開啟後台
+                window.location.href = './indexPart234.html'; // 導向首頁
               } else {
-                // 使用者取消，只導向首頁
                 window.location.href = './indexPart234.html';
               }
             } else if (redirectUrl) {
-              // 如果有記錄來源頁面，導回該頁面
-              localStorage.removeItem('redirectAfterLogin'); // 清除記錄
+              localStorage.removeItem('redirectAfterLogin');
               window.location.href = redirectUrl;
             } else {
-              // 預設導向首頁
-              window.location.href = './indexPart234.html';
+              window.location.href = './UpdateUser.html';
             }
             // ==================================
           } else {
@@ -197,20 +182,16 @@
         })
         .catch(function (error) {
           console.error('登入錯誤:', error);
-          
+
           if (error.response) {
-            // 伺服器回應錯誤
             alert(error.response.data.message || "帳號或密碼錯誤，請重新輸入");
           } else if (error.request) {
-            // 請求發送但沒有收到回應
             alert("無法連接到伺服器，請檢查網路連線或確認後端服務是否啟動");
           } else {
-            // 其他錯誤
             alert("登入時發生錯誤：" + error.message);
           }
         });
     }
-
   </script>
 </body>
 
