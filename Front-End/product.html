@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="">
     <script src="./js/part1_5.js"></script>
     <style>
-         html,
+        html,
         body {
             height: 100%;
             margin: 0;
@@ -45,12 +45,12 @@
             overflow-y: auto;
             /* 讓頁面可以往下拉 */
         }
-        .fontB{
+
+        .fontB {
             font-size: 28px;
             font-weight: bold;
         }
 
-        /* navbar */
         .hidden {
             display: none;
         }
@@ -248,7 +248,6 @@
             }
         }
 
-
         /* -------------------------------------------------
    左右兩欄（佔滿畫面上 100% 高）
 ------------------------------------------------- */
@@ -369,7 +368,10 @@
             width: 10vw;
         }
 
-       
+
+
+
+
 
         /* -------------------------------------------------
    手機排版（寬度 < 768px 時改為上下堆疊）
@@ -414,6 +416,9 @@
             .card:focus {
                 z-index: 10;
             }
+
+
+
             .show {
                 display: none;
             }
@@ -434,61 +439,58 @@
                 display: block;
             }
         }
-
     </style>
 
 
 </head>
 
 <body>
-    <div class="part1">
-        <!-- 導覽列 -->
-        <div class="navbar navbar-default mobile-nav-wrap">
-            <img class="separateLeft" src="./images/soda_title.png" alt="SODA標題" style="height:6vw; margin-right:auto;">
-            <ul>
-                <li>
-                    <div class="nav-item nav-item-style" id="about"><a href="./about.html">關於我們</a></div>
-                </li>
-                <li>
-                    <div class="nav-item nav-item-style" id="shop"><a href="./product.html">商品</a></div>
-                </li>
-                <li>
-                    <div class="nav-item nav-item-style" id="userbtn"><a href="./login.html"><img
-                                src="./images/user.svg" alt=""></a></div>
-                </li>
-                <li>
-                    <div class="show">
-                        <div class="nav-item nav-item-style separateRight" id="shoppingCarBtn">
-                            <a href="javascript:void(0);" onclick="toggleCart(); return false;"><img
-                                    src="./images/shopping-cart.svg" alt=""></a>
-                            <span
-                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                4+
-                                <span class="visually-hidden">unread messages</span>
-                            </span>
-                        </div>
+    <!-- 導覽列 -->
+    <div class="navbar navbar-default mobile-nav-wrap">
+        <img class="separateLeft" src="./images/soda_title.png" alt="SODA標題" style="height:6vw; margin-right:auto;">
+        <ul>
+            <li>
+                <div class="nav-item nav-item-style" id="about"><a href="./about.html">關於我們</a></div>
+            </li>
+            <li>
+                <div class="nav-item nav-item-style" id="shop"><a href="./product.html">商品</a></div>
+            </li>
+            <li>
+                <div class="nav-item nav-item-style" id="userbtn"><a href="./login.html"><img src="./images/user.svg"
+                            alt=""></a></div>
+            </li>
+            <li>
+                <div class="show">
+                    <div class="nav-item nav-item-style separateRight" id="shoppingCarBtn">
+                        <a href="javascript:void(0);" onclick="toggleCart(); return false;"><img
+                                src="./images/shopping-cart.svg" alt=""></a>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            4+
+                            <span class="visually-hidden">unread messages</span>
+                        </span>
                     </div>
-                </li>
-                <li>
-                    <div class="container hidden dropbtn" onclick="openNav()">
-                        <div class="bar1"></div>
-                        <div class="bar2"></div>
-                        <div class="bar3"></div>
-                    </div>
-                </li>
-            </ul>
-
-            <!-- 下拉選單 -->
-            <div id="myNav" class="overlay">
-                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-                <div class="overlay-content">
-                    <a href="./about.html">關於我們</a>
-                    <a href="./product.html">商品</a>
-                    <a href="./login.html">登入</a>
-                    <a href="javascript:void(0);" onclick="toggleCart(); return false;">購物車</a>
                 </div>
+            </li>
+            <li>
+                <div class="container hidden dropbtn" onclick="openNav()">
+                    <div class="bar1"></div>
+                    <div class="bar2"></div>
+                    <div class="bar3"></div>
+                </div>
+            </li>
+        </ul>
+
+        <!-- 下拉選單 -->
+        <div id="myNav" class="overlay">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <div class="overlay-content">
+                <a href="./about.html">關於我們</a>
+                <a href="./product.html">商品</a>
+                <a href="./login.html">登入</a>
+                <a href="javascript:void(0);" onclick="toggleCart(); return false;">購物車</a>
             </div>
         </div>
+    </div>
     <!-- ---------- 上半部：左 / 右 ---------- -->
     <div class="product">
 
@@ -534,19 +536,19 @@
         <div class="right">
             <div class="details">
                 <h2 class="fontB">Lemon</h2>
-                <h3 class="fontB">Energizing infusion</h3>
+                <h3 class="fontB"><span>$199</span> Energizing infusion</h3>
 
                 <table>
                     <thead>
                         <tr>
-                            <th colspan="2">內容物</th>
-                            <th colspan="2">一天攝取量</th>
+                            <th colspan="2">成分</th>
+                            <th colspan="2">每日建議攝取量</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>卡路里</td>
-                            <td class="right-line">60</td>
+                            <td class="right-line">60cal</td>
                             <td colspan="2"></td>
                         </tr>
                         <tr>
@@ -555,7 +557,7 @@
                             <td colspan="2">14%</td>
                         </tr>
                         <tr>
-                            <td>糖</td>
+                            <td>糖分</td>
                             <td class="right-line">14g</td>
                             <td colspan="2"></td>
                         </tr>
@@ -606,14 +608,14 @@
         integrity="sha512-1lV2tJv+N/6hK8hB0nW1g4E4IhYc6j+H9YhV2F5fO+QeD5N3YH1Zbq1lMjwXkH9qR0XU0b9x6a3KZ5zYhVg5A=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    
+
     <script>
         // 產品資料
         const productData = {
             lemon: {
                 name: "檸檬",
                 price: "$199",
-                description: "清爽酸甜，一口喚醒夏日活力。",
+                description: "清爽酸甜，一口喚醒夏日活力",
                 nutrition: {
                     calories: 60,
                     carbohydrates: 15,
@@ -632,7 +634,7 @@
             grape: {
                 name: "葡萄",
                 price: "$199",
-                description: "飽滿果香，氣泡中藏著微醺的浪漫。",
+                description: "飽滿果香，氣泡中藏著微醺的浪漫",
                 nutrition: {
                     calories: 55,
                     carbohydrates: 13,
@@ -649,7 +651,7 @@
                 }
             },
             strawberry: {
-                name: "草莓",
+                name: "草莓 ",
                 price: "$199",
                 description: "粉嫩香甜，每一口都是戀愛的感覺",
                 nutrition: {
@@ -681,35 +683,35 @@
             // 更新營養成分表格
             const tbody = document.querySelector('table tbody');
             const rows = tbody.querySelectorAll('tr');
-            
+
             // Calories
-            rows[0].querySelector('td:last-child').textContent = product.nutrition.calories;
-            
+            rows[0].querySelector('td:nth-child(2)').textContent = product.nutrition.calories+'cal';
+
             // Carbohydrates
             rows[1].querySelector('td:nth-child(2)').textContent = product.nutrition.carbohydrates + 'g';
             rows[1].querySelector('td:last-child').textContent = product.dailyValue.carbohydrates + '%';
-            
+
             // Sugars
             rows[2].querySelector('td:nth-child(2)').textContent = product.nutrition.sugars + 'g';
-            
+
             // Sodium
             rows[3].querySelector('td:nth-child(2)').textContent = product.nutrition.sodium + 'mg';
             rows[3].querySelector('td:last-child').textContent = product.dailyValue.sodium + '%';
-            
+
             // Potassium
             rows[4].querySelector('td:nth-child(2)').textContent = product.nutrition.potassium + 'mg';
             rows[4].querySelector('td:last-child').textContent = product.dailyValue.potassium + '%';
-            
+
             // Calcium
             rows[5].querySelector('td:nth-child(2)').textContent = product.nutrition.calcium + 'mg';
             rows[5].querySelector('td:last-child').textContent = product.dailyValue.calcium + '%';
         }
 
         // 監聽輪播圖切換事件
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const carousel = document.getElementById('carouselExampleIndicators');
             const productKeys = ['lemon', 'grape', 'strawberry'];
-            
+
             // 監聽輪播圖切換
             carousel.addEventListener('slide.bs.carousel', function (event) {
                 const activeIndex = event.to;
@@ -720,7 +722,7 @@
             // 監聽指示器點擊
             const indicators = document.querySelectorAll('.carousel-indicators button');
             indicators.forEach((indicator, index) => {
-                indicator.addEventListener('click', function() {
+                indicator.addEventListener('click', function () {
                     const productKey = productKeys[index];
                     updateProductInfo(productKey);
                 });
@@ -766,14 +768,6 @@
             selectedAttraction: 0.05,
             freeScrollFriction: .1
         });
-
-        function openNav() {
-                document.getElementById("myNav").style.height = "100%";
-            }
-
-            function closeNav() {
-                document.getElementById("myNav").style.height = "0%";
-            }
     </script>
 </body>
 
