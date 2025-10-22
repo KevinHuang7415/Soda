@@ -8,6 +8,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Frontend\a.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Frontend\範例.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Frontend\a.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.20" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">

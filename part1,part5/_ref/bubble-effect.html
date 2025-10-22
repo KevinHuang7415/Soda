@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>泡泡飄浮效果</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-image: url(./bg_test.png);
+            overflow: hidden;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position-y: -2.5cm;
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            /* height: 100vh;
+            overflow: hidden; */
+            font-family: Arial, sans-serif;
+        }
+
+        .bubble-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            animation: floatUp linear infinite;
+            pointer-events: none;
+            bottom: -100px;
+        }
+
+        .bubble::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 30%;
+            height: 30%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            filter: blur(1px);
+        }
+
+        .bubble::after {
+            content: '';
+            position: absolute;
+            top: 60%;
+            right: 20%;
+            width: 15%;
+            height: 15%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            filter: blur(0.5px);
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0) translate(var(--mouse-x, 0), var(--mouse-y, 0)) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(calc(-100vh - 200px)) translateX(var(--drift)) translate(var(--mouse-x, 0), var(--mouse-y, 0)) scale(var(--scale));
+                opacity: 0;
+            }
+        }
+
+        .bubble:nth-child(odd) {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .bubble:nth-child(3n) {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .bubble:nth-child(5n) {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            text-align: center;
+        }
+
+        .content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .content p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .controls button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .controls button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .controls input[type="range"] {
+            width: 100px;
+            margin: 0 10px;
+        }
+
+        .controls label {
+            color: white;
+            font-size: 0.9rem;
+            display: block;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="bubble-container" id="bubbleContainer"></div>
+    
+    <div class="content">
+        <div>
+            <h1>泡泡飄浮效果</h1>
+            <p>使用純 JavaScript 和 CSS 實現的半透明泡泡動畫</p>
+        </div>
+    </div>
+
+    <div class="controls">
+        <label>泡泡數量: <span id="countValue">50</span></label>
+        <input type="range" id="bubbleCount" min="10" max="200" value="50">
+        
+        <label>飄浮速度: <span id="speedValue">1</span></label>
+        <input type="range" id="bubbleSpeed" min="0.5" max="3" step="0.1" value="1">
+        
+        <label>泡泡大小: <span id="sizeValue">1</span></label>
+        <input type="range" id="bubbleSize" min="0.5" max="3" step="0.1" value="1">
+        
+        <br>
+        <button onclick="toggleBubbles()">暫停/繼續</button>
+        <button onclick="clearBubbles()">清除泡泡</button>
+    </div>
+    <div >        
+        
+    </div>
+    <script>
+        class BubbleEffect {
+            constructor() {
+                this.container = document.getElementById('bubbleContainer');
+                this.bubbles = [];
+                this.isRunning = true;
+                this.settings = {
+                    count: 50,
+                    speed: 1,
+                    size: 1
+                };
+                
+                this.initControls();
+                this.startBubbleGeneration();
+            }
+
+            initControls() {
+                const countSlider = document.getElementById('bubbleCount');
+                const speedSlider = document.getElementById('bubbleSpeed');
+                const sizeSlider = document.getElementById('bubbleSize');
+                const countValue = document.getElementById('countValue');
+                const speedValue = document.getElementById('speedValue');
+                const sizeValue = document.getElementById('sizeValue');
+
+                countSlider.addEventListener('input', (e) => {
+                    this.settings.count = parseInt(e.target.value);
+                    countValue.textContent = e.target.value;
+                });
+
+                speedSlider.addEventListener('input', (e) => {
+                    this.settings.speed = parseFloat(e.target.value);
+                    speedValue.textContent = e.target.value;
+                    this.updateBubbleSpeeds();
+                });
+
+                sizeSlider.addEventListener('input', (e) => {
+                    this.settings.size = parseFloat(e.target.value);
+                    sizeValue.textContent = e.target.value;
+                });
+            }
+
+            createBubble() {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                // 隨機大小 (20px 到 80px)
+                const size = (Math.random() * 60 + 20) * this.settings.size;
+                bubble.style.width = size + 'px';
+                bubble.style.height = size + 'px';
+                
+                // 隨機水平位置
+                const x = Math.random() * window.innerWidth;
+                bubble.style.left = x + 'px';
+                
+                // 隨機飄移距離
+                const drift = (Math.random() - 0.5) * 200;
+                bubble.style.setProperty('--drift', drift + 'px');
+                
+                // 隨機縮放
+                const scale = Math.random() * 0.5 + 0.8;
+                bubble.style.setProperty('--scale', scale);
+                
+                // 隨機動畫持續時間 (8-15秒)
+                const duration = (Math.random() * 7 + 8) / this.settings.speed;
+                bubble.style.animationDuration = duration + 's';
+                
+                // 隨機延遲開始
+                bubble.style.animationDelay = Math.random() * 2 + 's';
+                
+                this.container.appendChild(bubble);
+                this.bubbles.push(bubble);
+                
+                // 動畫結束後移除泡泡
+                setTimeout(() => {
+                    if (bubble.parentNode) {
+                        bubble.parentNode.removeChild(bubble);
+                        const index = this.bubbles.indexOf(bubble);
+                        if (index > -1) {
+                            this.bubbles.splice(index, 1);
+                        }
+                    }
+                }, (duration + 2) * 1000);
+            }
+
+            startBubbleGeneration() {
+                const generateBubble = () => {
+                    if (this.isRunning && this.bubbles.length < this.settings.count) {
+                        this.createBubble();
+                    }
+                    
+                    // 每 200-500ms 生成一個新泡泡
+                    const nextDelay = Math.random() * 300 + 200;
+                    setTimeout(generateBubble, nextDelay);
+                };
+                
+                generateBubble();
+            }
+
+            updateBubbleSpeeds() {
+                this.bubbles.forEach(bubble => {
+                    const currentDuration = parseFloat(bubble.style.animationDuration);
+                    const newDuration = currentDuration / this.settings.speed;
+                    bubble.style.animationDuration = newDuration + 's';
+                });
+            }
+
+            toggle() {
+                this.isRunning = !this.isRunning;
+                if (this.isRunning) {
+                    this.startBubbleGeneration();
+                }
+            }
+
+            clear() {
+                this.bubbles.forEach(bubble => {
+                    if (bubble.parentNode) {
+                        bubble.parentNode.removeChild(bubble);
+                    }
+                });
+                this.bubbles = [];
+            }
+        }
+
+        // 初始化泡泡效果
+        const bubbleEffect = new BubbleEffect();
+
+        // 全域函數供按鈕使用
+        function toggleBubbles() {
+            bubbleEffect.toggle();
+        }
+
+        function clearBubbles() {
+            bubbleEffect.clear();
+        }
+
+        // 視窗大小改變時重新調整
+        window.addEventListener('resize', () => {
+            // 可以添加視窗大小改變時的處理邏輯
+        });
+
+        // 添加一些互動效果
+        document.addEventListener('mousemove', (e) => {
+            const bubbles = document.querySelectorAll('.bubble');
+            bubbles.forEach(bubble => {
+                const rect = bubble.getBoundingClientRect();
+                const bubbleX = rect.left + rect.width / 2;
+                const bubbleY = rect.top + rect.height / 2;
+                
+                const distance = Math.sqrt(
+                    Math.pow(e.clientX - bubbleX, 2) + Math.pow(e.clientY - bubbleY, 2)
+                );
+                
+                if (distance < 100) {
+                    const force = (100 - distance) / 100;
+                    const angle = Math.atan2(e.clientY - bubbleY, e.clientX - bubbleX);
+                    const pushX = Math.cos(angle) * force * 10;
+                    const pushY = Math.sin(angle) * force * 10;
+                    
+                    // 使用 CSS 變數來避免與動畫衝突
+                    bubble.style.setProperty('--mouse-x', pushX + 'px');
+                    bubble.style.setProperty('--mouse-y', pushY + 'px');
+                } else {
+                    bubble.style.setProperty('--mouse-x', '0px');
+                    bubble.style.setProperty('--mouse-y', '0px');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

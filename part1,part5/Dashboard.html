@@ -464,6 +464,64 @@
             visibility: visible;
             opacity: 1;
         }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .delete-btn:active {
+            transform: scale(0.95);
+        }
+
+        .coupon-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .coupon-input,
+        .coupon-select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .coupon-btn {
+            background-color: #2d5ee6;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        .coupon-btn:hover {
+            background-color: #6d11e6;
+            transform: scale(1.05);
+        }
+
+        .coupon-btn:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 
@@ -498,18 +556,16 @@
                     <table id="productTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>名稱</th>
+                                <th>規格</th>
                                 <th>價格</th>
                                 <th>庫存</th>
+                                <th>圖片連結</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>1</td>
-                                <td>紅茶</td>
-                                <td><span class="price">$30</span></td>
-                                <td>5</td>
+                                
                             </tr>
                         </tbody>
                     </table>
@@ -528,20 +584,33 @@
                                 <th>商品列表</th>
                                 <th>總金額</th>
                                 <th>狀態</th>
+                                <th>詳細資料</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>#001</td>
-                                <td>1</td>
-                                <td>紅茶、綠茶</td>
-                                <td><span class="price">$60</span></td>
-                                <td><span class="status-badge status-active">已完成</span></td>
+
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
+            <!-- 訂單詳細資料彈窗 -->
+            <div id="orderDetailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.4); justify-content:center; align-items:center; z-index:999;">
+                <div
+                    style="background:white; padding:20px; border-radius:10px; width:500px; max-height:80vh; overflow-y:auto;">
+                    <h3 style="text-align:center;">訂單詳細資料</h3>
+                    <div id="orderDetailContent" style="margin-top:10px; line-height:1.6;"></div>
+                    <div style="text-align:center; margin-top:20px;">
+                        <button onclick="closeOrderDetail()"
+                            style="background:#666; color:white; border:none; padding:6px 12px; border-radius:5px; cursor:pointer;">
+                            關閉
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- 用戶管理 -->
             <div id="users" class="tabContent" style="display:none;">
                 <h2>用戶管理</h2>
@@ -552,15 +621,16 @@
                                 <th>ID</th>
                                 <th>名稱</th>
                                 <th>Email</th>
+                                <th>姓氏</th>
+                                <th>名字</th>
+                                <th>電話號碼</th>
+                                <th>建立時間</th>
                                 <th>狀態</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>1</td>
-                                <td>testUser</td>
-                                <td>test@email.com</td>
-                                <td><span class="status-badge status-active">活躍</span></td>
+                                
                             </tr>
                         </tbody>
                     </table>
@@ -570,31 +640,32 @@
             <!-- 優惠管理 -->
             <div id="coupons" class="tabContent" style="display:none;">
                 <h2>優惠管理</h2>
-                <div class="form-inline">
-                    <input type="text" id="couponCode" placeholder="優惠代碼">
-                    <input type="number" id="couponDiscount" placeholder="折扣百分比">
-                    <button onclick="addCoupon()">新增優惠</button>
+                <div class="coupon-form">
+                    <input type="text" id="couponCode" class="coupon-input" placeholder="優惠代碼">
+                    <input type="number" id="couponDiscount" class="coupon-input" placeholder="折扣數值">
+                    <select id="couponDiscountType" class="coupon-select">
+                        <option value="P">百分比</option>
+                        <option value="A">金額</option>
+                    </select>
+                    <button class="coupon-btn" onclick="addCoupon()">新增優惠</button>
                 </div>
+
+
                 <div class="data-table">
                     <table id="couponTable">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>代碼</th>
-                                <th>折扣%</th>
+                                <th>折扣方法</th>
+                                <th>折扣</th>
                                 <th>狀態</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>1</td>
-                                <td><code
-                                        style="background: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-family: monospace;">test1coupon123</code>
-                                </td>
-                                <td><span class="price">50%</span></td>
-                                <td><span class="status-badge status-active">有效</span></td>
-                                <td><button class="action-btn">刪除</button></td>
+                               
                             </tr>
                         </tbody>
                     </table>
@@ -604,9 +675,9 @@
     </div>
 
     <script>
-
+        //顯示點選圖標頁面
         function showTab(tabId) {
-
+            
             document.querySelectorAll('.tabContent').forEach(t => {
                 t.style.display = 'none';
                 t.style.opacity = '0';
@@ -640,7 +711,7 @@
             }
         }
 
-
+        //顯示錯誤訊息
         function showMessage(message, type = 'success') {
 
             const existingMessage = document.querySelector('.message');
@@ -669,187 +740,310 @@
 
         // 商品管理 API 
         function loadProducts() {
-            axios.get('http://localhost:5090/api/products')
+            axios.get('https://localhost:7085/api/products')
                 .then(res => {
                     const tbody = document.querySelector('#productTable tbody');
                     tbody.innerHTML = '';
+
                     res.data.forEach(p => {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                    <td>${p.id}</td>
-                    <td>
-                        <input type="text" value="${p.name}" id="name-${p.id}" 
-                               style="width:120px; padding:4px;border:none"
-                               onkeydown="if(event.key === 'Enter') updateProduct(${p.id})" title="按下enter更新">
-                    </td>
-                    <td>
-                        <input type="number" min="0" step="0.01" value="${p.price}" id="price-${p.id}" 
-                               style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;"
-                               onkeydown="if(event.key === 'Enter') updateProduct(${p.id})" title="按下enter更新">
-                    </td>
-                    <td>
-                        <input type="number" min="0" value="${p.stock}" id="stock-${p.id}" 
-                               style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;"
-                               onkeydown="if(event.key === 'Enter') updateProduct(${p.id})" title="按下enter更新">
-                    </td>
+                    <td><input type="text" value="${p.name}" id="name-${p.id}" style="width:120px; padding:4px;border:none" onkeydown="if(event.key === 'Enter') updateProduct(${p.id})"></td>
+                    <td><input type="text" value="${p.size || ''}" id="size-${p.id}" style="width:120px; padding:4px;border:none" onkeydown="if(event.key === 'Enter') updateProduct(${p.id})"></td>
+                    <td><input type="number" min="0" value="${p.price}" id="price-${p.id}" style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;" onkeydown="if(event.key === 'Enter') updateProduct(${p.id})"></td>
+                    <td><input type="number" min="0" value="${p.stock}" id="stock-${p.id}" style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;" onkeydown="if(event.key === 'Enter') updateProduct(${p.id})"></td>
+                    <td><input type="text" value="${p.imageUrl || ''}" id="imageurl-${p.id}" style="width:120px; padding:4px;border:none" onkeydown="if(event.key === 'Enter') updateProduct(${p.id})"></td>
                     
                 `;
                         tbody.appendChild(tr);
                     });
                 })
-                .catch(err => {
+                .catch(() => {
                     showMessage('載入商品資料時發生錯誤', 'error');
                 });
         }
-
+        //透過id更新商品
         function updateProduct(id) {
             const newName = document.getElementById(`name-${id}`).value.trim();
             const newPrice = parseFloat(document.getElementById(`price-${id}`).value);
             const newStock = parseInt(document.getElementById(`stock-${id}`).value);
+            const newImageUrl = document.getElementById(`imageurl-${id}`).value.trim();
+            const newSize = document.getElementById(`size-${id}`).value.trim();
 
-            if (!newName) {
-                showMessage('名稱不能為空', 'error');
-                return;
-            }
-            if (isNaN(newPrice) || newPrice < 0) {
-                showMessage('價格必須大於等於0', 'error');
-                return;
-            }
-            if (isNaN(newStock) || newStock < 0) {
-                showMessage('庫存不能小於0', 'error');
-                return;
-            }
-
-            axios.put(`http://localhost:5090/api/products/${id}`, {
+            axios.put(`https://localhost:7085/api/products/${id}`, {
                 name: newName,
                 price: newPrice,
-                stock: newStock
+                stock: newStock,
+                imageUrl: newImageUrl,
+                size: newSize
             })
                 .then(() => {
                     showMessage('商品更新成功！', 'success');
-                    loadProducts(); // 重新載入商品資料
+                    loadProducts();
                 })
-                .catch(err => {
+                .catch(() => {
                     showMessage('更新商品時發生錯誤', 'error');
                 });
         }
 
 
 
+
         // 訂單管理 API 
         function loadOrders() {
-            axios.get('http://localhost:5090/api/orders')
+            axios.get('https://localhost:7085/api/orders')
                 .then(res => {
                     const tbody = document.querySelector('#orderTable tbody');
                     tbody.innerHTML = '';
+
                     res.data.forEach(o => {
+                        let items = [];
+                        try {
+
+                            items = JSON.parse(o.productList);
+                        } catch (err) {
+                            console.error('商品列表 JSON 解析錯誤:', err);
+                        }
+
+
+                        const productNames = items.map(i => `${i.Size}${i.ProductName}x${i.Quantity}`).join(', ');
+
+
+                        const statusClass = o.status === 'Paid' ? 'status-active' : 'status-pending';
+                        const statusText = o.status === 'Paid' ? '已完成' : '處理中';
+
+
                         const tr = document.createElement('tr');
-                        const statusClass = o.status === 'completed' ? 'status-active' : 'status-pending';
-                        const statusText = o.status === 'completed' ? '已完成' : '處理中';
                         tr.innerHTML = `
-                            <td>#${String(o.id).padStart(3, '0')}</td>
-                            <td>${o.userId}</td>
-                            <td>${o.items.map(i => i.name).join(', ')}</td>
-                            <td><span class="price">$${o.total}</span></td>
-                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                        `;
+                    <td>#${String(o.orderID).padStart(3, '0')}</td>
+                    <td>${o.userID}</td>
+                    <td>${productNames}</td>
+                    <td><span class="price">$${o.totalAmount.toFixed(2)}</span></td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td><button onclick="orderInfo(${o.orderID})" style="border:none;cursor:pointer;">詳細資料</button></td>
+                `;
                         tbody.appendChild(tr);
                     });
                 })
                 .catch(err => {
+                    console.error(err);
                     showMessage('載入訂單資料時發生錯誤', 'error');
                 });
+        }
+        // 顯示單筆訂單詳細資料
+        function orderInfo(orderID) {
+            axios.get(`https://localhost:7085/api/orders/${orderID}`)
+                .then(res => {
+                    const o = res.data;
+
+
+                    const orderDate = new Date(o.orderDate).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' });
+
+
+                    let products = [];
+                    let itemsHTML = '';
+                    try {
+                        products = JSON.parse(o.productList || "[]");
+                        if (Array.isArray(products) && products.length > 0) {
+                            itemsHTML = '<ul style="list-style:none;">' + products.map(p =>
+                                `<li>${p.Size}${p.ProductName} × ${p.Quantity} — $${(p.UnitPrice * p.Quantity)?.toFixed(2) ?? ''}</li>`
+                            ).join('') + '</ul>';
+                        } else {
+                            itemsHTML = '<p>無商品資料</p>';
+                        }
+                    } catch {
+                        itemsHTML = '<p>商品列表格式錯誤</p>';
+                    }
+
+
+                    const html = `
+                <p><strong>訂單編號：</strong>#${String(o.orderID).padStart(3, '0')}</p>
+                <p><strong>會員ID：</strong>${o.userID}</p>
+                <p><strong>總金額：</strong>$${o.totalAmount.toFixed(2)}</p>
+                <p><strong>訂單狀態：</strong>${o.status}</p>
+                <p><strong>訂單日期：</strong>${orderDate}</p>
+                <p><strong>付款方式：</strong>${o.paymentMethod || '————'}</p>
+                <p><strong>付款狀態：</strong>${o.paymentStatus || '————'}</p>
+                <p><strong>收件地址：</strong>${o.shippingAddress || '————'}</p>
+                <p><strong>運送方式：</strong>${o.shippingMethod || '————'}</p>
+                <p><strong>運送狀態：</strong>${o.shippingStatus || '————'}</p>
+                <p><strong>收件人姓名：</strong>${o.receiverName || '————'}</p>
+                <p><strong>訂單明細：</strong></p>
+                ${itemsHTML}
+                <p><strong>備註：</strong>${o.notes || '————'}</p>
+            `;
+
+
+                    document.getElementById('orderDetailContent').innerHTML = html;
+                    document.getElementById('orderDetailModal').style.display = 'flex';
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('載入訂單詳細資料時發生錯誤');
+                });
+        }
+
+        //關閉單筆訂單詳細資訊
+        function closeOrderDetail() {
+            document.getElementById('orderDetailModal').style.display = 'none';
         }
 
         // 用戶管理 API 
         function loadUsers() {
-            axios.get('http://localhost:5090/api/users')
+            axios.get('https://localhost:7085/api/users')
                 .then(res => {
                     const tbody = document.querySelector('#userTable tbody');
                     tbody.innerHTML = '';
+
                     res.data.forEach(u => {
+                        const isActive = u.isActive;
+                        const statusClass = isActive ? 'status-active' : 'status-inactive';
+                        const statusText = isActive ? '活躍' : '非活躍';
+
                         const tr = document.createElement('tr');
-                        const statusClass = u.status === 'active' ? 'status-active' : 'status-pending';
-                        const statusText = u.status === 'active' ? '活躍' : '非活躍';
                         tr.innerHTML = `
-                            <td>${u.id}</td>
-                            <td>${u.name}</td>
-                            <td>${u.email}</td>
-                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                        `;
+                    <td>${u.id}</td>
+                    <td>${u.username}</td>
+                    <td>${u.email}</td>
+                    <td>${u.firstName}</td>
+                    <td>${u.lastName}</td>
+                    <td>${u.phoneNumber ?? '-'}</td>
+                    <td>${new Date(u.createdAt).toLocaleString()}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                `;
                         tbody.appendChild(tr);
                     });
                 })
                 .catch(err => {
+                    console.error(err);
                     showMessage('載入用戶資料時發生錯誤', 'error');
                 });
         }
-
-        // 優惠管理 API
+        // 優惠券管理API   
         function loadCoupons() {
-            axios.get('http://localhost:5090/api/coupons')
+            axios.get('https://localhost:7085/api/coupons')
                 .then(res => {
                     const tbody = document.querySelector('#couponTable tbody');
                     tbody.innerHTML = '';
+
                     res.data.forEach(c => {
                         const tr = document.createElement('tr');
-                        const statusClass = c.status === 'active' ? 'status-active' : 'status-pending';
-                        const statusText = c.status === 'active' ? '有效' : '無效';
                         tr.innerHTML = `
-                            <td>${c.id}</td>
-                            <td><code style="background: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-family: monospace;">${c.code}</code></td>
-                            <td><span class="price">${c.discount}%</span></td>
-                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                            <td>
-                                <button class="action-btn" onclick="deleteCoupon(${c.id})">刪除</button>
-                            </td>
-                        `;
+                    <td>${c.id}</td>
+                    <td>
+                        <input type="text" value="${c.code}" id="code-${c.id}" style="width:120px; padding:4px; border:none"
+                               onkeydown="if(event.key === 'Enter') updateCoupon(${c.id})">
+                    </td>
+                    <td>
+                        <select id="discountType-${c.id}" style="padding:4px; border-radius:4px; border:1px solid #ccc;"
+                                onchange="updateCoupon(${c.id})">
+                            <option value="A" ${c.discountType === "A" ? 'selected' : ''}>金額</option>
+                            <option value="P" ${c.discountType === "P" ? 'selected' : ''}>百分比</option>
+                        </select>
+                        
+                    </td>
+                    <td>
+                        <input type="number" min="0" value="${c.discount}" id="discount-${c.id}" style="width:80px; padding:4px; border-radius:4px; border:1px solid #ccc;"
+                               onkeydown="if(event.key === 'Enter') updateCoupon(${c.id})">
+                    </td>
+                    <td>
+                        <select id="status-${c.id}" style="padding:4px; border-radius:4px; border:1px solid #ccc;"
+                                onchange="updateCoupon(${c.id})">
+                            <option value="active" ${c.status.toLowerCase() === 'active' ? 'selected' : ''}>活躍</option>
+                            <option value="inactive" ${c.status.toLowerCase() !== 'active' ? 'selected' : ''}>非活躍</option>
+                        </select>
+                    </td>
+                    
+                    
+                    <td>                        
+                        <button class="delete-btn" onclick="deleteCoupon(${c.id})">刪除</button>
+                    </td>
+                      
+
+
+                `;
                         tbody.appendChild(tr);
                     });
                 })
                 .catch(err => {
-                    showMessage('載入優惠資料時發生錯誤', 'error');
+                    console.error(err);
+                    showMessage('載入優惠券資料時發生錯誤', 'error');
                 });
         }
 
-        function addCoupon() {
-            const code = document.getElementById('couponCode').value;
-            const discount = Number(document.getElementById('couponDiscount').value);
+        // 更新優惠券
+        function updateCoupon(id) {
+            const newCode = document.getElementById(`code-${id}`).value.trim();
+            const newDiscount = parseFloat(document.getElementById(`discount-${id}`).value);
+            const newStatus = document.getElementById(`status-${id}`).value;
+            const newDiscountType = document.getElementById(`discountType-${id}`).value;
 
-            if (!code || !discount) {
-                showMessage('請填寫完整資訊', 'error');
-                return;
-            }
-
-            if (discount < 1 || discount > 100) {
-                showMessage('折扣百分比必須在1-100之間', 'error');
-                return;
-            }
-
-            axios.post('http://localhost:5090/api/coupons', { code, discount })
+            axios.put(`https://localhost:7085/api/coupons/${id}`, {
+                code: newCode,
+                discount: newDiscount,
+                status: newStatus,
+                discountType: newDiscountType
+            })
                 .then(() => {
-                    showMessage('優惠券新增成功！', 'success');
-                    document.getElementById('couponCode').value = '';
-                    document.getElementById('couponDiscount').value = '';
+                    showMessage('優惠券更新成功！', 'success');
                     loadCoupons();
                 })
                 .catch(err => {
+                    console.error(err);
+                    showMessage('更新優惠券時發生錯誤', 'error');
+                });
+        }
+
+
+        //增加優惠券
+        function addCoupon() {
+            const code = document.getElementById('couponCode').value.trim();
+            const discount = parseFloat(document.getElementById('couponDiscount').value);
+            const discountType = document.getElementById('couponDiscountType').value;
+
+            if (!code) {
+                showMessage('請輸入優惠代碼', 'error');
+                return;
+            }
+            if (isNaN(discount) || discount < 0) {
+                showMessage('折扣必須為正數', 'error');
+                return;
+            }
+
+            axios.post('https://localhost:7085/api/coupons', {
+                code: code,
+                discount: discount,
+                discountType: discountType, 
+                status: 'active' 
+            })
+                .then(() => {
+                    showMessage('優惠券新增成功！', 'success');                    
+                    document.getElementById('couponCode').value = '';
+                    document.getElementById('couponDiscount').value = '';
+                    document.getElementById('couponDiscountType').value = 'P';
+                    loadCoupons();
+                })
+                .catch(err => {
+                    console.error(err);
                     showMessage('新增優惠券時發生錯誤', 'error');
                 });
         }
 
+        //刪除優惠券
         function deleteCoupon(id) {
-            if (confirm('確定要刪除這個優惠券嗎？')) {
-                axios.delete(`http://localhost:5090/api/coupons/${id}`)
-                    .then(() => {
-                        showMessage('優惠券刪除成功！', 'success');
-                        loadCoupons();
-                    })
-                    .catch(err => {
-                        showMessage('刪除優惠券時發生錯誤', 'error');
-                    });
-            }
+            if (!confirm("確定要刪除此優惠券嗎？")) return;
+
+            axios.delete(`https://localhost:7085/api/coupons/${id}`)
+                .then(() => {
+                    showMessage('優惠券刪除成功！', 'success');
+                    loadCoupons();
+                })
+                .catch(err => {
+                    console.error(err);
+                    showMessage('刪除優惠券時發生錯誤', 'error');
+                });
         }
+
 
 
         showTab('products');

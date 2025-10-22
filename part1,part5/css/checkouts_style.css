@@ -1,0 +1,661 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+/* checkouts.CSS 結帳*/
+
+
+.fontSize14 {
+    font-size: 14px;
+}
+
+.fontGray {
+    color: var(--main-gray);
+}
+
+.checkouts-header {
+    border-bottom: 1px solid var(--main-gray-drck);
+    padding: 0 250px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 30px;
+    height: 90px;
+    align-content: center;
+    line-height: 90px;
+    color: var(--main-orange);
+}
+
+.checkouts-header a {
+    color: var(--main-orange);
+}
+
+.logo {
+    height: 50px;
+    margin-top: 20px;
+}
+
+/* ===== 現代化跑馬燈樣式 ===== */
+.marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    line-height: 2rem;
+    margin: 0px 250px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+    /* 性能優化 */
+    contain: layout style paint;
+    /* 確保容器有固定高度 */
+    height: 2rem;
+}
+
+.marquee-content {
+    display: inline-block;
+
+    animation: marquee-scroll 200s linear infinite;
+    will-change: transform;
+    /* 性能優化 */
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    /* 確保內容不會換行 */
+    white-space: nowrap;
+    /* 添加一些間距讓動畫更自然 */
+    padding-right: 100px;
+}
+
+.marquee-content.paused {
+    animation-play-state: paused;
+}
+
+.marquee-content:hover {
+    animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+    0% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+
+}
+
+/* 添加淡入淡出效果 */
+.marquee-container::before,
+.marquee-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 50px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.marquee-container::before {
+    left: 0;
+    background: linear-gradient(to right, var(--bg-color), transparent);
+}
+
+.marquee-container::after {
+    right: 0;
+    background: linear-gradient(to left, var(--bg-color), transparent);
+}
+
+.marquee-item {
+    display: inline-block;
+    color: var(--main-gray);
+    margin-right: 50px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    /* 性能優化 */
+    will-change: transform, color, background-color;
+}
+
+.marquee-item:hover {
+    color: var(--main-orange);
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+/* 無障礙設計 */
+.marquee-item:focus {
+    outline: 2px solid var(--main-orange);
+    outline-offset: 2px;
+}
+
+.list-title-box {
+    display: none;
+    position: relative;
+    /* 讓它成為定位參考 */
+    overflow: hidden;
+    /* 避免往上移時穿幫 */
+    z-index: 10;
+    justify-content: space-between;
+    padding: 20px 20px 10px 20px;
+    background-color: var(--main-gray-light);
+    border: 1px solid var(--main-gray-drck);
+    cursor: pointer;
+}
+
+.list-title {
+    color: var(--main-orange);
+    font-size: 16px;
+    height: 26px;
+    line-height: 20px;
+}
+
+.list-title img {
+    margin-left: 10px;
+    height: 12px;
+}
+
+.list-title-sum {
+    font-weight: 600;
+    font-size: 24px;
+}
+
+.order-list {
+    position: sticky;
+    top: 0;
+    padding: 50px 250px 20px 50px;
+    width: 50vw;
+    background: var(--light-yellow);
+    overflow: hidden;
+    opacity: 1;
+    /* 平滑動畫 */
+    transition: all 0.5s ease;
+    /* 預設不位移 */
+    transform: translateY(0);
+    /* 確保在全螢幕下釘在頂部 */
+    z-index: 1;
+    height: fit-content;
+}
+
+/* 收起狀態 */
+.order-list.hidden {
+    display: none;
+    /* 由上往下收起 */
+    max-height: 0;
+    /* 慢慢變透明 */
+    opacity: 0;
+    /* 往上收起的錯覺 */
+    transform: translateY(-50px);
+}
+
+/* 讓箭頭旋轉 */
+.list-title img {
+    transition: transform 0.3s ease;
+}
+
+.list-title img.rotate {
+    transform: rotate(180deg);
+}
+
+/* 讓箭頭旋轉 End */
+.order-item-box {
+    display: flex;
+    margin-bottom: 30px;
+}
+
+.order-item-info {
+    flex: 1;
+    margin-left: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.order-item-size p {
+    font-size: 12px;
+    margin: 10px 0;
+    color: var(--main-black);
+}
+
+.order-item-img {
+    width: 60px;
+    height: 60px;
+    background: var(--product-green-light);
+    border-radius: 10px;
+    border: 2px solid white;
+    box-shadow: 1px 1px 3px var(--main-black);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.order-item-img span {
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    line-height: 18px;
+    border-radius: 5px;
+    background: var(--main-black);
+    color: white;
+    border: 2px solid #ffffff;
+    text-align: center;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+}
+
+.order-item-img h2 {
+    font-size: 24px;
+    color: white;
+    margin: 0px;
+}
+
+.order-item-img img {
+    height: 25px;
+}
+
+.order-item-sel-box {
+    margin-top: 10px;
+}
+
+.gift-box {
+    display: flex;
+    justify-content: space-between;
+}
+
+.input-box {
+    border: 1px solid var(--main-gray-drck);
+    border-radius: 5px;
+    width: 350px;
+    font-size: 16px;
+    padding: 10px;
+    height: 50px;
+    box-sizing: border-box;
+}
+
+.input-box:focus {
+    /* 改變邊框顏色 */
+    border-color: var(--main-orange);
+    /* 移除預設的藍色 outline */
+    outline: none;
+}
+
+.gift-btn {
+    border-radius: 5px;
+    font-size: 12px;
+    padding: 10px;
+    border: none;
+    color: white;
+    background: var(--main-orange);
+}
+
+.gift-btn:hover {
+    background: var(--drck-orange);
+
+}
+
+.discount-box {
+    margin: 20px auto;
+}
+
+.discount-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    padding: 5px 10px;
+}
+
+.total-box {
+    font-size: 24px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.checkouts-main {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.pay-container {
+    width: 50vw;
+    padding: 50px 50px 20px 250px;
+    margin-bottom: 50px;
+}
+
+.pay-container-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.pay-way-box {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+}
+
+.pay-way-box img {
+    object-fit: contain;
+}
+
+.pay-way-btn {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    line-height: 45px;
+    margin-bottom: 20px;
+    background: var(--main-orange);
+    width: 200px;
+    height: 45px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 100ms ease;
+}
+
+.pay-way-btn:hover {
+    background: var(--drck-orange);
+    transform: translateY(3px);
+}
+
+.pay-now-btn {
+    width: 100%;
+}
+
+.applePay {
+    background: var(--product-green-light);
+}
+
+.googlePay {
+    background: var(--product-pink-light);
+}
+
+.amazonPay {
+    background: var(--product-purple-light);
+}
+
+
+/* or分隔線 */
+.or-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* 字與線的間距 */
+    margin: 30px 0;
+    /* 與上下內容距離 */
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: "";
+    flex: 1;
+    /* 兩邊線自動填滿剩餘寬度 */
+    border-top: 1px solid rgba(0, 0, 0, .2);
+    /* 線條樣式 */
+}
+
+.or-divider span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    /* 可換成 var(--main-gray) 等 */
+    white-space: nowrap;
+    /* 避免換行 */
+}
+
+.form-box {
+    padding-bottom: 30px;
+    border-bottom: 1px solid var(--main-gray-drck);
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.pay-container h3 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.contact-box-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+
+}
+
+.contact-input {
+    height: 50px;
+    line-height: 2rem;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.contact-box-title a {
+    color: var(--main-orange);
+}
+
+.contact-box-title a:hover {
+    color: var(--drck-orange);
+}
+
+.contact-box-emailBox {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.select-box {
+    margin: 5px 0;
+    border-radius: 5px;
+    height: 50px;
+}
+
+.select-box:invalid {
+    color: var(--main-gray);
+    /* 當還沒選時，顯示灰色 */
+}
+
+/* 讓預設選項文字變淡 */
+.select-box option:disabled {
+    color: var(--main-gray);
+    opacity: 0.5;
+}
+
+.city-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.city-container select {
+    width: 150px;
+}
+
+.city-container input {
+    width: 100px;
+}
+
+.card-expiry {
+    display: flex;
+    gap: 20px;
+}
+
+.creditCard-box {
+    margin-top: 20px;
+    background: var(--main-gray-light);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.disclaimer-box {
+    margin-top: 20px;
+
+}
+
+.disclaimer-box a {
+    /* text-decoration: none; */
+    color: var(--main-orange);
+    margin-right: 20px;
+}
+
+/* 減少動畫對用戶的干擾 */
+@media (prefers-reduced-motion: reduce) {
+    .marquee-content {
+        animation: none;
+    }
+}
+
+
+
+/* 3) RWD 區塊寬度用 % 取代 vw（讓它吃父層可用寬度）*/
+@media (max-width: 1500px) {
+    .applePay {
+        width: 100%;
+    }
+}
+
+@media (max-width: 1200px) {
+    .checkouts-header {
+        padding: 0 20px;
+    }
+
+    .order-list {
+        padding: 50px 20px 20px 50px;
+    }
+
+    .pay-container {
+        padding: 50px 50px 20px 20px;
+
+    }
+
+    .marquee-container {
+        margin: 0px 20px;
+    }
+}
+
+/* 全螢幕模式（大於 1140px）的 order-list 釘頂效果 */
+@media (min-width: 1141px) {
+    .order-list {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        max-height: 100vh;
+        overflow-y: auto;
+        /* 讓背景色延伸到底部 */
+        min-height: 100vh;
+        background: var(--light-yellow);
+    }
+}
+
+@media (max-width: 1140px) {
+    .checkouts-header {
+        padding: 0 20px;
+        border-bottom: none;
+    }
+
+    .list-title-box {
+        display: flex;
+    }
+
+    .checkouts-main {
+        display: block;
+        width: 100%;
+    }
+
+    .order-list,
+    .pay-container {
+        height: 100%;
+        padding: 20px;
+        width: 100%;
+    }
+
+    .pay-container {
+        display: block;
+    }
+
+    /* 響應式模式下預設打開 order-list，不釘頂 */
+    .order-list {
+        position: static;
+        display: block;
+        max-height: none;
+        overflow: visible;
+        min-height: auto;
+    }
+
+    .order-list.hidden {
+        display: none;
+    }
+
+    .gift-box {
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .gift-box .input-box {
+        height: 50px;
+        min-height: 50px;
+        flex-shrink: 0;
+    }
+
+    /* 圖片與內容也保險加上不超出容器 */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .pay-way-box {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .googlePay {
+        width: 45%;
+    }
+
+    .amazonPay {
+        width: 45%;
+    }
+}
+
+@media (max-width: 768px) {}
+
+@media (max-width: 300px) {
+    .googlePay {
+        width: 100%;
+    }
+
+    .amazonPay {
+        width: 100%;
+    }
+}
+/* 偵測使用者系統若是深色模式 */
+@media(prefers-color-scheme: dark) {
+    body {
+        background-color: #333;
+        color: white;
+    }
+
+    .order-list {
+        background: var(--drck-yellow);
+    }
+
+    .list-title-box{
+        background: gray;
+    }
+}
+/* checkouts.CSS  End*/

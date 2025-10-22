@@ -340,32 +340,130 @@
         integrity="sha512-1lV2tJv+N/6hK8hB0nW1g4E4IhYc6j+H9YhV2F5fO+QeD5N3YH1Zbq1lMjwXkH9qR0XU0b9x6a3KZ5zYhVg5A=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     
     <script>
-        const app = Vue.createApp({
-            data() {
-                const per = " %";
-                return {
-                    Con: [{
-                        Calories: 60,
-                        Carbohydrates: 15,
-                        Sugars: 14,
-                        Sodium: 15,
-                        Potassium: 10,
-                        Calcium: 10
-                    }],
-                    Val: [{
-                        DailyValue: 14 + per,
-                        Sodium: 1 + per,
-                        Potassium: 1 + per,
-                        Calcium: 1 + per
-                    }]
-
+        // 產品資料
+        const productData = {
+            lemon: {
+                name: "Lemon Lime",
+                price: "$599",
+                description: "Energizing infusion",
+                nutrition: {
+                    calories: 60,
+                    carbohydrates: 15,
+                    sugars: 14,
+                    sodium: 15,
+                    potassium: 10,
+                    calcium: 10
+                },
+                dailyValue: {
+                    carbohydrates: 14,
+                    sodium: 1,
+                    potassium: 1,
+                    calcium: 1
+                }
+            },
+            grape: {
+                name: "Grape",
+                price: "$599",
+                description: "Antioxidant rich",
+                nutrition: {
+                    calories: 55,
+                    carbohydrates: 13,
+                    sugars: 12,
+                    sodium: 10,
+                    potassium: 15,
+                    calcium: 8
+                },
+                dailyValue: {
+                    carbohydrates: 12,
+                    sodium: 1,
+                    potassium: 1,
+                    calcium: 1
+                }
+            },
+            strawberry: {
+                name: "Strawberry Lemonade",
+                price: "$599",
+                description: "Refreshing blend",
+                nutrition: {
+                    calories: 65,
+                    carbohydrates: 16,
+                    sugars: 15,
+                    sodium: 12,
+                    potassium: 12,
+                    calcium: 12
+                },
+                dailyValue: {
+                    carbohydrates: 15,
+                    sodium: 1,
+                    potassium: 1,
+                    calcium: 1
                 }
             }
-        })
-        app.mount('#app')
+        };
+
+        // 更新商品資訊的函數
+        function updateProductInfo(productKey) {
+            const product = productData[productKey];
+            if (!product) return;
+
+            // 更新標題和價格
+            document.querySelector('.details h2').textContent = product.name;
+            document.querySelector('.details h3 span').textContent = product.price;
+            document.querySelector('.details h3').innerHTML = `<span>${product.price}</span> ${product.description}`;
+
+            // 更新營養成分表格
+            const tbody = document.querySelector('table tbody');
+            const rows = tbody.querySelectorAll('tr');
+            
+            // Calories
+            rows[0].querySelector('td:last-child').textContent = product.nutrition.calories;
+            
+            // Carbohydrates
+            rows[1].querySelector('td:nth-child(2)').textContent = product.nutrition.carbohydrates + 'g';
+            rows[1].querySelector('td:last-child').textContent = product.dailyValue.carbohydrates + '%';
+            
+            // Sugars
+            rows[2].querySelector('td:nth-child(2)').textContent = product.nutrition.sugars + 'g';
+            
+            // Sodium
+            rows[3].querySelector('td:nth-child(2)').textContent = product.nutrition.sodium + 'mg';
+            rows[3].querySelector('td:last-child').textContent = product.dailyValue.sodium + '%';
+            
+            // Potassium
+            rows[4].querySelector('td:nth-child(2)').textContent = product.nutrition.potassium + 'mg';
+            rows[4].querySelector('td:last-child').textContent = product.dailyValue.potassium + '%';
+            
+            // Calcium
+            rows[5].querySelector('td:nth-child(2)').textContent = product.nutrition.calcium + 'mg';
+            rows[5].querySelector('td:last-child').textContent = product.dailyValue.calcium + '%';
+        }
+
+        // 監聽輪播圖切換事件
+        document.addEventListener('DOMContentLoaded', function() {
+            const carousel = document.getElementById('carouselExampleIndicators');
+            const productKeys = ['lemon', 'grape', 'strawberry'];
+            
+            // 監聽輪播圖切換
+            carousel.addEventListener('slide.bs.carousel', function (event) {
+                const activeIndex = event.to;
+                const productKey = productKeys[activeIndex];
+                updateProductInfo(productKey);
+            });
+
+            // 監聽指示器點擊
+            const indicators = document.querySelectorAll('.carousel-indicators button');
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', function() {
+                    const productKey = productKeys[index];
+                    updateProductInfo(productKey);
+                });
+            });
+
+            // 初始化顯示第一個產品
+            updateProductInfo('lemon');
+        });
     </script>
 
 
@@ -403,15 +501,6 @@
             selectedAttraction: 0.05,
             freeScrollFriction: .1
         });
-
-
-
-
-
-
-
-
-
     </script>
 </body>
 
