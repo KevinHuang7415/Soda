@@ -36,8 +36,7 @@ namespace SodaBackend.Controllers
                             IsActive = reader.GetBoolean(7),
                             PhoneNumber = reader.IsDBNull(8) ? null : reader.GetString(8),
                             CreatedAt = reader.GetDateTime(9),
-
-
+                            IsEmailVerified = reader.GetBoolean(15),
                         });
                     }
                 }
