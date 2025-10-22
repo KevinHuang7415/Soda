@@ -97,7 +97,11 @@
                         <a href="./login.html" id="login-status-link">登入</a>
                     </div>
                     <div class="contact-box-emailBox">
-                        <input class="input-box contact-input" type="email" id="email" placeholder="abc123@gmail.com">
+                        <div class="input-wrapper">
+                            <input class="input-box contact-input" type="email" id="email" placeholder="電子郵件">
+                            <label for="email" class="floating-label">電子郵件</label>
+                            <span class="error-message"></span>
+                        </div>
                         <label for="sendemail">
                             <input type="checkbox" name="interest[]" id="sendemail" value="透過電子郵件向我發送新聞和優惠訊息" checked>
                             <span class="fontSize14">透過電子郵件向我發送新聞和優惠訊息</span>
@@ -106,35 +110,53 @@
                 </div>
                 <div class="delivery-box">
                     <h3>收件資料</h3>
-                    <input class="input-box contact-input" type="text" id="deliveryFirstName" placeholder="收件人姓">
-                    <input class="input-box contact-input" type="text" id="deliveryLaName" placeholder="收件人名">
-                    <input class="input-box contact-input" type="tel" id="deliveryTel" placeholder="聯絡電話">
+                    <div class="input-wrapper">
+                        <input class="input-box contact-input" type="text" id="deliveryFirstName" placeholder="收件人姓" required>
+                        <label for="deliveryFirstName" class="floating-label">收件人姓</label>
+                        <span class="error-message"></span>
+                    </div>
+                    <div class="input-wrapper">
+                        <input class="input-box contact-input" type="text" id="deliveryLaName" placeholder="收件人名" required>
+                        <label for="deliveryLaName" class="floating-label">收件人名</label>
+                        <span class="error-message"></span>
+                    </div>
+                    <div class="input-wrapper">
+                        <input class="input-box contact-input" type="tel" id="deliveryTel" placeholder="聯絡電話" required>
+                        <label for="deliveryTel" class="floating-label">聯絡電話</label>
+                        <span class="error-message"></span>
+                    </div>
                     <div class="address-box">
                         <div class="city-container">
                             <div class="city-box">
-                                <select id="city" class="select-box input-box">
+                                <select id="city" class="select-box input-box" required>
                                     <option value="" selected disabled>中華民國縣市</option>
                                 </select>
                             </div>
                             <div class="dustruct-box">
-                                <select id="district" class="select-box input-box">
+                                <select id="district" class="select-box input-box" required>
                                     <option value="" selected disabled>請先選擇縣市</option>
                                 </select>
                             </div>
                             <input id="zipcode-input" class="select-box input-box zipcode-input" type="text" readonly
                                 placeholder="自動帶入" title="郵遞區號">
                         </div>
-                        <input class="input-box contact-input" type="text" id="addressName" placeholder="收件人地址">
+                        <div class="input-wrapper">
+                            <input class="input-box contact-input" type="text" id="addressName" placeholder="收件人地址" required>
+                            <label for="addressName" class="floating-label">收件人地址</label>
+                            <span class="error-message"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="paymentMethod-box">
                     <h3>付款方式</h3>
                     <p class="fontGray fontSize14">所有交易都是安全且加密的。</p>
                     <div class="creditCard-box">
-                        <label>
-                            <input class="input-box contact-input" type="number" id="cardNum" inputmode="numeric"
-                                maxlength="19" placeholder="信用卡號 (**** **** **** ****)" required>
-                        </label>
+                        <div class="input-wrapper">
+                            <input class="input-box contact-input" type="text" id="cardNum" inputmode="numeric"
+                                maxlength="19" placeholder="信用卡號" required>
+                            <label for="cardNum" class="floating-label">信用卡號 (**** **** **** ****)</label>
+                            <span class="error-message"></span>
+                        </div>
 
                         <div class="card-expiry">
                             <select id="cardMonth" class="select-box input-box" required>
@@ -145,15 +167,19 @@
                             </select>
                         </div>
 
-                        <label>
-                            <input class="input-box contact-input" type="number" id="cvv" inputmode="numeric"
+                        <div class="input-wrapper">
+                            <input class="input-box contact-input" type="text" id="cvv" inputmode="numeric"
                                 maxlength="4" placeholder="CVV" required>
-                        </label>
+                            <label for="cvv" class="floating-label">CVV</label>
+                            <span class="error-message"></span>
+                        </div>
 
-                        <label>
+                        <div class="input-wrapper">
                             <input class="input-box contact-input" type="text" id="nameOnCard"
                                 placeholder="持卡人姓名 (與卡片相同)" required>
-                        </label>
+                            <label for="nameOnCard" class="floating-label">持卡人姓名 (與卡片相同)</label>
+                            <span class="error-message"></span>
+                        </div>
                     </div>
 
                 </div>
