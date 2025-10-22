@@ -18,12 +18,12 @@ namespace Soda.Migrations
                 columns: new[] { "Id", "ImageUrl", "Name", "Price", "Size", "Stock" },
                 values: new object[,]
                 {
-                    { 1, "test.com", "紅茶", 25m, "4*355", 100 },
-                    { 2, "test.com", "紅茶", 30m, "12*355", 80 },
-                    { 3, "test.com", "綠茶", 35m, "4*355", 60 },
-                    { 4, "test.com", "綠茶", 35m, "12*355", 60 },
-                    { 5, "test.com", "清茶", 40m, "4*355", 60 },
-                    { 6, "test.com", "清茶", 35m, "12*355", 60 }
+                    { 1, "./images/lemon-lime_mockup.png", "檸檬能量飲", 199m, "6*355", 100 },
+                    { 2, "./images/lemon-lime_mockup.png", "檸檬能量飲", 599m, "24*355", 80 },
+                    { 3, "./images/grape_mockup.png", "葡萄能量飲", 199m, "6*355", 60 },
+                    { 4, "./images/grape_mockup.png", "葡萄能量飲", 599m, "24*355", 60 },
+                    { 5, "./images/strawberry-lemonade_mockup.png", "草莓能量飲", 199m, "6*355", 60 },
+                    { 6, "./images/strawberry-lemonade_mockup.png", "草莓能量飲", 599m, "24*355", 60 }
                 });
         }
 
