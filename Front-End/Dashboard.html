@@ -252,6 +252,10 @@
             background: #d4edda;
             color: #155724;
         }
+        .status-inactive {
+            background-color: red;
+            color: white
+        }
 
         .status-pending {
             background: #fff3cd;
@@ -626,6 +630,7 @@
                                 <th>電話號碼</th>
                                 <th>建立時間</th>
                                 <th>狀態</th>
+                                <th>信箱驗證</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -897,8 +902,11 @@
 
                     res.data.forEach(u => {
                         const isActive = u.isActive;
+                        const isVerified = u.isEmailVerified;
                         const statusClass = isActive ? 'status-active' : 'status-inactive';
                         const statusText = isActive ? '活躍' : '非活躍';
+                        const statusClass2 = isVerified ? 'status-active' : 'status-inactive';
+                        const statusTex2t = isVerified ? '已驗證' : '未驗證';
 
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
@@ -910,6 +918,7 @@
                     <td>${u.phoneNumber ?? '-'}</td>
                     <td>${new Date(u.createdAt).toLocaleString()}</td>
                     <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td><span class="status-badge ${statusClass2}">${statusTex2t}</span></td>
                 `;
                         tbody.appendChild(tr);
                     });
