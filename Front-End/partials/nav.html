@@ -1,245 +1,277 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- Bootstrap 5 - 僅載入必要的樣式 -->
+<style>
+    /* 只載入需要的 Bootstrap 樣式，避免影響主頁面 */
+    .position-absolute {
+        position: absolute !important;
+    }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>header</title>
-    <!-- Bootstrap 5 - 僅載入必要的樣式 -->
-    <style>
-        /* 只載入需要的 Bootstrap 樣式，避免影響主頁面 */
-        .position-absolute { position: absolute !important; }
-        .top-0 { top: 0 !important; }
-        .start-100 { left: 100% !important; }
-        .translate-middle { transform: translate(-50%, -50%) !important; }
-        .badge { display: inline-block; padding: 0.35em 0.65em; font-size: 0.75em; font-weight: 700; line-height: 1; text-align: center; white-space: nowrap; vertical-align: baseline; border-radius: 0.375rem; }
-        .rounded-pill { border-radius: 50rem !important; }
-        .bg-danger { background-color: #dc3545 !important; }
-        .visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
-    </style>
+    .top-0 {
+        top: 0 !important;
+    }
 
-    <style>
-        .hidden {
-            display: none;
-        }
+    .start-100 {
+        left: 100% !important;
+    }
 
-        .show {
-            display: block;
-        }
+    .translate-middle {
+        transform: translate(-50%, -50%) !important;
+    }
 
-        /* 第一部分 */
-        a {
-            text-decoration: none;
-            color: #000;
-        }
+    .badge {
+        display: inline-block;
+        padding: 0.35em 0.65em;
+        font-size: 0.75em;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.375rem;
+    }
 
-        /* 導覽列 */
-        .navbar {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            background: transparent;
-            position: relative;
-            width: 100%;
-            z-index: 2;
-            margin-bottom: 0;
-        }
+    .rounded-pill {
+        border-radius: 50rem !important;
+    }
 
-        .nav-item {
-            margin-right: 1vw;
-            position: relative;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1.6vw;
-        }
+    .bg-danger {
+        background-color: #dc3545 !important;
+    }
 
-        .nav-item-style {
-            background-color: #f0f0f0;
-            border: 0.05vw solid #000;
-            padding: 0.4vw 0.4vw 0 0.4vw;
-            border-radius: 20px;
-        }
+    .visually-hidden {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        padding: 0 !important;
+        margin: -1px !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+        white-space: nowrap !important;
+        border: 0 !important;
+    }
+</style>
 
-        .nav-item img {
-            min-width: 1.5vw;
-            min-height: 1.5vw;
-            width: 2vw;
-            height: 2vw;
-        }
+<style>
+    .hidden {
+        display: none;
+    }
 
-        /* 下拉 DIV */
-        .dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: white;
-            border-radius: 0.5vw;
-            box-shadow: 0 0.3vw 1vw rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-            transform: translateY(-1vw);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-            z-index: 11;
-        }
+    .show {
+        display: block;
+    }
 
-        .dropdown.active {
-            transform: translateY(0);
-            opacity: 1;
-            pointer-events: auto;
-        }
+    /* 第一部分 */
+    a {
+        text-decoration: none;
+        color: #000;
+    }
 
-        .dropdown-item {
-            padding: 0.8vw 1.2vw;
-            font-size: 0.9vw;
-            transition: background 0.2s;
-        }
+    /* 導覽列 */
+    .navbar {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        background: transparent;
+        position: relative;
+        width: 100%;
+        z-index: 2;
+        margin-bottom: 0;
+    }
 
-        .dropdown-item:hover {
-            background: #f0f0f0;
-        }
+    .nav-item {
+        margin-right: 1vw;
+        position: relative;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1.6vw;
+    }
 
-        .separateRight {
-            margin-right: 3vw;
-        }
+    .nav-item-style {
+        background-color: #f0f0f0;
+        border: 0.05vw solid #000;
+        padding: 0.4vw 0.4vw 0 0.4vw;
+        border-radius: 20px;
+    }
 
-        .separateLeft {
-            padding-left: 3vw;
-            padding-top: 5px;
-            width: 20vw;
-        }
+    .nav-item img {
+        min-width: 1.5vw;
+        min-height: 1.5vw;
+        width: 2vw;
+        height: 2vw;
+    }
 
-        .navbar ul {
-            display: flex;
-            list-style: none;
-        }
+    /* 下拉 DIV */
+    .dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: white;
+        border-radius: 0.5vw;
+        box-shadow: 0 0.3vw 1vw rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        transform: translateY(-1vw);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s ease;
+        z-index: 11;
+    }
 
-        .sign {
-            line-height: 12px;
-            font-size: small;
-            text-align: right;
-            margin-top: 12px;
-        }
+    .dropdown.active {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
 
-        /* ======768px以下導覽列下拉選單========  */
-        .ctn {
-            cursor: pointer;
-        }
+    .dropdown-item {
+        padding: 0.8vw 1.2vw;
+        font-size: 0.9vw;
+        transition: background 0.2s;
+    }
 
-        .bar1,
-        .bar2,
-        .bar3 {
-            width: 20px;
-            height: 1px;
-            background-color: #333;
-            margin: 5px 10px 0 0;
-            transition: 0.4s;
-        }
+    .dropdown-item:hover {
+        background: #f0f0f0;
+    }
 
-        .change .bar1 {
-            -webkit-transform: rotate(-45deg) translate(-9px, 6px);
-            transform: rotate(-45deg) translate(-9px, 6px);
-        }
+    .separateRight {
+        margin-right: 3vw;
+    }
 
-        .change .bar2 {
-            opacity: 0;
-        }
+    .separateLeft {
+        padding-left: 3vw;
+        padding-top: 5px;
+        width: 20vw;
+    }
 
-        .change .bar3 {
-            -webkit-transform: rotate(45deg) translate(-8px, -8px);
-            transform: rotate(45deg) translate(-8px, -8px);
-        }
+    .navbar ul {
+        display: flex;
+        list-style: none;
+    }
+
+    .sign {
+        line-height: 12px;
+        font-size: small;
+        text-align: right;
+        margin-top: 12px;
+    }
+
+    /* ======768px以下導覽列下拉選單========  */
+    .ctn {
+        cursor: pointer;
+    }
+
+    .bar1,
+    .bar2,
+    .bar3 {
+        width: 20px;
+        height: 1px;
+        background-color: #333;
+        margin: 5px 10px 0 0;
+        transition: 0.4s;
+    }
+
+    .change .bar1 {
+        -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+        transform: rotate(-45deg) translate(-9px, 6px);
+    }
+
+    .change .bar2 {
+        opacity: 0;
+    }
+
+    .change .bar3 {
+        -webkit-transform: rotate(45deg) translate(-8px, -8px);
+        transform: rotate(45deg) translate(-8px, -8px);
+    }
 
 
+    .overlay {
+        height: 0%;
+        width: 100%;
+        position: fixed;
+        z-index: 10;
+        top: 0;
+        left: 0;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.9);
+        overflow-y: hidden;
+        transition: 0.5s;
+    }
+
+    .overlay-content {
+        position: relative;
+        top: 25%;
+        width: 100%;
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .overlay a {
+        padding: 8px;
+        text-decoration: none;
+        font-size: 36px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+    }
+
+    .overlay a:hover,
+    .overlay a:focus {
+        color: #f1f1f1;
+    }
+
+    .overlay .closebtn {
+        position: absolute;
+        top: 20px;
+        right: 45px;
+        font-size: 60px;
+    }
+
+    @media screen and (max-height: 450px) {
         .overlay {
-            height: 0%;
-            width: 100%;
-            position: fixed;
-            z-index: 10;
-            top: 0;
-            left: 0;
-            background-color: rgb(0, 0, 0);
-            background-color: rgba(0, 0, 0, 0.9);
-            overflow-y: hidden;
-            transition: 0.5s;
-        }
-
-        .overlay-content {
-            position: relative;
-            top: 25%;
-            width: 100%;
-            text-align: center;
-            margin-top: 30px;
+            overflow-y: auto;
         }
 
         .overlay a {
-            padding: 8px;
-            text-decoration: none;
-            font-size: 36px;
-            color: #818181;
-            display: block;
-            transition: 0.3s;
-        }
-
-        .overlay a:hover,
-        .overlay a:focus {
-            color: #f1f1f1;
+            font-size: 20px
         }
 
         .overlay .closebtn {
+            font-size: 40px;
+            top: 15px;
+            right: 35px;
+        }
+    }
+
+    @media (max-width:768px) {
+
+        .show {
+            display: none;
+        }
+
+        .container {
+            display: inline-block;
+        }
+
+        .dropdown-content {
             position: absolute;
-            top: 20px;
-            right: 45px;
-            font-size: 60px;
+            top: 60px;
+            /* 可依你的導覽列高度調整 */
+            right: 10px;
+            display: none;
         }
 
-        @media screen and (max-height: 450px) {
-            .overlay {
-                overflow-y: auto;
-            }
-
-            .overlay a {
-                font-size: 20px
-            }
-
-            .overlay .closebtn {
-                font-size: 40px;
-                top: 15px;
-                right: 35px;
-            }
+        .dropdown-content.show {
+            display: block;
         }
+    }
+</style>
 
-        @media (max-width:768px) {
 
-            .show {
-                display: none;
-            }
 
-            .container {
-                display: inline-block;
-            }
-
-            .dropdown-content {
-                position: absolute;
-                top: 60px;
-                /* 可依你的導覽列高度調整 */
-                right: 10px;
-                display: none;
-            }
-
-            .dropdown-content.show {
-                display: block;
-            }
-        }
-    </style>
-</head>
-
-<body>
 <header>
     <div class="main-nav">
         <!-- 導覽列 -->
         <div class="navbar navbar-default mobile-nav-wrap">
-            <a style=" margin-right:auto;" href="./index.html"><img class="separateLeft" src="./images/soda_title.png" alt="SODA標題" style="height:4vw;"></a>
+            <img class="separateLeft" src="./images/soda_title.png" alt="SODA標題" style="height:4vw; margin-right:auto;">
             <ul>
                 <li>
                     <div class="nav-item nav-item-style" id="about"><a href="./about.html">關於我們</a></div>
@@ -284,18 +316,15 @@
                 </div>
             </div>
         </div>
-    </header>
-        <script>
-            //768px以下導覽列下拉選單
+</header>
+<script>
+    //768px以下導覽列下拉選單
 
-            function openNav() {
-                document.getElementById("myNav").style.height = "100%";
-            }
+    function openNav() {
+        document.getElementById("myNav").style.height = "100%";
+    }
 
-            function closeNav() {
-                document.getElementById("myNav").style.height = "0%";
-            }
-        </script>
-</body>
-
-</html>
+    function closeNav() {
+        document.getElementById("myNav").style.height = "0%";
+    }
+</script>
