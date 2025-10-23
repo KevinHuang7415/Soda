@@ -29,7 +29,7 @@
     --product-pink-mid: #D21670;
     --product-pink-drck: #9C315E;
 
-    --product-pink-cover: #ff8bbb30;
+    --product-pink-cover: #ff8bbb80;
 }
 
 html,
@@ -47,16 +47,11 @@ body {
 }
 
 /* 按鈕樣式及動畫設定 */
-.btn {
-    background: var(--light-blue);
-    box-shadow: 0px 3px 0px var(--main-black);
-    transition: all 100ms ease;
-}
 
 .btn-l {
     margin: 30px auto;
     height: 70px;
-    line-height: 70px;
+    line-height: 50px;
     text-align: center;
     width: 400px;
     color: #333;
@@ -65,7 +60,10 @@ body {
     border-radius: 50px;
     font-size: 36px;
     font-weight: 400;
+    background-color: var(--light-blue);
     border: 1px solid var(--main-black);
+    box-shadow: 0px 3px 0px var(--main-black);
+    transition: all 100ms ease;
 }
 
 .btn-s {
@@ -78,13 +76,15 @@ body {
     display: flex;
     justify-content: center;
     align-content: center;
+    box-shadow: 0px 3px 0px var(--main-black);
+    transition: all 100ms ease;
 }
 
 .btn-s img {
     width: 30%;
 }
 
-.btn:hover {
+.btn-l:hover {
     cursor: pointer;
     transform: translateY(3px);
     box-shadow: 0px 0px 0px #ffffff00;

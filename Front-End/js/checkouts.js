@@ -1,4 +1,72 @@
+        // ==================== 頁面初始化 ====================
+        
+        // 頁面載入時初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            initializeUserDataOnLoad();
+        });
 
+        // 初始化使用者資料（頁面載入時）
+        function initializeUserDataOnLoad() {
+            const user = getCurrentUser();
+            
+            if (user) {
+                // 已登入，自動填入使用者資料
+                fillUserData(user);
+            } else {
+                // 未登入，顯示登入連結
+                const loginStatusLink = document.getElementById('login-status-link');
+                if (loginStatusLink) {
+                    loginStatusLink.textContent = '登入';
+                    loginStatusLink.href = './login.html';
+                }
+            }
+        }
+
+        // 填入使用者資料
+        function fillUserData(user) {
+            // 1. 更新登入狀態顯示
+            const loginStatusLink = document.getElementById('login-status-link');
+            if (loginStatusLink) {
+                loginStatusLink.textContent = `Hi, ${user.username || user.email}`;
+                loginStatusLink.href = 'javascript:void(0);';
+                loginStatusLink.style.cursor = 'default';
+                loginStatusLink.style.color = 'var(--main-green)';
+                loginStatusLink.title = '已登入';
+            }
+
+            // 2. 自動填入 Email
+            const emailInput = document.getElementById('email');
+            if (emailInput && user.email) {
+                emailInput.value = user.email;
+                emailInput.readOnly = true; // 已登入使用者不能修改 email
+                emailInput.style.backgroundColor = '#f5f5f5';
+            }
+
+            // 3. 自動填入姓名（如果有的話）
+            const firstNameInput = document.getElementById('deliveryFirstName');
+            const lastNameInput = document.getElementById('deliveryLaName');
+            
+            if (user.lastName && firstNameInput) {
+                firstNameInput.value = user.lastName;
+            }
+            
+            if (user.firstName && lastNameInput) {
+                lastNameInput.value = user.firstName;
+            }
+
+            // 4. 自動填入地址（如果有的話）
+            if (user.address) {
+                const addressInput = document.getElementById('addressName');
+                if (addressInput) {
+                    addressInput.value = user.address;
+                }
+            }
+
+            console.log('已自動填入使用者資料:', user);
+        }
+
+        // ==================== 商品相關 ====================
+        
         // 商品背景顏色對應表
         const productBackgroundMap = {
             '檸檬能量飲': 'var(--product-green-light)',
@@ -606,6 +674,17 @@
             }
 
             const newDiscountAmount = calculateDiscountAmount(discount);
+            
+            // ⭐ 新增：檢查使用優惠券後金額是否小於 500
+            const currentTotalDiscount = calculateDiscounts();
+            const finalAmountAfterNewDiscount = subtotal - currentTotalDiscount - newDiscountAmount;
+            
+            if (finalAmountAfterNewDiscount < 500) {
+                pauseMarquee();
+                alert(`使用此優惠券後結帳金額將低於 $500，無法使用！\n\n目前小計：$${subtotal.toLocaleString()}\n使用後金額：$${finalAmountAfterNewDiscount.toLocaleString()}\n最低結帳金額：$500`);
+                resumeMarquee();
+                return;
+            }
             const newDiscount = {
                 id: discountId,
                 name: discount.name,
@@ -1089,13 +1168,33 @@
         async function handleOrderSubmit(event) {
             event.preventDefault();
 
+            // 0. 檢查登入狀態（結帳時才需要登入）
+            if (!getCurrentUser()) {
+                const confirmLogin = confirm('結帳需要登入會員，是否前往登入？');
+                if (confirmLogin) {
+                    // 儲存當前頁面 URL，登入後返回
+                    sessionStorage.setItem('returnUrl', window.location.href);
+                    window.location.href = './login.html';
+                }
+                return;
+            }
+
             // 1. 驗證表單
             if (!validateOrderForm()) {
                 return;
             }
 
-            // 2. 收集訂單資料
-            const orderData = collectOrderData();
+            // 2. 收集訂單資料並檢查金額限制
+            let orderData;
+            try {
+                orderData = collectOrderData();
+            } catch (error) {
+                // 捕獲金額不足等錯誤
+                pauseMarquee();
+                alert(error.message);
+                resumeMarquee();
+                return;
+            }
 
             // 3. 顯示確認訊息
             if (!confirm('確定要送出訂單嗎？')) {
@@ -1105,6 +1204,8 @@
             // 4. 送出訂單到後端
             try {
                 pauseMarquee();
+                console.log('送出訂單資料 (JSON):', JSON.stringify(orderData, null, 2));
+                
                 const response = await submitOrder(orderData);
                 
                 if (response.success) {
@@ -1142,8 +1243,8 @@
             const cvv = document.getElementById('cvv').value.trim();
             const nameOnCard = document.getElementById('nameOnCard').value.trim();
 
-            // 驗證電子郵件
-            if (!email || !isValidEmail(email)) {
+            // 驗證電子郵件（非必填，但如果有填寫則需要格式正確）
+            if (email && !isValidEmail(email)) {
                 alert('請輸入有效的電子郵件地址');
                 document.getElementById('email').focus();
                 return false;
@@ -1217,7 +1318,7 @@
             // 取得購物車資料
             const cartData = getCartDataFromURL();
             let productList = '';
-            let orderItems = '';
+            let orderItems = [];
 
             if (cartData && cartData.cart) {
                 // 產品列表（簡單字串格式）
@@ -1225,8 +1326,8 @@
                     `${item.name} (${item.size}) x${item.qty}`
                 ).join(', ');
 
-                // 訂單項目（JSON 格式）
-                orderItems = JSON.stringify(cartData.cart);
+                // 訂單項目（陣列格式，不需要再 stringify）
+                orderItems = cartData.cart;
             }
 
             // 收集表單資料
@@ -1250,6 +1351,11 @@
             const totalDiscount = calculateDiscounts();
             const finalAmount = subtotal - totalDiscount;
 
+            // ⭐ 新增：最終檢查結帳金額不能小於 500
+            if (finalAmount < 500) {
+                throw new Error(`結帳金額不能低於 $500！\n\n目前結帳金額：$${finalAmount.toLocaleString()}\n請調整購物車或移除部分優惠券。`);
+            }
+
             // 備註（包含優惠券資訊）
             let notes = `Email: ${email}, Tel: ${tel}`;
             if (sendEmail) {
@@ -1263,16 +1369,27 @@
                 notes += `, 使用優惠: ${discountInfo}`;
             }
 
-            // 組合訂單資料
+            // 組合訂單資料（JSON 格式）
             return {
                 userID: userId,
                 productList: productList,
                 totalAmount: finalAmount,
+                subtotal: subtotal,
+                discount: totalDiscount,
                 paymentMethod: 'Credit Card',
                 shippingAddress: fullAddress,
                 receiverName: receiverName,
+                receiverPhone: tel,
+                receiverEmail: email,
                 orderItems: orderItems,
-                notes: notes
+                appliedCoupons: appliedDiscounts.filter(d => !d.isInvalid && !d.isReplaced).map(d => ({
+                    id: d.id,
+                    code: d.code || d.name,
+                    name: d.name,
+                    discountAmount: d.amount
+                })),
+                notes: notes,
+                subscribeNewsletter: sendEmail
             };
         }
 
@@ -1314,4 +1431,239 @@
             if (marqueeInstance && typeof marqueeInstance.resume === 'function') {
                 marqueeInstance.resume();
             }
+        }
+
+        // ==================== 表單驗證和浮動標籤功能 ====================
+
+        // 初始化表單驗證
+        function initFormValidation() {
+            const inputWrappers = document.querySelectorAll('.input-wrapper');
+            
+            inputWrappers.forEach(wrapper => {
+                const input = wrapper.querySelector('input');
+                if (!input) return;
+
+                // 處理預填值（如已登入的用戶自動填入的資料）
+                if (input.value) {
+                    input.classList.add('has-value');
+                }
+
+                // 監聽輸入事件
+                input.addEventListener('input', function() {
+                    if (this.value) {
+                        this.classList.add('has-value');
+                    } else {
+                        this.classList.remove('has-value');
+                    }
+                    
+                    // 清除錯誤狀態（當用戶開始輸入時）
+                    if (this.classList.contains('error')) {
+                        clearError(this);
+                    }
+                });
+
+                // 監聽失焦事件（blur）- 進行驗證
+                input.addEventListener('blur', function() {
+                    if (this.hasAttribute('required')) {
+                        validateInput(this);
+                    }
+                });
+
+                // 監聽焦點事件（focus）- 清除錯誤
+                input.addEventListener('focus', function() {
+                    clearError(this);
+                });
+            });
+
+            // 為選擇框添加驗證
+            const selectBoxes = document.querySelectorAll('select.select-box[required]');
+            selectBoxes.forEach(select => {
+                select.addEventListener('change', function() {
+                    if (this.value) {
+                        this.classList.remove('error');
+                    }
+                });
+
+                select.addEventListener('blur', function() {
+                    if (this.hasAttribute('required') && !this.value) {
+                        showSelectError(this);
+                    }
+                });
+            });
+        }
+
+        // 驗證單個輸入框
+        function validateInput(input) {
+            const value = input.value.trim();
+            const type = input.type;
+            const id = input.id;
+            
+            // 必填驗證
+            if (!value) {
+                showError(input, '此欄位為必填');
+                return false;
+            }
+
+            // Email 格式驗證
+            if (type === 'email' || id === 'email') {
+                if (!isValidEmail(value)) {
+                    showError(input, '請輸入有效的電子郵件地址');
+                    return false;
+                }
+            }
+
+            // 電話號碼驗證
+            if (id === 'deliveryTel') {
+                if (!isValidPhone(value)) {
+                    showError(input, '請輸入有效的手機號碼（格式：09xxxxxxxx）');
+                    return false;
+                }
+            }
+
+            // 信用卡號驗證
+            if (id === 'cardNum') {
+                // 移除空格和破折號
+                const cardNum = value.replace(/[\s-]/g, '');
+                if (cardNum.length < 13 || cardNum.length > 19) {
+                    showError(input, '請輸入有效的信用卡號碼（13-19位數字）');
+                    return false;
+                }
+                if (!/^\d+$/.test(cardNum)) {
+                    showError(input, '信用卡號只能包含數字');
+                    return false;
+                }
+            }
+
+            // CVV 驗證
+            if (id === 'cvv') {
+                if (value.length < 3 || value.length > 4) {
+                    showError(input, 'CVV 應為 3 或 4 位數字');
+                    return false;
+                }
+                if (!/^\d+$/.test(value)) {
+                    showError(input, 'CVV 只能包含數字');
+                    return false;
+                }
+            }
+
+            // 姓名驗證
+            if (id === 'deliveryFirstName' || id === 'deliveryLaName' || id === 'nameOnCard') {
+                if (value.length < 1) {
+                    showError(input, '請輸入姓名');
+                    return false;
+                }
+            }
+
+            // 地址驗證
+            if (id === 'addressName') {
+                if (value.length < 5) {
+                    showError(input, '請輸入完整地址');
+                    return false;
+                }
+            }
+
+            // 驗證通過，清除錯誤
+            clearError(input);
+            return true;
+        }
+
+        // 顯示錯誤訊息
+        function showError(input, message) {
+            const wrapper = input.closest('.input-wrapper');
+            if (!wrapper) return;
+
+            const errorMessage = wrapper.querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.textContent = message;
+            }
+
+            input.classList.add('error');
+        }
+
+        // 清除錯誤訊息
+        function clearError(input) {
+            const wrapper = input.closest('.input-wrapper');
+            if (!wrapper) return;
+
+            const errorMessage = wrapper.querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.textContent = '';
+            }
+
+            input.classList.remove('error');
+        }
+
+        // 顯示選擇框錯誤
+        function showSelectError(select) {
+            select.classList.add('error');
+            select.style.borderColor = '#dc3545';
+        }
+
+        // 驗證所有必填欄位
+        function validateAllRequiredFields() {
+            let isValid = true;
+            const inputWrappers = document.querySelectorAll('.input-wrapper');
+            
+            inputWrappers.forEach(wrapper => {
+                const input = wrapper.querySelector('input[required]');
+                if (input && !validateInput(input)) {
+                    isValid = false;
+                }
+            });
+
+            // 驗證選擇框
+            const selectBoxes = document.querySelectorAll('select.select-box[required]');
+            selectBoxes.forEach(select => {
+                if (!select.value) {
+                    showSelectError(select);
+                    isValid = false;
+                }
+            });
+
+            return isValid;
+        }
+
+        // 修改原有的 validateOrderForm 函數，添加視覺驗證
+        const originalValidateOrderForm = validateOrderForm;
+        validateOrderForm = function() {
+            // 先執行視覺驗證
+            const visualValidation = validateAllRequiredFields();
+            
+            if (!visualValidation) {
+                alert('請完整填寫所有必填欄位');
+                return false;
+            }
+            
+            // 再執行原有的邏輯驗證
+            return originalValidateOrderForm();
+        };
+
+        // 在 DOMContentLoaded 後初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFormValidation);
+        } else {
+            // DOM 已經載入完成
+            initFormValidation();
+        }
+
+        // 信用卡號格式化（選用功能：自動加入空格）
+        const cardNumInput = document.getElementById('cardNum');
+        if (cardNumInput) {
+            cardNumInput.addEventListener('input', function(e) {
+                let value = this.value.replace(/\s/g, '');
+                let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+                
+                // 只在格式化後的值與當前值不同時更新
+                if (formattedValue !== this.value) {
+                    const cursorPos = this.selectionStart;
+                    this.value = formattedValue;
+                    
+                    // 調整游標位置
+                    let newCursorPos = cursorPos;
+                    if (value.length % 4 === 0 && cursorPos === formattedValue.length - 1) {
+                        newCursorPos = cursorPos + 1;
+                    }
+                    this.setSelectionRange(newCursorPos, newCursorPos);
+                }
+            });
         }
