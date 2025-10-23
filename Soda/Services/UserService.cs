@@ -142,7 +142,8 @@ namespace Soda.Services
                 Role = user.Role.ToString(),
                 IsActive = user.IsActive,
                 CreatedAt = user.CreatedAt,
-                LastLoginAt = user.LastLoginAt
+                LastLoginAt = user.LastLoginAt,
+                IsEmailVerified = user.IsEmailVerified
             };
         }
     }

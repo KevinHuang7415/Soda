@@ -252,6 +252,7 @@
             background: #d4edda;
             color: #155724;
         }
+
         .status-inactive {
             background-color: red;
             color: white
@@ -569,7 +570,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                
+
                             </tr>
                         </tbody>
                     </table>
@@ -635,7 +636,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                
+
                             </tr>
                         </tbody>
                     </table>
@@ -670,7 +671,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                               
+
                             </tr>
                         </tbody>
                     </table>
@@ -682,7 +683,7 @@
     <script>
         //顯示點選圖標頁面
         function showTab(tabId) {
-            
+
             document.querySelectorAll('.tabContent').forEach(t => {
                 t.style.display = 'none';
                 t.style.opacity = '0';
@@ -894,40 +895,137 @@
         }
 
         // 用戶管理 API 
-        function loadUsers() {
-            axios.get('https://localhost:7085/api/users')
-                .then(res => {
-                    const tbody = document.querySelector('#userTable tbody');
-                    tbody.innerHTML = '';
+        // function loadUsers() {
+        //     axios.get('https://localhost:7085/api/users')
+        //         .then(res => {
+        //             const tbody = document.querySelector('#userTable tbody');
+        //             tbody.innerHTML = '';
 
-                    res.data.forEach(u => {
-                        const isActive = u.isActive;
-                        const isVerified = u.isEmailVerified;
+        //             res.data.forEach(u => {
+        //                 const isActive = u.isActive;
+        //                 const isVerified = u.isEmailVerified;
+        //                 const statusClass = isActive ? 'status-active' : 'status-inactive';
+        //                 const statusText = isActive ? '活躍' : '非活躍';
+        //                 const statusClass2 = isVerified ? 'status-active' : 'status-inactive';
+        //                 const statusTex2t = isVerified ? '已驗證' : '未驗證';
+
+        //                 const tr = document.createElement('tr');
+        //                 tr.innerHTML = `
+        //             <td>${u.id}</td>
+        //             <td>${u.username}</td>
+        //             <td>${u.email}</td>
+        //             <td>${u.firstName}</td>
+        //             <td>${u.lastName}</td>
+        //             <td>${u.phoneNumber ?? '-'}</td>
+        //             <td>${new Date(u.createdAt).toLocaleString()}</td>
+        //             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+        //             <td><span class="status-badge ${statusClass2}">${statusTex2t}</span></td>
+        //         `;
+        //                 tbody.appendChild(tr);
+        //             });
+        //         })
+        //         .catch(err => {
+        //             console.error(err);
+        //             showMessage('載入用戶資料時發生錯誤', 'error');
+        //         });
+        // }
+        document.addEventListener("DOMContentLoaded", () => {
+            const userData = localStorage.getItem('user');
+
+            if (!userData) {
+                alert("尚未登入，請先登入");
+                window.location.href = "./login.html";
+                return;
+            }
+
+            const user = JSON.parse(userData);
+            const userId = user.id;
+            const userRole = user.role;
+            const token = user.token;
+
+            console.log("目前登入的使用者 ID:", userId);
+            console.log("目前登入的 token:", token);
+            console.log("目前登入的角色:", userRole);
+
+            if (!token) {
+                alert("登入逾時，請重新登入");
+                localStorage.removeItem('user');
+                window.location.href = "./login.html";
+                return;
+            }
+
+            if (userRole !== "Admin") {
+                alert("您沒有權限瀏覽此頁面");
+                window.location.href = "./index.html";
+                return;
+            }
+
+            loadAllUsers(token);
+        });
+
+        function loadAllUsers(token) {
+            axios.get(`https://localhost:7085/api/User/Users`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(res => {
+                    const data = res.data;
+                    console.log("取得的使用者資料:", data);
+
+                    const tbody = document.querySelector('#userTable tbody');
+                    tbody.innerHTML = "";
+
+                    if (!Array.isArray(data)) {
+                        console.error("資料格式錯誤:", data);
+                        alert("伺服器回傳資料格式錯誤");
+                        return;
+                    }
+
+                    data.forEach(user => {
+                        const isActive = user.isActive === true || user.isActive === "true";
+                        const isVerified = user.isEmailVerified === true || user.isEmailVerified === "true";
+
                         const statusClass = isActive ? 'status-active' : 'status-inactive';
                         const statusText = isActive ? '活躍' : '非活躍';
                         const statusClass2 = isVerified ? 'status-active' : 'status-inactive';
-                        const statusTex2t = isVerified ? '已驗證' : '未驗證';
+                        const statusText2 = isVerified ? '已驗證' : '未驗證';
 
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                    <td>${u.id}</td>
-                    <td>${u.username}</td>
-                    <td>${u.email}</td>
-                    <td>${u.firstName}</td>
-                    <td>${u.lastName}</td>
-                    <td>${u.phoneNumber ?? '-'}</td>
-                    <td>${new Date(u.createdAt).toLocaleString()}</td>
-                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                    <td><span class="status-badge ${statusClass2}">${statusTex2t}</span></td>
-                `;
+                <td>${user.id}</td>
+                <td>${user.username}</td>
+                <td>${user.email}</td>
+                <td>${user.firstName ?? '-'}</td>
+                <td>${user.lastName ?? '-'}</td>
+                <td>${user.phoneNumber ?? '-'}</td>
+                <td>${new Date(user.createdAt).toLocaleString()}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td><span class="status-badge ${statusClass2}">${statusText2}</span></td>
+            `;
                         tbody.appendChild(tr);
                     });
                 })
                 .catch(err => {
-                    console.error(err);
-                    showMessage('載入用戶資料時發生錯誤', 'error');
+                    console.error("載入失敗:", err.response || err);
+
+                    if (err.response && err.response.status === 401) {
+                        alert("登入驗證已過期，請重新登入");
+                        localStorage.removeItem('user');
+                        window.location.href = "./login.html";
+                    }
+                    else if (err.response && err.response.status === 403) {
+                        alert("您沒有權限查看所有使用者");
+                        window.location.href = "./index.html";
+                    }
+                    else {
+                        alert("無法載入使用者資料");
+                    }
                 });
         }
+
+
         // 優惠券管理API   
         function loadCoupons() {
             axios.get('https://localhost:7085/api/coupons')
@@ -1022,11 +1120,11 @@
             axios.post('https://localhost:7085/api/coupons', {
                 code: code,
                 discount: discount,
-                discountType: discountType, 
-                status: 'active' 
+                discountType: discountType,
+                status: 'active'
             })
                 .then(() => {
-                    showMessage('優惠券新增成功！', 'success');                    
+                    showMessage('優惠券新增成功！', 'success');
                     document.getElementById('couponCode').value = '';
                     document.getElementById('couponDiscount').value = '';
                     document.getElementById('couponDiscountType').value = 'P';
@@ -1058,7 +1156,8 @@
         showTab('products');
         loadProducts();
         loadOrders();
-        loadUsers();
+        // loadUsers();
+        // loadAllUsers(token);
         loadCoupons();
 
     </script>
