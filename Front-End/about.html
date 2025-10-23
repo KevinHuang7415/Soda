@@ -13,29 +13,32 @@
 	<!-- 必須先載入 jQuery，建議使用 CDN -->
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"
 		integrity="sha256-5+o5r5Zp+9N4ZQ+XKjKQ0XhXW/7e0bV6k5d5M1kVjXU=" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="./css/main_setting.css">
 	<!-- 再載入自己的載入腳本 -->
 	<script src="js/include.js" defer></script>
 	<style>
 		/* 街頭藝術風格樣式 - 黃色主色調 */
 		body {
-			background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
-			background-size: 200% 200%;
 			font-family: 'coolFont';
 			margin: 0;
 			padding: 0;
 			min-height: 100vh;
 			animation: bg-pan-right 8s ease-in-out infinite alternate;
-			margin-bottom: 0px;
-			margin-right: 0px;
 		}
+
+		#site-header {
+			background-color: var(--light-blue);
+		}
+		#site-footer {
+			background-color: var(--light-blue);
+		}
+
 
 		.flex {
 			display: flex;
 		}
 
-		.widePic {
-			width: 400px
-		}
+
 
 		.text-focus-in {
 			animation: text-focus-in 2s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
@@ -48,7 +51,7 @@
 			font-family: 'Comic Sans MS', cursive, sans-serif;
 			font-weight: bold;
 			font-size: 4rem;
-			color: white;
+			color:var(--main-orange);
 			text-shadow: 4px 4px 0px #000, 8px 8px 0px #333;
 			text-align: center;
 			margin: 2rem 0;
@@ -415,27 +418,29 @@
 			background-color: #000;
 		}
 
-		/* 版面排版優化 */
+		/* 版面排版優化 - 去掉邊距/內距，使內容更貼齊邊緣 */
 		.container {
+			/* 解除預設寬度與內邊距，讓 container 可滿寬或貼齊父層 */
+			max-width: 100%;
 			overflow-x: hidden;
-			max-width: 1200px;
-			margin: 0 auto;
-			padding: 0 15px;
+			margin: 0;
+			padding: 0;
+			/* 移除左右 15px 內距 */
 		}
 
 		.row {
-			margin-left: -10px;
-			margin-right: -10px;
-			margin-bottom: 2rem;
+			/* 移除 row 的負邊距，避免產生額外水平間隙 */
+			margin: 0 0 2rem 0;
 		}
 
 		.col-lg-3,
 		.col-md-6,
 		.col-md-8,
 		.col-md-4 {
-			padding-left: 10px;
-			padding-right: 10px;
-			margin-bottom: 1rem;
+			/* 去掉欄位的內邊距與底部間距，讓欄位緊密排列 */
+			padding-left: 0;
+			padding-right: 0;
+			margin-bottom: 0;
 		}
 
 
@@ -525,7 +530,7 @@
 
 		/* 卡片特殊樣式 */
 		.card-center {
-			max-width: 600px;
+
 			margin: 0 auto;
 		}
 
@@ -589,10 +594,7 @@
 			line-height: 1.8;
 		}
 
-		/* 標題間距 */
-		.section-title {
-			margin-bottom: 3rem;
-		}
+
 
 		/* 響應式設計 */
 		@media (max-width: 768px) {
@@ -639,8 +641,11 @@
 </head>
 
 <body>
-	<div id="site-header"><iframe src="./partials/nav.html" style="width:100%; border:none;"></iframe></div>
-	<div class="bg-pan-top">
+
+	<div id="site-header">
+		<iframe src="./partials/nav.html" style="width:100%; border:none;"></iframe>
+	</div>
+	<div class="col">
 		<!--------關於我們介紹-------->
 		<section>
 			<div class="container">
@@ -945,9 +950,11 @@
 				</div>
 			</div>
 		</section>
+
+
 	</div>
 
-
+	<!--------Footer-------->
 	<div id="site-footer">
 		<iframe src="./partials/footer.html" style="width:100%; border:none;"></iframe>
 	</div>
