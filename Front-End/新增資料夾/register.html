@@ -14,36 +14,18 @@
   <!-- axios -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-
   <style>
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-
-    #site-footer {
-      margin-top: auto;
-      /* 將 footer 推到底部 */
-    }
-
     /* register CSS */
     body {
       background: var(--light-yellow);
-      display: flex;
-      flex-direction: column;
     }
-    
-    /* 讓主要內容區域佔滿剩餘空間 */
+
     .containerAcc {
       margin: auto;
       width: calc(300px + (300) * ((100vw - 480px) / (1200 - 480)));
       /* 在 480px 寬螢幕時寬度約為 300px
          在 1200px 寬螢幕時寬度約為 800px
          之間會平滑變化 */
-      flex: 1;
-      padding: 2rem 1rem;
     }
 
     .titleAcc {
@@ -119,7 +101,6 @@
 </head>
 
 <body>
-  <div id="site-header"></div>
   <div class="containerAcc">
     <div class="titleAcc">
       <h1 class="alc mgt">註冊個人資料</h1>
@@ -146,12 +127,7 @@
       <button type="button" class="btn btn-l alc" onclick="register()">註冊</button>
     </form>
   </div>
-  <div id="site-footer"></div>
 </body>
-<!-- jQuery -->
-<script src="./js/jquery-3.4.1.min.js"></script>
-<!-- Include script -->
-<script src="./js/include.js"></script>
 <script>
   function showMessage(message, type = 'error') {
     const container = document.getElementById('messageContainer');
@@ -189,7 +165,7 @@
       .then(res => {
         showMessage(res.data.message, 'success');
         document.getElementById('formAcc').reset();
-
+        
         setTimeout(() => {
           window.location.href = './login.html';
         }, 3000);

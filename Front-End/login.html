@@ -13,11 +13,21 @@
   <link rel="stylesheet" href="./css/shoppingCart_style.css">
   <!-- axios -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- jQuery -->
+  <script src="./js/jquery-3.4.1.min.js"></script>
 
   <style>
     /* register CSS */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
     body {
       background: var(--light-yellow);
+      display: flex;
+      flex-direction: column;
     }
 
     .containerAcc {
@@ -26,6 +36,13 @@
       /* 在 480px 寬螢幕時寬度約為 300px
          在 1200px 寬螢幕時寬度約為 800px
          之間會平滑變化 */
+      padding: 2rem 1rem;
+      flex: 1; /* 讓內容區域佔滿剩餘空間 */
+    }
+    
+    /* Footer 貼底樣式 */
+    #site-footer {
+      margin-top: auto; /* 將 footer 推到底部 */
     }
 
     .titleAcc {
@@ -100,6 +117,9 @@
 </head>
 
 <body>
+  <!-- Navigation -->
+  <div id="site-header"></div>
+  
   <div class="containerAcc">
     <div class="titleAcc">
       <h1 class="alc mgt">登入會員</h1>
@@ -117,6 +137,11 @@
     </form>
   </div>
 
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Include script -->
+  <script src="./js/include.js"></script>
 
   <script>
 

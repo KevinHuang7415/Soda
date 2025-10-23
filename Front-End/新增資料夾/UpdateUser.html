@@ -13,34 +13,11 @@
   <link rel="stylesheet" href="./css/shoppingCar.css">
   <!-- axios -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <!-- jQuery for include functionality -->
-  <script src="./js/jquery-3.4.1.min.js"></script>
 
   <style>
-    /* Footer 置底樣式 */
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
-    
-    /* 確保 nav 正確顯示 */
-    #site-header {
-      position: relative;
-      z-index: 1000;
-      width: 100%;
-    }
-    
-    /* 確保 navbar 內容不被截斷 */
-    #site-header .navbar {
-      position: relative !important;
-      width: 100% !important;
-    }
     /* register CSS */
     body {
       background: var(--light-yellow);
-      display: flex;
-      flex-direction: column;
     }
 
     .containerAcc {
@@ -49,13 +26,6 @@
       /* 在 480px 寬螢幕時寬度約為 300px
          在 1200px 寬螢幕時寬度約為 800px
          之間會平滑變化 */
-      flex: 1;
-      padding: 2rem 1rem;
-    }
-    
-    /* Footer 置底樣式 */
-    #site-footer {
-      margin-top: auto; /* 將 footer 推到底部 */
     }
 
     .titleAcc {
@@ -131,9 +101,6 @@
 </head>
 
 <body>
-  <!-- Navigation -->
-  <div id="site-header"></div>
-  
   <div class="containerAcc">
     <div class="titleAcc">
       <h1 class="alc mgt">更新個人資料</h1>
@@ -155,12 +122,6 @@
       <button type="button" class="btn btn-l alc" onclick="UpdateInfo()">更新</button>
     </form>
   </div>
-
-  <!-- Footer -->
-  <div id="site-footer"></div>
-
-  <!-- Include script -->
-  <script src="./js/include.js"></script>
 </body>
 <script>
 
