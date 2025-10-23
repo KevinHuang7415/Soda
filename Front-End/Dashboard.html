@@ -929,6 +929,7 @@
         //             showMessage('載入用戶資料時發生錯誤', 'error');
         //         });
         // }
+        //驗證使用者
         document.addEventListener("DOMContentLoaded", () => {
             const userData = localStorage.getItem('user');
 
@@ -962,7 +963,7 @@
 
             loadAllUsers(token);
         });
-
+        //讀取所有使用者
         function loadAllUsers(token) {
             axios.get(`https://localhost:7085/api/User/Users`, {
                 headers: {
@@ -986,7 +987,6 @@
                     data.forEach(user => {
                         const isActive = user.isActive === true || user.isActive === "true";
                         const isVerified = user.isEmailVerified === true || user.isEmailVerified === "true";
-
                         const statusClass = isActive ? 'status-active' : 'status-inactive';
                         const statusText = isActive ? '活躍' : '非活躍';
                         const statusClass2 = isVerified ? 'status-active' : 'status-inactive';
@@ -994,12 +994,12 @@
 
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                <td>${user.id}</td>
-                <td>${user.username}</td>
-                <td>${user.email}</td>
-                <td>${user.firstName ?? '-'}</td>
-                <td>${user.lastName ?? '-'}</td>
-                <td>${user.phoneNumber ?? '-'}</td>
+                <td id="user-${user.id}">${user.id}</td>
+                <td><input id="user-username-${user.id}" value="${user.username}" style="width:120px; padding:4px; border:none" onkeydown="if(event.key === 'Enter') updateUser(${user.id})" /></td>
+                <td><input id="user-email-${user.id}" value="${user.email}" style="width:120px; padding:4px; border:none" onkeydown="if(event.key === 'Enter') updateUser(${user.id})" /></td>
+                <td><input id="user-firstName-${user.id}" value="${user.firstName ?? ''}" style="width:120px; padding:4px; border:none" onkeydown="if(event.key === 'Enter') updateUser(${user.id})" /></td>
+                <td><input id="user-lastName-${user.id}" value="${user.lastName ?? ''}" style="width:120px; padding:4px; border:none" onkeydown="if(event.key === 'Enter') updateUser(${user.id})" /></td>
+                <td><input id="user-phoneNumber-${user.id}" value="${user.phoneNumber ?? ''}" style="width:120px; padding:4px; border:none" onkeydown="if(event.key === 'Enter') updateUser(${user.id})" /></td>
                 <td>${new Date(user.createdAt).toLocaleString()}</td>
                 <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                 <td><span class="status-badge ${statusClass2}">${statusText2}</span></td>
@@ -1024,6 +1024,38 @@
                     }
                 });
         }
+        //更新使用者
+        function updateUser(id) {
+            const newUserName = document.getElementById(`user-username-${id}`).value.trim();
+            const newEmail = document.getElementById(`user-email-${id}`).value.trim();
+            const newFirstName = document.getElementById(`user-firstName-${id}`).value.trim();
+            const newLastName = document.getElementById(`user-lastName-${id}`).value.trim();
+            const newPhoneNumber = document.getElementById(`user-phoneNumber-${id}`).value.trim();
+
+            const token = JSON.parse(localStorage.getItem('user'))?.token;
+
+            axios.put(`https://localhost:7085/api/User/${id}`, {
+                UserName: newUserName,
+                Email: newEmail,
+                FirstName: newFirstName,
+                LastName: newLastName,
+                PhoneNumber: newPhoneNumber
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(() => {
+                    showMessage('使用者更新成功！', 'success');
+                    loadAllUsers(token); // 
+                })
+                .catch(err => {
+                    console.error(err);
+                    showMessage('更新使用者時發生錯誤', 'error');
+                });
+        }
+
 
 
         // 優惠券管理API   

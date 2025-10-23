@@ -141,6 +141,7 @@ namespace Soda.Services
                 Address = user.Address,
                 Role = user.Role.ToString(),
                 IsActive = user.IsActive,
+                PhoneNumber = user.PhoneNumber,
                 CreatedAt = user.CreatedAt,
                 LastLoginAt = user.LastLoginAt,
                 IsEmailVerified = user.IsEmailVerified
