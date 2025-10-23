@@ -11,18 +11,6 @@ let productSizesCache = {}; // 快取每個商品的規格列表
 
 // --- 動態插入購物車 HTML 結構 ---
 function injectshoppingCartHTML() {
-    // 檢查是否已經存在購物車元素
-    if (document.getElementById('shoppingCart')) {
-        return; // 如果已存在，不重複插入
-    }
-    
-    // 檢查 document.body 是否準備好
-    if (!document.body) {
-        console.warn('document.body 尚未準備好，延遲插入購物車 HTML');
-        setTimeout(injectshoppingCartHTML, 100);
-        return;
-    }
-    
     const html = `
     <div class="shoppingCart is-hidden" id="shoppingCart">
         <div class="cart">
@@ -62,12 +50,7 @@ function injectshoppingCartHTML() {
         </div>
     </div>
     `;
-    
-    try {
-        document.body.insertAdjacentHTML("afterbegin", html);
-    } catch (error) {
-        console.error('插入購物車 HTML 時發生錯誤:', error);
-    }
+    document.body.insertAdjacentHTML("afterbegin", html);
 }
 
 // ==============================
@@ -602,6 +585,7 @@ function updateCartItemQty(productId, newQty) {
             cart[itemIndex].qty = newQty;
             localStorage.setItem('cart', JSON.stringify(cart));
             updateSubtotal(); // 只更新小計
+            updateCartBadge(); // 更新徽章數量
         }
     }
 }
@@ -805,16 +789,6 @@ function refreshFavorites() {
 // --- 開關購物車 (toggle) ---
 function toggleCart() {
     const shoppingCart = document.getElementById('shoppingCart');
-    if (!shoppingCart) {
-        console.warn('購物車元素不存在，嘗試重新初始化');
-        injectshoppingCartHTML();
-        // 重新獲取元素
-        const newShoppingCart = document.getElementById('shoppingCart');
-        if (newShoppingCart) {
-            newShoppingCart.classList.toggle('is-hidden');
-        }
-        return;
-    }
     shoppingCart.classList.toggle('is-hidden');
 }
 
@@ -925,6 +899,43 @@ function refreshCart() {
 
     // 更新小計
     updateSubtotal();
+    
+    // 更新購物車徽章數量
+    updateCartBadge();
+}
+
+// --- 更新購物車徽章數量 ---
+function updateCartBadge() {
+    const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+    
+    // 計算總商品數量
+    const totalItems = cartData.reduce((sum, item) => sum + item.qty, 0);
+    
+    // 更新所有徽章元素
+    const badges = document.querySelectorAll('.shoppingCart-item-nmber');
+    badges.forEach(badge => {
+        const currentNumber = badge.textContent.replace('+', '');
+        const newNumber = totalItems > 99 ? '99+' : totalItems.toString();
+        
+        if (totalItems > 0) {
+            // 如果數字有變化，重新觸發動畫
+            if (currentNumber !== newNumber) {
+                badge.style.animation = 'none';
+                setTimeout(() => {
+                    badge.textContent = newNumber;
+                    badge.style.animation = '';
+                }, 10);
+            } else {
+                badge.textContent = newNumber;
+            }
+            badge.classList.add('show');
+        } else {
+            badge.textContent = '';
+            badge.classList.remove('show');
+        }
+    });
+    
+    console.log(`購物車徽章已更新：${totalItems} 件商品`);
 }
 
 // --- 切換 Tab (購物車 / 我的最愛) ---
@@ -1027,35 +1038,21 @@ function initializeAddCartSelectors() {
 
 // --- 初始化 ---
 document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        injectshoppingCartHTML();
+    injectshoppingCartHTML();
 
-        // 預先載入所有商品資料（含名稱和規格）- 優化效能
-        await preloadProductData();
+    // 預先載入所有商品資料（含名稱和規格）- 優化效能
+    await preloadProductData();
 
-        // 確保購物車元素存在後再渲染
-        const shoppingCart = document.getElementById('shoppingCart');
-        if (shoppingCart) {
-            // 渲染購物車和我的最愛
-            refreshCart();
-            refreshFavorites();
-        } else {
-            console.warn('購物車元素未找到，跳過初始化渲染');
-        }
-    } catch (error) {
-        console.error('購物車初始化時發生錯誤:', error);
-    }
+    // 渲染購物車和我的最愛
+    refreshCart();
+    refreshFavorites();
+    
+    // 初始化購物車徽章數量
+    updateCartBadge();
 
     // 綁定 Tab 切換事件
-    const cartTab = document.getElementById('cart-tab');
-    const favoriteTab = document.getElementById('favorite-tab');
-    
-    if (cartTab) {
-        cartTab.addEventListener('click', () => switchTab('cart'));
-    }
-    if (favoriteTab) {
-        favoriteTab.addEventListener('click', () => switchTab('favorite'));
-    }
+    document.getElementById('cart-tab').addEventListener('click', () => switchTab('cart'));
+    document.getElementById('favorite-tab').addEventListener('click', () => switchTab('favorite'));
 
     // 初始化所有互動式選擇器
     initializeAddCartSelectors();
@@ -1064,6 +1061,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const openBtns = document.querySelectorAll('.openCart-btn');
     openBtns.forEach(btn => {
         btn.addEventListener('click', async (e) => {
+            // ⭐ 阻止默認行為（避免 <a> 標籤重新載入頁面）
+            e.preventDefault();
+            
             // 檢查按鈕文字，判斷是「加入購物車」還是「開啟購物車」
             if (btn.textContent.includes('加入購物車')) {
                 // 這是「加入購物車」按鈕
@@ -1097,17 +1097,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 點擊背景（粉色遮罩）關閉購物車
     const shoppingCartOverlay = document.getElementById('shoppingCart');
-    if (shoppingCartOverlay) {
-        shoppingCartOverlay.addEventListener('click', (e) => {
-            if (e.target === shoppingCartOverlay) {
-                toggleCart();
-            }
-        });
-    }
+    shoppingCartOverlay.addEventListener('click', (e) => {
+        if (e.target === shoppingCartOverlay) {
+            toggleCart();
+        }
+    });
 
     // 按 ESC 鍵關閉購物車
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && shoppingCartOverlay && !shoppingCartOverlay.classList.contains('is-hidden')) {
+        if (e.key === 'Escape' && !shoppingCartOverlay.classList.contains('is-hidden')) {
             toggleCart();
         }
     });
@@ -1142,4 +1140,5 @@ document.addEventListener('DOMContentLoaded', async () => {
 window.addToCart = addToCart;
 window.addToFavorites = addToFavorites;
 window.toggleCart = toggleCart;
+window.updateCartBadge = updateCartBadge;
 
