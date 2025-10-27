@@ -50,7 +50,9 @@ function injectshoppingCartHTML() {
         </div>
     </div>
     `;
-    document.body.insertAdjacentHTML("afterbegin", html);
+    // 將購物車插入到 body 末尾，確保不會與導航欄插入順序衝突
+    // 購物車是全頁遮罩（fixed positioning），在 DOM 中的位置不影響視覺效果
+    document.body.insertAdjacentHTML("beforeend", html);
 }
 
 // ==============================
