@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./css/normalize.css">
     <link rel="stylesheet" href="./css/main_setting.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
             margin: 0;
@@ -549,6 +549,9 @@
                 <div class="nav-icon" title="優惠管理" onclick="showTab('coupons')">
                     <img src="./images/dashboard/ticket-simple-solid-full.svg" alt="優惠管理">
                 </div>
+                <div class="nav-icon" title="銷售管理" onclick="showTab('sales')">
+                    <img src="./images/dashboard/sales.svg" alt="">
+                </div>
             </div>
         </div>
 
@@ -677,6 +680,19 @@
                     </table>
                 </div>
             </div>
+            <div id="sales" class="tabContent" style="display:none;">
+                <h2>銷售統計</h2>
+                <div style="display:flex; gap:40px; flex-wrap:wrap;">
+                    <div style="flex:1; min-width:300px;">
+                        <h3>售出數量</h3>
+                        <canvas id="quantityChart" width="400" height="400"></canvas>
+                    </div>
+                    <div style="flex:1; min-width:300px;">
+                        <h3>總金額</h3>
+                        <canvas id="revenueChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -708,7 +724,8 @@
                 'products': 0,
                 'orders': 1,
                 'users': 2,
-                'coupons': 3
+                'coupons': 3,
+                'sales': 4
             };
 
             const navIcons = document.querySelectorAll('.nav-icon');
@@ -1182,15 +1199,94 @@
                     showMessage('刪除優惠券時發生錯誤', 'error');
                 });
         }
+        //銷售統計圖
+        function loadSalesChart() {
+            axios.get('https://localhost:7085/api/orders')
+                .then(res => {
+                    const orders = res.data;
+                    const productStats = {};
 
+                    orders.forEach(o => {
+                        let items = [];
+                        try { items = JSON.parse(o.productList); } catch { }
+                        items.forEach(item => {
+                            const name = `${item.Size}ml${item.ProductName}`;
+                            if (!productStats[name])
+                                productStats[name] = { quantity: 0, total: 0 };
+                            productStats[name].quantity += item.Quantity;
+                            productStats[name].total += item.Quantity * item.UnitPrice;
+                        });
+                    });
 
+                    const labels = Object.keys(productStats);
+                    const quantities = labels.map(l => productStats[l].quantity);
+                    const totals = labels.map(l => productStats[l].total.toFixed(2));
 
+                    // 售出數量圓餅圖
+                    const ctx1 = document.getElementById('quantityChart').getContext('2d');
+                    new Chart(ctx1, {
+                        type: 'pie',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: quantities,
+                                backgroundColor: labels.map(() => `hsl(${Math.random() * 360},70%,60%)`)
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { position: 'bottom' },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (ctx) {
+                                            return `${ctx.label}: ${ctx.raw} 件`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // 總金額長條圖
+                    const ctx2 = document.getElementById('revenueChart').getContext('2d');
+                    new Chart(ctx2, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: '總金額 ($)',
+                                data: totals,
+                                backgroundColor: 'rgba(255, 159, 64, 0.7)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: { display: true, text: '總金額 ($)' }
+                                }
+                            },
+                            plugins: {
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (ctx) { return `$${ctx.raw}`; }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(err => console.error('載入銷售資料錯誤:', err));
+        }
         showTab('products');
         loadProducts();
         loadOrders();
         // loadUsers();
         // loadAllUsers(token);
         loadCoupons();
+        loadSalesChart();
 
     </script>
 </body>
