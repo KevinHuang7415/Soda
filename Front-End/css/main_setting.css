@@ -35,9 +35,8 @@
 html,
 body {
     /* 文字設定 */
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Zalando+Sans+SemiExpanded:ital,wght@0,200..900;1,200..900&display=swap');
-    font-family: "Zalando Sans SemiExpanded", sans-serif;
-
+    font-family: 'coolFont', 'FakePearl-regular',sans-serif;
+    font-weight: 650;
     /* 主樣式設定 */
     vertical-align: top;
     box-sizing: border-box;
@@ -94,6 +93,25 @@ body {
     cursor: pointer;
     transform: translateY(3px);
 }
+@font-face {
+        font-family: 'coolFont';
+        /* 自訂的字體名稱 */
+        src: url('./fonts/字幫玩酷體.ttf') format('truetype'),
+            /* 優先使用ttf */
+            url('../fonts/搖滾樂.ttf') format('woff'),
+            /* 備用woff */
+            url('../fonts/宅在家粉條甜.ttf') format('truetype');
+        /* 最終備用truetype */
+    }
+
+    @font-face {
+        font-family: "FakePearl-regular";
+        /* 自訂名稱 */
+        src: url("../fonts/FakePearl-regular.ttf") format("truetype");
+        /* 字體檔路徑 */
+        font-weight: normal;
+        font-style: normal;
+    }
 
 @media (max-width: 768px) {
     .btn-l {
@@ -101,6 +119,8 @@ body {
 
         padding: 12px 0;
     }
+
+    
 
     .btn-s {}
 }

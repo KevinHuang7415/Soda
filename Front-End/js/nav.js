@@ -10,7 +10,6 @@
             box-sizing:content-box;
             background-color: var(--main-color);
             height: 40px;
-            font-family: Arial, Helvetica, sans-serif;
             font-weight: bold;
             display: flex;
             justify-content: space-between;
@@ -92,7 +91,6 @@
         .navUl a {
             color: #000;
             text-decoration: none;
-            font-family: Arial, Helvetica, sans-serif;
             font-weight: bold;
         }
 
