@@ -192,9 +192,9 @@
             if (userRole === 'Admin') {
               if (confirm('現在將引導您前往管理者畫面')) {
                 window.open('./Dashboard.html', '_blank'); // 新視窗開啟後台
-                window.location.href = './indexPart234.html'; // 導向首頁
+                window.location.href = './index.html'; // 導向首頁
               } else {
-                window.location.href = './indexPart234.html';
+                window.location.href = './index.html';
               }
             } else if (redirectUrl) {
               localStorage.removeItem('redirectAfterLogin');
