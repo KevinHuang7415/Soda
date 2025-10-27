@@ -17,19 +17,24 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <!-- jQuery -->
   <script src="./js/jquery-3.4.1.min.js"></script>
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+  <!-- bubbles.js -->
+  <script src="./js/bubbles.js"></script>
   <!-- Footer -->
   <script src="./js/footer.js"></script>
 
   <style>
-
-
     /* register CSS */
-    html, body {
+    html,
+    body {
       height: 100%;
       margin: 0;
       padding: 0;
     }
-    
+
+
+
     body {
       background: var(--light-yellow);
       display: flex;
@@ -43,9 +48,10 @@
          在 1200px 寬螢幕時寬度約為 800px
          之間會平滑變化 */
       padding: 2rem 1rem;
-      flex: 1; /* 讓內容區域佔滿剩餘空間 */
+      flex: 1;
+      /* 讓內容區域佔滿剩餘空間 */
     }
-    
+
 
     .titleAcc {
       width: 100%
@@ -109,7 +115,7 @@
 </head>
 
 <body>
-  
+
   <div class="containerAcc">
     <div class="titleAcc">
       <h1 class="alc mgt">登入會員</h1>
@@ -158,7 +164,7 @@
         return;
       }
       const obj = {
-        usernameOrEmail: account.value,  
+        usernameOrEmail: account.value,
         password: password.value
       };
       console.log('發送資料:', obj);
@@ -213,7 +219,12 @@
           }
         });
     }
-    
+
+    // 初始化泡泡動畫
+    initBubbles({
+      maxBubbles: 15  // 較少的泡泡數量，避免干擾登入表單
+    });
+  
   </script>
 </body>
 

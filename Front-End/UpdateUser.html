@@ -13,6 +13,10 @@
   <link rel="stylesheet" href="./css/shoppingCar.css">
   <!-- axios -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.2/TweenMax.min.js"></script>
+  <!-- bubbles.js -->
+  <script src="./js/bubbles.js"></script>
   <!-- jQuery for include functionality -->
   <script src="./js/jquery-3.4.1.min.js"></script>
 
@@ -245,6 +249,11 @@
         }
       });
   }
+
+      // 初始化泡泡動畫
+      initBubbles({
+      maxBubbles: 15  // 較少的泡泡數量，避免干擾登入表單
+    });
 </script>
 
 </html>
