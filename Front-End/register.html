@@ -11,6 +11,10 @@
   <link rel="stylesheet" href="./css/main_setting.css">
   <!-- style.css -->
   <link rel="stylesheet" href="./css/shoppingCar.css">
+   <!-- nav.js -->
+    <script src="./js/nav.js"></script>
+    <!-- ShoppingCart CSS -->
+    <link rel="stylesheet" href="./css/shoppingCart_style.css">
   <!-- axios -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -23,10 +27,6 @@
       padding: 0;
     }
 
-    #site-footer {
-      margin-top: auto;
-      /* 將 footer 推到底部 */
-    }
 
     /* register CSS */
     body {
@@ -119,9 +119,7 @@
 </head>
 
 <body>
-  <div id="site-header">
-  <iframe src="./partials/nav.html" style="width:100%; border:none;"></iframe>
-</div>
+
   <div class="containerAcc">
     <div class="titleAcc">
       <h1 class="alc mgt">註冊個人資料</h1>
@@ -148,14 +146,11 @@
       <button type="button" class="btn btn-l alc" onclick="register()">註冊</button>
     </form>
   </div>
-  <div id="site-footer">
   <iframe src="./partials/footer.html" style="width:100%; border:none;"></iframe>
 </div>
 </body>
 <!-- jQuery -->
 <script src="./js/jquery-3.4.1.min.js"></script>
-<!-- Include script -->
-<script src="./js/include.js"></script>
 <script>
   function showMessage(message, type = 'error') {
     const container = document.getElementById('messageContainer');
