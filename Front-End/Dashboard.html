@@ -912,40 +912,6 @@
         }
 
         // 用戶管理 API 
-        // function loadUsers() {
-        //     axios.get('https://localhost:7085/api/users')
-        //         .then(res => {
-        //             const tbody = document.querySelector('#userTable tbody');
-        //             tbody.innerHTML = '';
-
-        //             res.data.forEach(u => {
-        //                 const isActive = u.isActive;
-        //                 const isVerified = u.isEmailVerified;
-        //                 const statusClass = isActive ? 'status-active' : 'status-inactive';
-        //                 const statusText = isActive ? '活躍' : '非活躍';
-        //                 const statusClass2 = isVerified ? 'status-active' : 'status-inactive';
-        //                 const statusTex2t = isVerified ? '已驗證' : '未驗證';
-
-        //                 const tr = document.createElement('tr');
-        //                 tr.innerHTML = `
-        //             <td>${u.id}</td>
-        //             <td>${u.username}</td>
-        //             <td>${u.email}</td>
-        //             <td>${u.firstName}</td>
-        //             <td>${u.lastName}</td>
-        //             <td>${u.phoneNumber ?? '-'}</td>
-        //             <td>${new Date(u.createdAt).toLocaleString()}</td>
-        //             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-        //             <td><span class="status-badge ${statusClass2}">${statusTex2t}</span></td>
-        //         `;
-        //                 tbody.appendChild(tr);
-        //             });
-        //         })
-        //         .catch(err => {
-        //             console.error(err);
-        //             showMessage('載入用戶資料時發生錯誤', 'error');
-        //         });
-        // }
         //驗證使用者
         document.addEventListener("DOMContentLoaded", () => {
             const userData = localStorage.getItem('user');
@@ -1217,7 +1183,6 @@
                             productStats[name].total += item.Quantity * item.UnitPrice;
                         });
                     });
-
                     const labels = Object.keys(productStats);
                     const quantities = labels.map(l => productStats[l].quantity);
                     const totals = labels.map(l => productStats[l].total.toFixed(2));
@@ -1283,8 +1248,6 @@
         showTab('products');
         loadProducts();
         loadOrders();
-        // loadUsers();
-        // loadAllUsers(token);
         loadCoupons();
         loadSalesChart();
 
