@@ -2,23 +2,23 @@
 // 用於在所有頁面中動態插入統一的導航欄
 
 (function () {
-  'use strict';
-  // 導航欄 CSS 樣式
-  const navStyles = `
+    'use strict';
+    // 導航欄 CSS 樣式
+    const navStyles = `
         <style id="nav-styles">
         header {
-            background: var(--main-color);
-            height: 80px;
+            box-sizing:content-box;
+            background-color: var(--main-color);
+            height: 40px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 30px;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: bold;
             position: relative;
+            list-style: none;
         }
-
-
         header nav {
             visibility: hidden;
             position: absolute;
@@ -74,10 +74,11 @@
         }
 
         .logoBox {
-            height: 90%;
+            height: 40px;
         }
 
         .navUl {
+            list-style: none;
             display: flex;
             gap: 10px;
             text-align: center;
@@ -91,6 +92,8 @@
         .navUl a {
             color: #000;
             text-decoration: none;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
         }
 
         .navTxtBtn {
@@ -126,7 +129,7 @@
             }
 
             30% {
-                transform: scale(0.9);
+                transform: scale(0.95);
             }
 
             60% {
@@ -284,9 +287,8 @@
         }
 
         @media (max-width:768px) {
-
             header {
-                height: 80px;
+                height: 40px;
             }
 
             header nav {
@@ -325,8 +327,8 @@
         }
     </style>
     `;
-  // 導航欄 HTML 模板
-  const navHTML = `
+    // 導航欄 HTML 模板
+    const navHTML = `
     <header class="header">
         <nav>
             <div class="bar"></div>
@@ -366,54 +368,54 @@
         </div>
     </header>
     `;
-  // 插入導航欄的函數
-  function injectNav() {
-    // 檢查是否已經插入過（避免重複）
-    if (document.getElementById('nav-styles')) {
-      console.warn('導航欄已經存在，跳過插入');
-      return;
+    // 插入導航欄的函數
+    function injectNav() {
+        // 檢查是否已經插入過（避免重複）
+        if (document.getElementById('nav-styles')) {
+            console.warn('導航欄已經存在，跳過插入');
+            return;
+        }
+
+        // 插入 CSS 樣式到 head
+        document.head.insertAdjacentHTML('beforeend', navStyles);
+
+        // 插入 HTML 到 body 開頭
+        document.body.insertAdjacentHTML('afterbegin', navHTML);
+
+        // 綁定事件監聽器（在插入 HTML 後）
+        const navElement = document.getElementsByTagName("nav")[0];
+        if (navElement) {
+            navElement.addEventListener("click", function () {
+                const overlay = document.getElementsByClassName("overlay")[0];
+                if (overlay) {
+                    overlay.classList.toggle("change");
+                }
+                for (const bar of this.children) {
+                    bar.classList.toggle("change");
+                }
+            });
+        }
+
+        console.log('✅ 導航欄已成功插入');
     }
 
-    // 插入 CSS 樣式到 head
-    document.head.insertAdjacentHTML('beforeend', navStyles);
-
-    // 插入 HTML 到 body 開頭
-    document.body.insertAdjacentHTML('afterbegin', navHTML);
-
-    // 綁定事件監聽器（在插入 HTML 後）
-    const navElement = document.getElementsByTagName("nav")[0];
-    if (navElement) {
-      navElement.addEventListener("click", function () {
-        const overlay = document.getElementsByClassName("overlay")[0];
-        if (overlay) {
-          overlay.classList.toggle("change");
+    // 確保 body 存在後才插入導航欄
+    function initNav() {
+        if (!document.body) {
+            // body 還沒準備好，等待 DOMContentLoaded
+            document.addEventListener('DOMContentLoaded', injectNav);
+        } else {
+            // DOM 已經載入完成
+            injectNav();
         }
-        for (const bar of this.children) {
-          bar.classList.toggle("change");
-        }
-      });
     }
 
-    console.log('✅ 導航欄已成功插入');
-  }
-
-  // 確保 body 存在後才插入導航欄
-  function initNav() {
-    if (!document.body) {
-      // body 還沒準備好，等待 DOMContentLoaded
-      document.addEventListener('DOMContentLoaded', injectNav);
+    // 立即執行或等待 DOM 準備好
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', injectNav);
     } else {
-      // DOM 已經載入完成
-      injectNav();
+        initNav();
     }
-  }
-
-  // 立即執行或等待 DOM 準備好
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', injectNav);
-  } else {
-    initNav();
-  }
 
 })();
 
