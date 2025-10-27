@@ -1,330 +1,375 @@
-<!-- Bootstrap 5 - 僅載入必要的樣式 -->
-<style>
-    /* 只載入需要的 Bootstrap 樣式，避免影響主頁面 */
-    .position-absolute {
-        position: absolute !important;
-    }
+<!DOCTYPE html>
+<html lang="en">
 
-    .top-0 {
-        top: 0 !important;
-    }
-
-    .start-100 {
-        left: 100% !important;
-    }
-
-    .translate-middle {
-        transform: translate(-50%, -50%) !important;
-    }
-
-    .badge {
-        display: inline-block;
-        padding: 0.35em 0.65em;
-        font-size: 0.75em;
-        font-weight: 700;
-        line-height: 1;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: baseline;
-        border-radius: 0.375rem;
-    }
-
-    .rounded-pill {
-        border-radius: 50rem !important;
-    }
-
-    .bg-danger {
-        background-color: #dc3545 !important;
-    }
-
-    .visually-hidden {
-        position: absolute !important;
-        width: 1px !important;
-        height: 1px !important;
-        padding: 0 !important;
-        margin: -1px !important;
-        overflow: hidden !important;
-        clip: rect(0, 0, 0, 0) !important;
-        white-space: nowrap !important;
-        border: 0 !important;
-    }
-</style>
-
-<style>
-    .hidden {
-        display: none;
-    }
-
-    .show {
-        display: block;
-    }
-
-    /* 第一部分 */
-    a {
-        text-decoration: none;
-        color: #000;
-    }
-
-    /* 導覽列 */
-    .navbar {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        background: transparent;
-        position: relative;
-        width: 100%;
-        z-index: 2;
-        margin-bottom: 0;
-    }
-
-    .nav-item {
-        margin-right: 1vw;
-        position: relative;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 1.6vw;
-    }
-
-    .nav-item-style {
-        background-color: #f0f0f0;
-        border: 0.05vw solid #000;
-        padding: 0.4vw 0.4vw 0 0.4vw;
-        border-radius: 20px;
-    }
-
-    .nav-item img {
-        min-width: 1.5vw;
-        min-height: 1.5vw;
-        width: 2vw;
-        height: 2vw;
-    }
-
-    /* 下拉 DIV */
-    .dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        background: white;
-        border-radius: 0.5vw;
-        box-shadow: 0 0.3vw 1vw rgba(0, 0, 0, 0.15);
-        overflow: hidden;
-        transform: translateY(-1vw);
-        opacity: 0;
-        pointer-events: none;
-        transition: all 0.3s ease;
-        z-index: 11;
-    }
-
-    .dropdown.active {
-        transform: translateY(0);
-        opacity: 1;
-        pointer-events: auto;
-    }
-
-    .dropdown-item {
-        padding: 0.8vw 1.2vw;
-        font-size: 0.9vw;
-        transition: background 0.2s;
-    }
-
-    .dropdown-item:hover {
-        background: #f0f0f0;
-    }
-
-    .separateRight {
-        margin-right: 3vw;
-    }
-
-    .separateLeft {
-        padding-left: 3vw;
-        padding-top: 5px;
-        width: 20vw;
-    }
-
-    .navbar ul {
-        display: flex;
-        list-style: none;
-    }
-
-    .sign {
-        line-height: 12px;
-        font-size: small;
-        text-align: right;
-        margin-top: 12px;
-    }
-
-    /* ======768px以下導覽列下拉選單========  */
-    .ctn {
-        cursor: pointer;
-    }
-
-    .bar1,
-    .bar2,
-    .bar3 {
-        width: 20px;
-        height: 1px;
-        background-color: #333;
-        margin: 5px 10px 0 0;
-        transition: 0.4s;
-    }
-
-    .change .bar1 {
-        -webkit-transform: rotate(-45deg) translate(-9px, 6px);
-        transform: rotate(-45deg) translate(-9px, 6px);
-    }
-
-    .change .bar2 {
-        opacity: 0;
-    }
-
-    .change .bar3 {
-        -webkit-transform: rotate(45deg) translate(-8px, -8px);
-        transform: rotate(45deg) translate(-8px, -8px);
-    }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Reset -->
+    <link rel="stylesheet" href="../css/Reset.css">
+    <!-- main_setting -->
+    <link rel="stylesheet" href="../css/main_setting.css">
+    <!-- shoppingCart_style.css -->
+    <link rel="stylesheet" href="../css/shoppingCart_style.css">
+    <!-- ShoppingCart (新版 - API 版本) -->
+    <script src="../js/shoppingCart_v2.js"></script>
+    <style>
+        header {
+            background: var(--main-color);
+            height: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+            position: relative;
+        }
 
 
-    .overlay {
-        height: 0%;
-        width: 100%;
-        position: fixed;
-        z-index: 10;
-        top: 0;
-        left: 0;
-        background-color: rgb(0, 0, 0);
-        background-color: rgba(0, 0, 0, 0.9);
-        overflow-y: hidden;
-        transition: 0.5s;
-    }
+        header nav {
+            visibility: hidden;
+            position: absolute;
+            width: 2em;
+            height: 1em;
+            top: calc(40px - 0.5em);
+            right: 35px;
+        }
 
-    .overlay-content {
-        position: relative;
-        top: 25%;
-        width: 100%;
-        text-align: center;
-        margin-top: 30px;
-    }
+        header nav .bar {
+            width: 100%;
+            height: 2px;
+            position: absolute;
+            background-color: var(--main-gray);
+        }
 
-    .overlay a {
-        padding: 8px;
-        text-decoration: none;
-        font-size: 36px;
-        color: #818181;
-        display: block;
-        transition: 0.3s;
-    }
+        header nav .bar:nth-of-type(1) {
+            top: 0;
+        }
 
-    .overlay a:hover,
-    .overlay a:focus {
-        color: #f1f1f1;
-    }
+        header nav .bar:nth-of-type(2) {
+            top: calc(0.5em - 1px);
+        }
 
-    .overlay .closebtn {
-        position: absolute;
-        top: 20px;
-        right: 45px;
-        font-size: 60px;
-    }
+        header nav .bar:nth-of-type(3) {
+            top: calc(0.5em - 1px);
+        }
 
-    @media screen and (max-height: 450px) {
+        header nav .bar:nth-of-type(4) {
+            bottom: 0;
+        }
+
+        header nav .bar:nth-of-type(1).change {
+            opacity: 0;
+        }
+
+        header nav .bar:nth-of-type(2).change {
+            transform: rotate(30deg);
+        }
+
+        header nav .bar:nth-of-type(3).change {
+            transform: rotate(-30deg);
+        }
+
+        header nav .bar:nth-of-type(4).change {
+            opacity: 0;
+        }
+
+        .header img {
+            object-fit: contain;
+            height: 100%;
+            vertical-align: middle;
+        }
+
+        .logoBox {
+            height: 90%;
+        }
+
+        .navUl {
+            display: flex;
+            gap: 10px;
+            text-align: center;
+            line-height: 50px;
+        }
+
+        .navUl li {
+            /* border: 1px solid #333; */
+        }
+
+        .navUl a {
+            color: #000;
+            text-decoration: none;
+        }
+
+        .navTxtBtn {
+            height: 50px;
+            width: 100px;
+            background: white;
+            border-radius: 30px;
+        }
+
+        .navIconBtn {
+            height: 50px;
+            width: 50px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .navIconBtn img {
+            height: 20px;
+        }
+
+        .navBtn {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .navBtn:hover {
+            cursor: pointer;
+            animation: heartBeat 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+
+        @keyframes heartBeat {
+            0% {
+                transform: scale(1);
+            }
+
+            30% {
+                transform: scale(0.8);
+            }
+
+            60% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* 下拉 DIV */
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border-radius: 0.5vw;
+            box-shadow: 0 0.3vw 1vw rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transform: translateY(-1vw);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 11;
+        }
+
+        .dropdown.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .dropdown-item {
+            padding: 0.8vw 1.2vw;
+            font-size: 0.9vw;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: #f0f0f0;
+        }
+
+        .separateRight {
+            margin-right: 3vw;
+        }
+
+        .separateLeft {
+            padding-left: 3vw;
+            padding-top: 5px;
+            width: 20vw;
+        }
+
+        .navbar ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .sign {
+            line-height: 12px;
+            font-size: small;
+            text-align: right;
+            margin-top: 12px;
+        }
+
+        /* ======768px以下導覽列下拉選單========  */
+        .ctn {
+            cursor: pointer;
+        }
+
+        .bar1,
+        .bar2,
+        .bar3 {
+            width: 20px;
+            height: 1px;
+            background-color: #333;
+            margin: 5px 10px 0 0;
+            transition: 0.4s;
+        }
+
+        .change .bar1 {
+            -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+            transform: rotate(-45deg) translate(-9px, 6px);
+        }
+
+        .change .bar2 {
+            opacity: 0;
+        }
+
+        .change .bar3 {
+            -webkit-transform: rotate(45deg) translate(-8px, -8px);
+            transform: rotate(45deg) translate(-8px, -8px);
+        }
+
         .overlay {
-            overflow-y: auto;
+            height: 0%;
+            width: 100%;
+            position: fixed;
+            z-index: 10;
+            top: 80px;
+            left: 0;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.9);
+            overflow-y: hidden;
+            transition: 0.5s;
+        }
+
+        .overlay.change {
+            height: 100%;
+        }
+
+        .overlay-content {
+            position: relative;
+            top: 25%;
+            width: 100%;
+            text-align: center;
+            margin-top: 30px;
         }
 
         .overlay a {
-            font-size: 20px
+            padding: 8px;
+            text-decoration: none;
+            font-size: 36px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .overlay a:hover,
+        .overlay a:focus {
+            color: #f1f1f1;
         }
 
         .overlay .closebtn {
-            font-size: 40px;
-            top: 15px;
-            right: 35px;
-        }
-    }
-
-    @media (max-width:768px) {
-
-        .show {
-            display: none;
-        }
-
-        .container {
-            display: inline-block;
-        }
-
-        .dropdown-content {
             position: absolute;
-            top: 60px;
-            /* 可依你的導覽列高度調整 */
-            right: 10px;
-            display: none;
+            top: 20px;
+            right: 45px;
+            font-size: 60px;
         }
 
-        .dropdown-content.show {
-            display: block;
+        @media screen and (max-height: 450px) {
+            .overlay {
+                overflow-y: auto;
+            }
+
+            .overlay a {
+                font-size: 20px
+            }
+
+            .overlay .closebtn {
+                font-size: 40px;
+                top: 15px;
+                right: 35px;
+            }
         }
-    }
-</style>
 
+        @media (max-width:768px) {
 
+            header nav {
+                visibility: visible;
+            }
 
-<header>
-    <div class="main-nav">
-        <!-- 導覽列 -->
-        <div class="navbar navbar-default mobile-nav-wrap">
-            <a style="margin-right:auto;" href="./index.html"><img class="separateLeft" src="./images/soda_title.png" alt="SODA標題" style="height:4vw; "></a>
-            <ul>
-                <li>
-                    <div class="nav-item nav-item-style" id="about"><a href="./about.html">關於我們</a></div>
+            .show {
+                display: none;
+            }
+
+            .container {
+                display: inline-block;
+            }
+
+            .dropdown-content {
+                position: absolute;
+                top: 60px;
+                /* 可依你的導覽列高度調整 */
+                right: 10px;
+                display: none;
+            }
+
+            .dropdown-content.show {
+                display: block;
+            }
+        }
+
+        @media screen and (min-width: 769px) {
+            .overlay {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <nav>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </nav>
+        <div class="logoBox">
+            <a href="../index.html"><img src="../images/logo.png" alt=""></a>
+        </div>
+
+        <div class="navBox show">
+            <ul class="navUl">
+                <li class="navBtn navTxtBtn">
+                    <a href="../about.html">關於我們</a>
                 </li>
-                <li>
-                    <div class="nav-item nav-item-style" id="shop"><a href="./product.html">商品</a></div>
+                <li class="navBtn navTxtBtn">
+                    <a href="../product.html">商品</a>
                 </li>
-                <li>
-                    <div class="nav-item nav-item-style" id="userbtn"><a href="./login.html"><img
-                                src="./images/user.svg" alt=""></a></div>
+                <li class="navBtn navIconBtn">
+                    <a href="../login.html"><img src="../images/user.svg" alt=""></a>
                 </li>
-                <li>
-                    <div class="show">
-                        <div class="nav-item nav-item-style separateRight" id="shoppingCarBtn">
-                            <a href="javascript:void(0);" onclick="toggleCart(); return false;"><img
-                                    src="./images/shopping-cart.svg" alt=""></a>
-                            <span
-                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                4+
-                                <span class="visually-hidden">unread messages</span>
-                            </span>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="ctn hidden dropbtn" onclick="openNav()">
-                        <div class="bar1"></div>
-                        <div class="bar2"></div>
-                        <div class="bar3"></div>
-                    </div>
+                <li class="navBtn navIconBtn openCart-btn">
+                    <a href=""><img src="../images/shopping-cart.svg" alt=""></a>
                 </li>
             </ul>
-
-            <!-- 下拉選單 -->
-            <div id="myNav" class="overlay">
-                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-                <div class="overlay-content">
-                    <a href="./about.html">關於我們</a>
-                    <a href="./product.html">商品</a>
-                    <a href="./login.html">登入</a>
-                    <a href="javascript:void(0);" onclick="toggleCart(); return false;">購物車</a>
-                </div>
+        </div>
+        <!-- 下拉選單 -->
+        <div id="myNav" class="overlay ">
+            <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
+            <div class="overlay-content">
+                <a href="../about.html">關於我們</a>
+                <a href="../product.html">商品</a>
+                <a href="../login.html">登入</a>
+                <a href="" class="openCart-btn">購物車</a>
             </div>
         </div>
-</header>
-<script>
-    //768px以下導覽列下拉選單
+    </header>
+    <script>
+        document.getElementsByTagName("nav")[0].addEventListener("click", function () {
+            document.getElementsByClassName("overlay")[0].classList.toggle("change"); for (const bar of
+                this.children) { bar.classList.toggle("change"); }
+        }) </script>
+</body>
 
-    function openNav() {
-        document.getElementById("myNav").style.height = "100%";
-    }
-
-    function closeNav() {
-        document.getElementById("myNav").style.height = "0%";
-    }
-</script>
+</html>
