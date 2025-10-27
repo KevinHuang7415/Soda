@@ -93,6 +93,19 @@ body {
     cursor: pointer;
     transform: translateY(3px);
 }
+
+.scale-in-center1{
+    animation:scale-in-center .5s cubic-bezier(.25,.46,.45,.94) both
+}
+.scale-in-center2{
+    animation:scale-in-center .6s cubic-bezier(.25,.46,.45,.94) both
+}
+.scale-in-center3{
+    animation:scale-in-center .7s cubic-bezier(.25,.46,.45,.94) both
+}
+.scale-in-center4{
+    animation:scale-in-center .8s cubic-bezier(.25,.46,.45,.94) both
+}
 @font-face {
         font-family: 'coolFont';
         /* 自訂的字體名稱 */
@@ -112,6 +125,20 @@ body {
         font-weight: normal;
         font-style: normal;
     }
+
+
+      @keyframes scale-in-center {
+        0% {
+          -webkit-transform: scale(0);
+                  transform: scale(0);
+          opacity: 1;
+        }
+        100% {
+          -webkit-transform: scale(1);
+                  transform: scale(1);
+          opacity: 1;
+        }
+      }
 
 @media (max-width: 768px) {
     .btn-l {
