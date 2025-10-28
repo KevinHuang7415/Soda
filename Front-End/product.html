@@ -9,20 +9,13 @@
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css?family=Mukta+Malar:400,700,800" rel="stylesheet">
-
-    <!-- Flickity CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flickity/2.2.2/flickity.min.css"
-        integrity="sha512-B6+U8E1yN+Gg7Z4Z7yK7Yq0Rj2y8cT2KQ5lJ+zq5ZzvUeF+4vXQ0w6JQ8G6s8kS9K0hWzOeT2W7Vf2LQGk2wg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <!-- main_setting -->
     <link rel="stylesheet" href="./css/main_setting.css">
     <!-- nav.js -->
     <script src="./js/nav.js"></script>
     <!-- ShoppingCart CSS -->
     <link rel="stylesheet" href="./css/shoppingCart_style.css">
+    <!-- jQuery -->
     <script src="./js/jquery-3.4.1.min.js"></script>
     <!-- Footer -->
     <script src="./js/footer.js"></script>
@@ -103,23 +96,27 @@
         }
         #favoriteBtn {
             position: absolute;
-            top: 2vw;
-            right: 2vw;
+            top: 1vw;
+            right: 1vw;
             z-index: 100;
             display: block;
         }
         .heartIcon {
-            width: 6vw;
+            width: 5vw;
             display: block;
             cursor: pointer;
             transition: all 0.3s ease;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            object-fit: contain;
         }
         .heartIcon:hover {
             transform: scale(1.1);
+            object-fit: contain;
         }
         .heartIcon.favorited {
-            filter: invert(27%) sepia(99%) saturate(7118%) hue-rotate(344deg) brightness(100%) contrast(100%) drop-shadow(0 2px 4px rgba(255,0,0,0.3));
+            background-color: rgb(255, 3, 3);
+            clip-path: circle(40%);
+            object-fit: contain;
         }
 
 
@@ -580,7 +577,7 @@
         <div class="left">
             <div class="backgroundPicture"></div>
             <a href="javascript:void(0);" id="favoriteBtn">
-                <img src="./images/product/show1.png" class="heartIcon" id="heartIcon">
+                <img src="./images/product/show4.png" class="heartIcon" id="heartIcon">
             </a>
 
             <div id="carouselExampleIndicators" class="carousel slide">

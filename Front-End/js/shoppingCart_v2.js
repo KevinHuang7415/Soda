@@ -123,10 +123,10 @@ function getProductBackground(productName) {
 function extractSizeNumber(sizeString) {
     // 將 sizeString 轉為字串
     const str = String(sizeString);
-    
+
     // 提取開頭的數字部分（支援 1-2 位數字）
     const match = str.match(/^(\d{1,2})/);
-    
+
     // 如果找到數字就返回，否則返回原始字串
     return match ? match[1] : str;
 }
@@ -202,7 +202,7 @@ function createFavoriteItemBox(favItem) {
         '葡萄能量飲': './images/grape_mockup.png',
         '草莓能量飲': './images/strawberry-lemonade_mockup.png'
     };
-    
+
     // 確保圖片路徑有效
     const validImageUrl = imageUrl || imageMap[name] || './images/lemon-lime_mockup.png';
 
@@ -277,7 +277,7 @@ function createItemBox(cartItem) {
         '葡萄能量飲': './images/grape_mockup.png',
         '草莓能量飲': './images/strawberry-lemonade_mockup.png'
     };
-    
+
     // 確保圖片路徑有效
     const validImageUrl = imageUrl || imageMap[name] || './images/lemon-lime_mockup.png';
 
@@ -531,7 +531,7 @@ async function updateItemProduct(box, newName, newSize) {
         // 更新顯示
         img.src = imageUrl;
         img.alt = newProduct.name;
-        img.onerror = function() {
+        img.onerror = function () {
             // 如果圖片載入失敗，使用備用圖片
             this.src = imageMap[newProduct.name] || './images/lemon-lime_mockup.png';
             console.warn(`圖片載入失敗，使用備用圖片: ${newProduct.name}`);
@@ -560,7 +560,7 @@ async function updateItemProduct(box, newName, newSize) {
 
         // 更新小計
         updateSubtotal();
-        
+
         console.log(`已更新商品: ${newProduct.name} ${newProduct.size}`, {
             imageUrl: imageUrl,
             price: newProduct.price,
@@ -684,14 +684,14 @@ async function updateFavoriteItemProduct(box, oldProductId, newName, newSize, ne
     imgDiv.style.backgroundColor = bg;
     img.src = imageUrl;
     img.alt = newName;
-    img.onerror = function() {
+    img.onerror = function () {
         // 如果圖片載入失敗，使用備用圖片
         this.src = imageMap[newName] || './images/lemon-lime_mockup.png';
         console.warn(`圖片載入失敗，使用備用圖片: ${newName}`);
     };
     sizeH2.textContent = extractSizeNumber(newSize);
     box.dataset.productId = productInfo.id;
-    
+
     console.log(`已更新我的最愛商品: ${newName} ${newSize}`, {
         imageUrl: imageUrl,
         price: productInfo.price,
@@ -870,9 +870,9 @@ async function addToCart(productId, productName, size, quantity) {
         // 根據 productInfo.id 找到目標商品（因為可能合併了，使用最新的 ID）
         const targetItem = document.querySelector(`.item-box[data-product-id="${productInfo.id}"]`);
         if (targetItem) {
-            targetItem.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center' 
+            targetItem.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
             });
             // 添加閃爍效果突出顯示
             targetItem.style.transition = 'background-color 0.5s ease';
@@ -901,7 +901,7 @@ function refreshCart() {
 
     // 更新小計
     updateSubtotal();
-    
+
     // 更新購物車徽章數量
     updateCartBadge();
 }
@@ -909,16 +909,16 @@ function refreshCart() {
 // --- 更新購物車徽章數量 ---
 function updateCartBadge() {
     const cartData = JSON.parse(localStorage.getItem('cart')) || [];
-    
+
     // 計算總商品數量
     const totalItems = cartData.reduce((sum, item) => sum + item.qty, 0);
-    
+
     // 更新所有徽章元素
     const badges = document.querySelectorAll('.shoppingCart-item-nmber');
     badges.forEach(badge => {
         const currentNumber = badge.textContent.replace('+', '');
         const newNumber = totalItems > 99 ? '99+' : totalItems.toString();
-        
+
         if (totalItems > 0) {
             // 如果數字有變化，重新觸發動畫
             if (currentNumber !== newNumber) {
@@ -936,7 +936,7 @@ function updateCartBadge() {
             badge.classList.remove('show');
         }
     });
-    
+
     console.log(`購物車徽章已更新：${totalItems} 件商品`);
 }
 
@@ -1048,7 +1048,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 渲染購物車和我的最愛
     refreshCart();
     refreshFavorites();
-    
+
     // 初始化購物車徽章數量
     updateCartBadge();
 
@@ -1065,7 +1065,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         btn.addEventListener('click', async (e) => {
             // ⭐ 阻止默認行為（避免 <a> 標籤重新載入頁面）
             e.preventDefault();
-            
+
             // 檢查按鈕文字，判斷是「加入購物車」還是「開啟購物車」
             if (btn.textContent.includes('加入購物車')) {
                 // 這是「加入購物車」按鈕
@@ -1121,17 +1121,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 alert('購物車是空的，請先加入商品！');
                 return;
             }
-            
+
             // 計算總計
             let total = 0;
             cart.forEach(item => {
                 total += item.price * item.qty;
             });
-            
+
             // 將購物車資料編碼為 URL 參數
             const cartData = encodeURIComponent(JSON.stringify(cart));
             const totalData = encodeURIComponent(total.toString());
-            
+
             // 跳轉到結帳頁面並傳遞購物車資料
             window.location.href = `./checkouts.html?cart=${cartData}&total=${totalData}`;
         }
