@@ -26,32 +26,30 @@
     <link rel="stylesheet" href="./css/shoppingCart_style.css">
     <!-- jQuery for include functionality -->
     <script src="./js/jquery-3.4.1.min.js"></script>
-    
+
     <style>
         /* Footer 貼底樣式 */
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
-        
-        
-        /* 確保 nav 正確顯示 */
-        #site-header {
-            position: relative;
-            z-index: 1000;
-            width: 100%;
-        }       
-        /* Footer 貼底樣式 */
-        footer {
-            margin-top: auto; /* 將 footer 推到底部 */
+
+        #container3D {
+            position: fixed;
+            inset: 0;
+            z-index: 15;
+            pointer-events: none;
+            mix-blend-mode: normal;
         }
-        
-        /* 確保 navbar 內容不被截斷 */
-        #site-header .navbar {
-            position: relative;
-            width: 100%;
-        }
+        @media screen and (max-width: 767px) {
+      #container3D { 
+            position: sticky; 
+            z-index: 1;
+      }
+    }
     </style>
 </head>
 
@@ -213,14 +211,14 @@
             </div>
         </div>
     </div>
-     <!-- 手機版專用容器 -->
-     <div class="orbit-container-mobile" id="orbit-container-mobile">
-         <!-- 旋轉提示 -->
-         <div class="rotation-hint" id="rotation-hint">
-             <p>繼續旋轉可查看產品資訊</p>
-         </div>
-         <!-- 軌道路徑 -->
-         <div class="orbit-path-mobile"></div>
+    <!-- 手機版專用容器 -->
+    <div class="orbit-container-mobile" id="orbit-container-mobile">
+        <!-- 旋轉提示 -->
+        <div class="rotation-hint" id="rotation-hint">
+            <p>繼續旋轉可查看產品資訊</p>
+        </div>
+        <!-- 軌道路徑 -->
+        <div class="orbit-path-mobile"></div>
         <!-- 圓形背景 -->
         <div class="circle-background-mobile">
             <!-- 卡片 1 -->
@@ -272,13 +270,13 @@
     </div>
     <div class="product">
         <div class="soda1">
-           <h2>檸檬能量飲</h2>
-           <div class="price">
-               <p>4 X 355ml</p>
-               <p>$199</p>
-               <p>12 X 355ml</p>
-               <p>$499</p>
-           </div>
+            <h2>檸檬能量飲</h2>
+            <div class="price">
+                <p>4 X 355ml</p>
+                <p>$199</p>
+                <p>12 X 355ml</p>
+                <p>$499</p>
+            </div>
             <img id="sodaPhoto1" src="./images/product/soda1.png">
             <img id="sodaPhoto2" src="./images/product/soda1_2.png">
             <img id="sodaPhoto3" src="./images/product/soda1_3.png">
@@ -374,7 +372,7 @@
         </div>
     </div>
 
-
+    <div id="container3D"></div>
 
     <!-- jQuery主程式 -->
     <script src="./jquary/js/jquery-1.11.3.min.js"></script>
@@ -387,8 +385,8 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
     <script src="./js/jquery.arctext.js"></script>
-      <!--撰寫自己的jQuery -->
-      <script src="./js/scroll.js"></script>
+    <!--撰寫自己的jQuery -->
+    <script src="./js/scroll.js"></script>
     <script>
         $(function () {
             $("nav").localScroll({
@@ -411,18 +409,18 @@
             document.getElementById("myNav").style.height = "0%";
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             console.log('=== 手機版旋轉功能開始執行 ===');
-            
+
             let rotation = 0;
             let targetRotation = 0;
             let isAnimating = false;
-        
-             const container = document.querySelector('#orbit-container-mobile');
-             const hint = document.querySelector('#rotation-hint');
-             
-             console.log('找到手機版容器:', container);
-            
+
+            const container = document.querySelector('#orbit-container-mobile');
+            const hint = document.querySelector('#rotation-hint');
+
+            console.log('找到手機版容器:', container);
+
             if (!container) {
                 console.error('找不到手機版容器');
                 return;
@@ -438,83 +436,83 @@
                 console.log('非手機版尺寸，跳過手機版功能');
                 return;
             }
-        
-             let lastRotation = 0;
-             let hasScrolledToProduct = false;
-             
-             function updateRotation() {
-                 const circleBackground = document.querySelector('#orbit-container-mobile .circle-background-mobile');
-                 
-                 if (circleBackground) {
-                     circleBackground.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-                     console.log('旋轉角度:', rotation.toFixed(2));
-                 }
-                 
-                 let normalizedRotation = ((rotation % 360) + 360) % 360;
-                 
-                 if (normalizedRotation >= 300 || normalizedRotation < 60) {
-                     container.style.backgroundColor = '#2BAD2F';
-                     hasScrolledToProduct = false; // 重置標記
-                 } else if (normalizedRotation >= 60 && normalizedRotation < 180) {
-                     container.style.backgroundColor = '#E33DDC';
-                     hasScrolledToProduct = false; // 重置標記
-                 } else if (normalizedRotation >= 180 && normalizedRotation < 300) {
-                     container.style.backgroundColor = '#FE3489';
-                     
-                     // 當到達卡片3時顯示提示
-                     if (normalizedRotation >= 180 && normalizedRotation <= 200) {
-                         showHint('繼續旋轉可查看產品資訊');
-                     }
-                     
-                     // 檢測是否旋轉超過卡片3（草莓卡片）
-                     // 當角度超過 240 度時，表示已經旋轉超過卡片3
-                     if (normalizedRotation > 240 && !hasScrolledToProduct) {
-                         console.log('旋轉超過卡片3，滾動到 product 區域');
-                         scrollToProduct();
-                         hasScrolledToProduct = true;
-                     }
-                 }
-                 
-                 lastRotation = rotation;
-             }
-             
-             // 顯示提示的函數
-             function showHint(message) {
-                 if (hint) {
-                     hint.querySelector('p').textContent = message;
-                     hint.classList.add('show');
-                     setTimeout(() => {
-                         hint.classList.remove('show');
-                     }, 3000);
-                 }
-             }
-             
-             // 滾動到 product 區域的函數
-             function scrollToProduct() {
-                 const productSection = document.querySelector('.product');
-                 
-                 if (productSection) {
-                     // 隱藏手機版容器
-                     container.style.display = 'none';
-                     
-                     // 滾動到 product 區域
-                     productSection.scrollIntoView({ 
-                         behavior: 'smooth',
-                         block: 'start'
-                     });
-                     
-                     console.log('已滾動到 product 區域');
-                     
-                     // 3秒後重新顯示手機版容器
-                     setTimeout(() => {
-                         container.style.display = 'block';
-                         console.log('重新顯示手機版容器');
-                     }, 3000);
-                 } else {
-                     console.error('找不到 product 區域');
-                 }
-             }
-        
+
+            let lastRotation = 0;
+            let hasScrolledToProduct = false;
+
+            function updateRotation() {
+                const circleBackground = document.querySelector('#orbit-container-mobile .circle-background-mobile');
+
+                if (circleBackground) {
+                    circleBackground.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+                    console.log('旋轉角度:', rotation.toFixed(2));
+                }
+
+                let normalizedRotation = ((rotation % 360) + 360) % 360;
+
+                if (normalizedRotation >= 300 || normalizedRotation < 60) {
+                    container.style.backgroundColor = '#2BAD2F';
+                    hasScrolledToProduct = false; // 重置標記
+                } else if (normalizedRotation >= 60 && normalizedRotation < 180) {
+                    container.style.backgroundColor = '#E33DDC';
+                    hasScrolledToProduct = false; // 重置標記
+                } else if (normalizedRotation >= 180 && normalizedRotation < 300) {
+                    container.style.backgroundColor = '#FE3489';
+
+                    // 當到達卡片3時顯示提示
+                    if (normalizedRotation >= 180 && normalizedRotation <= 200) {
+                        showHint('繼續旋轉可查看產品資訊');
+                    }
+
+                    // 檢測是否旋轉超過卡片3（草莓卡片）
+                    // 當角度超過 240 度時，表示已經旋轉超過卡片3
+                    if (normalizedRotation > 240 && !hasScrolledToProduct) {
+                        console.log('旋轉超過卡片3，滾動到 product 區域');
+                        scrollToProduct();
+                        hasScrolledToProduct = true;
+                    }
+                }
+
+                lastRotation = rotation;
+            }
+
+            // 顯示提示的函數
+            function showHint(message) {
+                if (hint) {
+                    hint.querySelector('p').textContent = message;
+                    hint.classList.add('show');
+                    setTimeout(() => {
+                        hint.classList.remove('show');
+                    }, 3000);
+                }
+            }
+
+            // 滾動到 product 區域的函數
+            function scrollToProduct() {
+                const productSection = document.querySelector('.product');
+
+                if (productSection) {
+                    // 隱藏手機版容器
+                    container.style.display = 'none';
+
+                    // 滾動到 product 區域
+                    productSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+
+                    console.log('已滾動到 product 區域');
+
+                    // 3秒後重新顯示手機版容器
+                    setTimeout(() => {
+                        container.style.display = 'block';
+                        console.log('重新顯示手機版容器');
+                    }, 3000);
+                } else {
+                    console.error('找不到 product 區域');
+                }
+            }
+
             function animate() {
                 if (Math.abs(targetRotation - rotation) > 0.1) {
                     rotation += (targetRotation - rotation) * 0.1;
@@ -526,12 +524,12 @@
                     isAnimating = false;
                 }
             }
-        
+
             updateRotation();
             console.log('✓ 手機版旋轉功能初始化完成！');
 
             // 監聽窗口大小變化
-            window.addEventListener('resize', function() {
+            window.addEventListener('resize', function () {
                 if (!isMobileSize()) {
                     console.log('切換到桌機版，禁用手機版功能');
                     // 移除事件監聽器
@@ -549,14 +547,14 @@
             function bindEvents() {
                 let scrollTimeout;
                 let isScrollingToProduct = false;
-                
+
                 // 監聽滾輪事件
                 container.addEventListener('wheel', (e) => {
                     // 如果正在滾動到 product 區域，允許正常滾動
                     if (isScrollingToProduct) {
                         return;
                     }
-                    
+
                     // 檢查是否在容器中心區域（旋轉模式）
                     const rect = container.getBoundingClientRect();
                     const centerX = rect.left + rect.width / 2;
@@ -564,32 +562,32 @@
                     const distanceFromCenter = Math.sqrt(
                         Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
                     );
-                    
+
                     // 如果在中心區域內，執行旋轉
                     if (distanceFromCenter < 100) {
                         e.preventDefault();
                         e.stopPropagation();
-                        
+
                         console.log('手機版滾輪觸發！', e.deltaY);
-                        
+
                         const delta = e.deltaY * 0.3;
                         targetRotation += delta;
-                        
+
                         if (!isAnimating) {
                             isAnimating = true;
                             requestAnimationFrame(animate);
                         }
-                        
+
                         // 清除滾動超時
                         clearTimeout(scrollTimeout);
-                        
+
                         // 如果向下滾動且旋轉角度超過一定值，準備滾動到 product
                         if (e.deltaY > 0 && targetRotation > 300) {
                             scrollTimeout = setTimeout(() => {
                                 console.log('準備滾動到 product 區域');
                                 isScrollingToProduct = true;
                                 scrollToProduct();
-                                
+
                                 // 3秒後重置狀態
                                 setTimeout(() => {
                                     isScrollingToProduct = false;
@@ -601,22 +599,22 @@
                         console.log('邊緣區域，允許正常滾動');
                     }
                 }, { passive: false });
-            
+
                 let touchStartY = 0;
-                
+
                 // 觸控事件也只在容器上監聽
                 container.addEventListener('touchstart', function (e) {
                     touchStartY = e.touches[0].clientY;
                 }, { passive: true });
-                
+
                 container.addEventListener('touchmove', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    
+
                     const touchEndY = e.touches[0].clientY;
                     const deltaY = touchStartY - touchEndY;
                     targetRotation += deltaY * 0.5;
-                    
+
                     if (!isAnimating) {
                         isAnimating = true;
                         requestAnimationFrame(animate);
@@ -629,11 +627,144 @@
             bindEvents();
         });
     </script>
-    
+
     <!-- ShoppingCart (新版 - API 版本) -->
     <script src="./js/shoppingCart_v2.js"></script>
     <!-- Footer -->
     <script src="./js/footer.js"></script>
+
+     <!-- Three.js Import Map -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <!-- Three.js 模型載入 -->
+  <script type="module">
+    console.log('頁面載入完成，開始初始化 Three.js');
+    console.log('當前協議:', window.location.protocol);  
+    
+    import * as THREE from "three";
+    import { MTLLoader } from "three/addons/loaders/MTLLoader.js";
+    import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
+    
+    console.log('Three.js 模塊載入成功');
+
+    const scene = new THREE.Scene();
+    scene.background = null; // 透明背景
+    console.log('場景創建成功');
+    
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    console.log('相機創建成功，視角:', camera.fov, '寬高比:', camera.aspect);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    const container = document.getElementById("container3D");
+    console.log('找到 3D 容器:', container);
+    container.appendChild(renderer.domElement);
+    console.log('渲染器已添加到 DOM，渲染器大小:', renderer.getSize(new THREE.Vector2()));
+
+    // 燈光
+    const ambient = new THREE.AmbientLight(0xffffff, 1.0); // 增強環境光
+    scene.add(ambient);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    dirLight.position.set(5, 10, 5);
+    scene.add(dirLight);
+
+  // 設置相機位置（可調，增大會讓整體畫面看起來更遠）
+  camera.position.set(0, 0, 15); // 相機在z軸5的位置
+
+  // 儲存模型對象以便動畫使用
+  let canModel = null;
+  // 用於滾輪控制的目標與當前 Y
+  let targetY = 0;
+  let currentY = 0;
+  const WHEEL_SENSITIVITY = 0.0025; // 滾輪靈敏度，可調
+  const MIN_Y = -15.0;
+  const MAX_Y = 15.0;
+
+    // 載入 MTL + OBJ
+    const mtlLoader = new MTLLoader();
+    mtlLoader.setPath('./Texture/');
+    console.log('開始載入 MTL 材質文件: ./Texture/Soda_Can.mtl');
+    mtlLoader.load('Soda_Can.mtl', (materials) => {
+      console.log('MTL 材質載入成功');
+      materials.preload();
+      const objLoader = new OBJLoader();
+      objLoader.setMaterials(materials);
+      objLoader.setPath('./Texture/');
+      console.log('開始載入 OBJ 模型文件: ./Texture/Soda_Can.obj');
+      objLoader.load('Soda_Can.obj', (object) => {
+        console.log('OBJ 模型載入成功，添加到場景');
+        console.log('模型初始位置:', object.position);
+        console.log('模型範圍:', object);
+        
+        // 調整罐子大小與深度（如果罐子看起來太大或太靠前，可調整下列常數）
+        const CAN_SCALE = 0.3; // 調小一點
+        const CAN_POSITION = new THREE.Vector3(-14, 0, 0); // 放在中心
+        object.scale.set(CAN_SCALE, CAN_SCALE, CAN_SCALE);
+        object.position.copy(CAN_POSITION);
+        scene.add(object);
+        canModel = object;
+        
+        // 相機看向模型
+        camera.lookAt(0, 0, 0);
+        
+        // 初始化滾輪目標與目前位置，讓物件立刻在預期高度
+        targetY = -7;
+        currentY = 0;
+        console.log('模型已添加到場景，當前場景對象數量:', scene.children.length);
+      }, (progress) => {
+        if (progress.total > 0) {
+          console.log('載入進度:', Math.round((progress.loaded / progress.total) * 100) + '%');
+        }
+      }, (error) => {
+        console.error('載入模型時發生錯誤:', error);
+        alert('載入模型失敗，請檢查文件路徑。錯誤: ' + error);
+      });
+    }, (progress) => {
+      if (progress.total > 0) {
+        console.log('MTL 載入進度:', Math.round((progress.loaded / progress.total) * 100) + '%');
+      }
+    }, (error) => {
+      console.error('載入材質時發生錯誤:', error);
+      alert('載入材質失敗，請檢查文件路徑。錯誤: ' + error);
+    });
+
+    // 監聽滾輪事件：在 3D 容器上滾動時控制罐子上下移動（阻止預設滾動）
+    // 使用 passive: false 以便可以 preventDefault()
+    if (renderer.domElement) {
+      renderer.domElement.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        // deltaY > 0 表示向下滾（內容上移），我們取反讓向下滾使罐子往下（y 減小）
+        targetY += -e.deltaY * WHEEL_SENSITIVITY;
+        // 限制範圍
+        if (targetY < MIN_Y) targetY = MIN_Y;
+        if (targetY > MAX_Y) targetY = MAX_Y;
+      }, { passive: false });
+    }
+
+    // 立即啟動動畫循環
+    function animate() {
+      requestAnimationFrame(animate);
+      if (canModel) {
+        // 保持直立（強制 x, z 為 0），僅繞 y 軸旋轉
+        canModel.rotation.y = 0* Math.PI / 180;;
+        canModel.rotation.x = 285* Math.PI / 180;
+        canModel.rotation.z += 0.3* Math.PI / 180;;
+
+        // 平滑插值位置（緩動）
+        currentY += (targetY - currentY) * 0.12; // 緩動係數可調
+        canModel.position.y = currentY;
+      }
+      renderer.render(scene, camera);
+    }
+    animate();
+
+  </script>
 </body>
 
 </html>
