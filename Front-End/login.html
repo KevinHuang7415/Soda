@@ -179,15 +179,12 @@
             // 儲存 token 到 localStorage（供 nav.js 的 isLoggedIn() 使用）
             localStorage.setItem('token', token);
             
-            // 儲存用戶資訊（包含 emailVerified）
-            localStorage.setItem('user', JSON.stringify({
-              id: user.id,
-              username: user.username,
-              email: user.email,
-              role: user.role,
-              emailVerified: user.isEmailVerified || false,
-              token: token
-            }));
+            // ⭐ 儲存完整的用戶資訊（包含 firstName, lastName, address, phoneNumber 等）
+            const userData = {
+              ...user,  // 包含所有後端返回的欄位
+              token: token  // 額外添加 token
+            };
+            localStorage.setItem('user', JSON.stringify(userData));
 
             alert(`${user.username} 恭喜登入成功！`);
 

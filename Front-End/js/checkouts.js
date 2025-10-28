@@ -54,11 +54,65 @@
                 lastNameInput.value = user.firstName;
             }
 
-            // 4. 自動填入地址（如果有的話）
+            // 4. 自動填入電話（如果有的話）
+            const phoneInput = document.getElementById('deliveryTel');
+            if (phoneInput) {
+                if (user.phoneNumber) {
+                    phoneInput.value = user.phoneNumber;
+                    phoneInput.classList.add('has-value');
+                } else if (!phoneInput.value) {
+                    // 如果沒有用戶電話且欄位為空，設置預設前綴 "09"
+                    phoneInput.value = '09';
+                    phoneInput.classList.add('has-value');
+                }
+            }
+
+            // 5. 自動填入地址（如果有的話）- 需要解析完整地址
             if (user.address) {
-                const addressInput = document.getElementById('addressName');
-                if (addressInput) {
-                    addressInput.value = user.address;
+                // 解析地址格式：例如 "320桃園市中壢區中山路100號"
+                const addressMatch = user.address.match(/^(\d{3})?([台北台中台南高雄桃園新北基隆新竹苗栗彰化南投雲林嘉義屏東宜蘭花蓮台東])([^市縣]+)(市|縣|市區|縣區)?([^區鄉鎮市]+)(區|鄉|鎮|市)?(.+)$/);
+                
+                if (addressMatch) {
+                    const zipcode = addressMatch[1];
+                    const city = addressMatch[2] + (addressMatch[4] || '');
+                    const district = addressMatch[5] + (addressMatch[6] || '');
+                    const detail = addressMatch[7];
+                    
+                    // 填入郵遞區號
+                    const zipcodeInput = document.getElementById('zipcode-input');
+                    if (zipcodeInput && zipcode) {
+                        zipcodeInput.value = zipcode;
+                    }
+                    
+                    // 填入縣市
+                    const citySelect = document.getElementById('city');
+                    if (citySelect && city) {
+                        citySelect.value = city;
+                        // 觸發change事件以更新區域選單
+                        citySelect.dispatchEvent(new Event('change'));
+                    }
+                    
+                    // 延遲填入區域（等待選單更新）
+                    setTimeout(() => {
+                        const districtSelect = document.getElementById('district');
+                        if (districtSelect && district) {
+                            districtSelect.value = district;
+                            // 觸發change事件以自動填入郵遞區號
+                            districtSelect.dispatchEvent(new Event('change'));
+                        }
+                    }, 100);
+                    
+                    // 填入詳細地址
+                    const addressInput = document.getElementById('addressName');
+                    if (addressInput && detail) {
+                        addressInput.value = detail;
+                    }
+                } else {
+                    // 如果無法解析，直接填入完整地址
+                    const addressInput = document.getElementById('addressName');
+                    if (addressInput) {
+                        addressInput.value = user.address;
+                    }
                 }
             }
 
@@ -67,12 +121,41 @@
 
         // ==================== 商品相關 ====================
         
-        // 商品背景顏色對應表
-        const productBackgroundMap = {
-            '檸檬能量飲': 'var(--product-green-light)',
-            '葡萄能量飲': 'var(--product-purple-light)',
-            '草莓能量飲': 'var(--product-pink-light)'
-        };
+        // 獲取商品背景顏色（根據ID）- 與shoppingCart_v2.js保持一致
+        function getProductBackgroundById(productId) {
+            // id: 1,2 -> 綠色; id: 3,4 -> 紫色; id: 5,6 -> 粉色
+            if (productId === 1 || productId === 2) {
+                return 'var(--product-green-light)';
+            } else if (productId === 3 || productId === 4) {
+                return 'var(--product-purple-light)';
+            } else if (productId === 5 || productId === 6) {
+                return 'var(--product-pink-light)';
+            }
+            return 'var(--main-gray-light)';
+        }
+
+        // 獲取商品圖片路徑（根據ID）- 與shoppingCart_v2.js保持一致
+        function getProductImageById(productId) {
+            // id: 1,2 -> 檸檬; id: 3,4 -> 葡萄; id: 5,6 -> 草莓
+            if (productId === 1 || productId === 2) {
+                return './images/lemon-lime_mockup.png';
+            } else if (productId === 3 || productId === 4) {
+                return './images/grape_mockup.png';
+            } else if (productId === 5 || productId === 6) {
+                return './images/strawberry-lemonade_mockup.png';
+            }
+            return './images/lemon-lime_mockup.png'; // 預設圖片
+        }
+
+        // 提取規格中的數字（用於顯示）- 與shoppingCart_v2.js保持一致
+        function extractSizeNumber(sizeString) {
+            // 將 sizeString 轉為字串
+            const str = String(sizeString);
+            // 提取開頭的數字部分（支援 1-2 位數字）
+            const match = str.match(/^(\d{1,2})/);
+            // 如果找到數字就返回，否則返回原始字串
+            return match ? match[1] : str;
+        }
 
         // 從 URL 參數獲取購物車資料
         function getCartDataFromURL() {
@@ -112,14 +195,16 @@
                 const orderItemBox = document.createElement('div');
                 orderItemBox.className = 'order-item-box';
 
-                const bgColor = productBackgroundMap[item.name] || 'var(--main-gray-light)';
+                // 使用基於ID的函數來獲取背景色和圖片
+                const bgColor = getProductBackgroundById(item.productId);
+                const imageUrl = item.imageUrl || getProductImageById(item.productId);
                 const subtotal = item.price * item.qty;
 
                 orderItemBox.innerHTML = `
                     <div class="order-item-img" style="background-color: ${bgColor}">
                         <span class="order-item-quantity">${item.qty}</span>
-                        <h2>${item.size}</h2>
-                        <img src="${item.imageUrl}" alt="${item.name}">
+                        <h2>${extractSizeNumber(item.size)}</h2>
+                        <img src="${imageUrl}" alt="${item.name}" onerror="this.src='${getProductImageById(item.productId)}'">
                     </div>
                     <div class="order-item-info">
                         <div class="order-item-sel-box">
@@ -177,7 +262,8 @@
             marqueeItems: [],
             isUserLoggedIn: false,
             userInfo: null,
-            marqueeInstance: null
+            marqueeInstance: null,
+            cartData: null  // 保存購物車資料
         };
 
         // 向後兼容的變數
@@ -951,6 +1037,12 @@
 
             // 檢查用戶登入狀態
             checkUserLoginStatus();
+            
+            // ⭐ 新增：自動填入登入用戶的資料
+            initializeUserDataOnLoad();
+            
+            // 💾 恢復之前保存的表單資料（在用戶資料之後，避免被覆蓋）
+            restoreFormData();
 
             // 載入優惠券資料
             await loadDiscountData();
@@ -959,6 +1051,7 @@
             const cartData = getCartDataFromURL();
             if (cartData) {
                 subtotal = cartData.total;
+                AppState.cartData = cartData;  // 保存購物車資料
                 updateOrderSummary(cartData.cart, cartData.total);
             } else {
                 console.warn('未找到購物車資料，使用預設顯示');
@@ -1019,6 +1112,9 @@
             syncPanel(mq);
             // 視窗大小改變時同步
             mq.addEventListener('change', syncPanel);
+            
+            // 💾 設置表單資料自動保存功能
+            setupAutoSaveFormData();
         });
 
         // === 全台縣市與郵遞區號資料 ===
@@ -1211,9 +1307,10 @@
                 if (response.success) {
                     alert(`訂單建立成功！\n訂單編號：${response.orderId}\n\n感謝您的訂購！`);
                     
-                    // 清除購物車資料
+                    // 清除購物車資料和表單資料
                     localStorage.removeItem('cartData');
                     clearDiscountState();
+                    clearSavedFormData();  // 清除保存的表單資料
                     
                     // 導向訂單完成頁面或首頁
                     window.location.href = './indexPart234.html';
@@ -1315,19 +1412,28 @@
             const user = userJson ? JSON.parse(userJson) : null;
             const userId = user?.id || 0;
 
-            // 取得購物車資料
-            const cartData = getCartDataFromURL();
+            // 取得購物車資料 - 優先使用保存的資料，避免 URL 參數遺失
+            let cartData = AppState.cartData;
+            if (!cartData) {
+                cartData = getCartDataFromURL();
+            }
+            
+            console.log('🔍 購物車資料來源:', cartData ? '找到資料' : '未找到資料');
+            
             let productList = '';
-            let orderItems = [];
+            let orderItems = '';
 
-            if (cartData && cartData.cart) {
+            if (cartData && cartData.cart && cartData.cart.length > 0) {
                 // 產品列表（簡單字串格式）
                 productList = cartData.cart.map(item => 
                     `${item.name} (${item.size}) x${item.qty}`
                 ).join(', ');
 
-                // 訂單項目（陣列格式，不需要再 stringify）
-                orderItems = cartData.cart;
+                // 訂單項目（轉換為 JSON 字串格式）
+                orderItems = JSON.stringify(cartData.cart);
+            } else {
+                // 如果沒有購物車資料，拋出錯誤
+                throw new Error('購物車資料遺失，請重新選擇商品');
             }
 
             // 收集表單資料
@@ -1369,33 +1475,36 @@
                 notes += `, 使用優惠: ${discountInfo}`;
             }
 
-            // 組合訂單資料（JSON 格式）
+            // 組合訂單資料（JSON 格式）- 使用帕斯卡式命名以匹配後端 C# 模型
             return {
-                userID: userId,
-                productList: productList,
-                totalAmount: finalAmount,
-                subtotal: subtotal,
-                discount: totalDiscount,
-                paymentMethod: 'Credit Card',
-                shippingAddress: fullAddress,
-                receiverName: receiverName,
-                receiverPhone: tel,
-                receiverEmail: email,
-                orderItems: orderItems,
-                appliedCoupons: appliedDiscounts.filter(d => !d.isInvalid && !d.isReplaced).map(d => ({
-                    id: d.id,
-                    code: d.code || d.name,
-                    name: d.name,
-                    discountAmount: d.amount
-                })),
-                notes: notes,
-                subscribeNewsletter: sendEmail
+                UserID: userId,
+                ProductList: productList,
+                TotalAmount: finalAmount,
+                OrderItems: orderItems,
+                PaymentMethod: 'Credit Card',
+                ShippingAddress: fullAddress,
+                ReceiverName: receiverName,
+                Notes: notes
             };
         }
 
         // 送出訂單到後端
         async function submitOrder(orderData) {
             try {
+                // 🔍 調試：詳細記錄要發送的數據
+                console.log('========== 訂單數據 ==========');
+                console.log('原始數據 (orderData):', orderData);
+                console.log('JSON 字串:', JSON.stringify(orderData, null, 2));
+                console.log('數據類型檢查:');
+                console.log('  - UserID:', typeof orderData.UserID, '=', orderData.UserID);
+                console.log('  - ProductList:', typeof orderData.ProductList, '=', orderData.ProductList?.substring(0, 100) + '...');
+                console.log('  - TotalAmount:', typeof orderData.TotalAmount, '=', orderData.TotalAmount);
+                console.log('  - OrderItems:', typeof orderData.OrderItems, '=', orderData.OrderItems?.substring(0, 200) + '...');
+                console.log('  - ShippingAddress:', typeof orderData.ShippingAddress, '=', orderData.ShippingAddress);
+                console.log('  - ReceiverName:', typeof orderData.ReceiverName, '=', orderData.ReceiverName);
+                console.log('===============================');
+                console.log('開始發送 POST 請求到: https://localhost:7085/api/Orders');
+                
                 // 使用 axios 或 fetch 發送請求
                 const response = await fetch('https://localhost:7085/api/Orders', {
                     method: 'POST',
@@ -1407,14 +1516,20 @@
                     body: JSON.stringify(orderData)
                 });
 
+                console.log('收到響應狀態:', response.status, response.statusText);
+                
                 if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('響應錯誤內容:', errorText);
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
+                console.log('成功收到訂單響應:', data);
                 return data;
             } catch (error) {
                 console.error('API 請求失敗:', error);
+                console.error('錯誤詳情:', error.message);
                 throw error;
             }
         }
@@ -1650,20 +1765,306 @@
         const cardNumInput = document.getElementById('cardNum');
         if (cardNumInput) {
             cardNumInput.addEventListener('input', function(e) {
-                let value = this.value.replace(/\s/g, '');
+                // 記錄當前游標位置
+                const cursorPos = this.selectionStart;
+                const oldValue = this.value;
+                
+                // 移除所有空格，只保留數字
+                let value = oldValue.replace(/\s/g, '');
+                
+                // 限制最大長度為16位
+                if (value.length > 16) {
+                    value = value.slice(0, 16);
+                }
+                
+                // 格式化：每4位加一個空格
                 let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
                 
-                // 只在格式化後的值與當前值不同時更新
-                if (formattedValue !== this.value) {
-                    const cursorPos = this.selectionStart;
-                    this.value = formattedValue;
-                    
-                    // 調整游標位置
-                    let newCursorPos = cursorPos;
-                    if (value.length % 4 === 0 && cursorPos === formattedValue.length - 1) {
-                        newCursorPos = cursorPos + 1;
+                // 計算在原始字符串中游標前面有多少個數字（不包括空格）
+                const digitsBeforeCursor = oldValue.slice(0, cursorPos).replace(/\s/g, '').length;
+                
+                // 在格式化後的字符串中找到對應的位置
+                let newCursorPos = 0;
+                let digitCount = 0;
+                
+                for (let i = 0; i < formattedValue.length; i++) {
+                    if (formattedValue[i] !== ' ') {
+                        digitCount++;
+                        if (digitCount === digitsBeforeCursor) {
+                            newCursorPos = i + 1;
+                            break;
+                        }
                     }
-                    this.setSelectionRange(newCursorPos, newCursorPos);
+                }
+                
+                // 如果沒有找到（游標在最後），則放在格式化後的字符串末尾
+                if (newCursorPos === 0) {
+                    newCursorPos = formattedValue.length;
+                }
+                
+                // 更新值
+                this.value = formattedValue;
+                
+                // 設置游標位置
+                this.setSelectionRange(newCursorPos, newCursorPos);
+            });
+        }
+
+        // 電話號碼輸入優化
+        const phoneInput = document.getElementById('deliveryTel');
+        if (phoneInput) {
+            // 設置預設前綴 "09"（僅在欄位為空時）
+            if (!phoneInput.value) {
+                phoneInput.value = '09';
+            }
+
+            phoneInput.addEventListener('input', function(e) {
+                let value = this.value;
+                
+                // 只保留數字
+                value = value.replace(/\D/g, '');
+                
+                // 確保開頭是 "09"
+                if (!value.startsWith('09')) {
+                    value = '09' + value;
+                }
+                
+                // 限制總長度為 10 位（09 + 8位數字）
+                if (value.length > 10) {
+                    value = value.slice(0, 10);
+                }
+                
+                // 確保至少保持 "09" 前綴
+                if (value.length < 2) {
+                    value = '09';
+                }
+                
+                // 更新值
+                this.value = value;
+                
+                // 如果值改變，觸發 has-value 類更新
+                if (value) {
+                    this.classList.add('has-value');
+                } else {
+                    this.classList.remove('has-value');
+                }
+            });
+
+            // 防止刪除前綴
+            phoneInput.addEventListener('keydown', function(e) {
+                const cursorPos = this.selectionStart;
+                
+                // 如果嘗試刪除 "09" 前綴
+                if ((e.key === 'Backspace' || e.key === 'Delete') && cursorPos <= 2) {
+                    e.preventDefault();
+                    // 保持前綴 "09"，選擇它
+                    this.setSelectionRange(2, 2);
+                }
+            });
+
+            // 獲取焦點時，將游標移到末尾（避免選擇 "09"）
+            phoneInput.addEventListener('focus', function(e) {
+                if (this.value === '09' || this.selectionStart <= 2) {
+                    this.setSelectionRange(this.value.length, this.value.length);
+                }
+            });
+        }
+
+        // ==================== 表單資料保存和恢復 ====================
+
+        // 保存表單資料到 localStorage
+        function saveFormData() {
+            const formData = {
+                email: document.getElementById('email').value,
+                deliveryFirstName: document.getElementById('deliveryFirstName').value,
+                deliveryLaName: document.getElementById('deliveryLaName').value,
+                deliveryTel: document.getElementById('deliveryTel').value,
+                city: document.getElementById('city').value,
+                district: document.getElementById('district').value,
+                zipcode: document.getElementById('zipcode-input').value,
+                addressName: document.getElementById('addressName').value,
+                cardNum: document.getElementById('cardNum').value,
+                cardMonth: document.getElementById('cardMonth').value,
+                cardYear: document.getElementById('cardYear').value,
+                cvv: document.getElementById('cvv').value,
+                nameOnCard: document.getElementById('nameOnCard').value,
+                sendemail: document.getElementById('sendemail').checked,
+                timestamp: Date.now()
+            };
+            
+            sessionStorage.setItem('checkoutFormData', JSON.stringify(formData));
+            console.log('✅ 表單資料已保存');
+        }
+
+        // 恢復表單資料
+        function restoreFormData() {
+            try {
+                const savedData = sessionStorage.getItem('checkoutFormData');
+                if (!savedData) return false;
+
+                const formData = JSON.parse(savedData);
+                
+                // 檢查資料是否過期（超過 24 小時）
+                const now = Date.now();
+                const oneDay = 24 * 60 * 60 * 1000;
+                if (now - formData.timestamp > oneDay) {
+                    sessionStorage.removeItem('checkoutFormData');
+                    console.log('⚠️ 保存的表單資料已過期，已清除');
+                    return false;
+                }
+
+                // 恢復資料（跳過 email，因為它是從用戶資料自動填入的）
+                if (formData.deliveryFirstName) {
+                    const firstNameInput = document.getElementById('deliveryFirstName');
+                    if (firstNameInput && !firstNameInput.value) {
+                        firstNameInput.value = formData.deliveryFirstName;
+                        firstNameInput.classList.add('has-value');
+                    }
+                }
+
+                if (formData.deliveryLaName) {
+                    const lastNameInput = document.getElementById('deliveryLaName');
+                    if (lastNameInput && !lastNameInput.value) {
+                        lastNameInput.value = formData.deliveryLaName;
+                        lastNameInput.classList.add('has-value');
+                    }
+                }
+
+                if (formData.deliveryTel) {
+                    const telInput = document.getElementById('deliveryTel');
+                    if (telInput && !telInput.value) {
+                        telInput.value = formData.deliveryTel;
+                        telInput.classList.add('has-value');
+                    }
+                }
+
+                // 恢復地址（如果有保存的城市和區域）
+                if (formData.city) {
+                    const citySelect = document.getElementById('city');
+                    if (citySelect && !citySelect.value) {
+                        citySelect.value = formData.city;
+                        citySelect.dispatchEvent(new Event('change'));
+                    }
+                }
+
+                // 延遲設置區域（等待城市選單更新）
+                if (formData.district) {
+                    setTimeout(() => {
+                        const districtSelect = document.getElementById('district');
+                        if (districtSelect && !districtSelect.value) {
+                            districtSelect.value = formData.district;
+                            districtSelect.dispatchEvent(new Event('change'));
+                        }
+                    }, 100);
+                }
+
+                if (formData.zipcode) {
+                    const zipcodeInput = document.getElementById('zipcode-input');
+                    if (zipcodeInput && !zipcodeInput.value) {
+                        zipcodeInput.value = formData.zipcode;
+                    }
+                }
+
+                if (formData.addressName) {
+                    const addressInput = document.getElementById('addressName');
+                    if (addressInput && !addressInput.value) {
+                        addressInput.value = formData.addressName;
+                        addressInput.classList.add('has-value');
+                    }
+                }
+
+                // 恢復信用卡資料
+                if (formData.cardNum) {
+                    const cardNumInput = document.getElementById('cardNum');
+                    if (cardNumInput && !cardNumInput.value) {
+                        cardNumInput.value = formData.cardNum;
+                        cardNumInput.classList.add('has-value');
+                    }
+                }
+
+                if (formData.cardMonth) {
+                    const cardMonthInput = document.getElementById('cardMonth');
+                    if (cardMonthInput && !cardMonthInput.value) {
+                        cardMonthInput.value = formData.cardMonth;
+                    }
+                }
+
+                if (formData.cardYear) {
+                    const cardYearInput = document.getElementById('cardYear');
+                    if (cardYearInput && !cardYearInput.value) {
+                        cardYearInput.value = formData.cardYear;
+                    }
+                }
+
+                if (formData.cvv) {
+                    const cvvInput = document.getElementById('cvv');
+                    if (cvvInput && !cvvInput.value) {
+                        cvvInput.value = formData.cvv;
+                        cvvInput.classList.add('has-value');
+                    }
+                }
+
+                if (formData.nameOnCard) {
+                    const nameInput = document.getElementById('nameOnCard');
+                    if (nameInput && !nameInput.value) {
+                        nameInput.value = formData.nameOnCard;
+                        nameInput.classList.add('has-value');
+                    }
+                }
+
+                if (formData.sendemail !== undefined) {
+                    const emailCheckbox = document.getElementById('sendemail');
+                    if (emailCheckbox) {
+                        emailCheckbox.checked = formData.sendemail;
+                    }
+                }
+
+                console.log('✅ 表單資料已恢復');
+                AppState.formDataSaved = true;
+                return true;
+            } catch (error) {
+                console.error('恢復表單資料失敗:', error);
+                return false;
+            }
+        }
+
+        // 清除保存的表單資料（訂單提交成功後調用）
+        function clearSavedFormData() {
+            sessionStorage.removeItem('checkoutFormData');
+            console.log('🗑️ 已清除保存的表單資料');
+        }
+
+        // 監聽表單輸入變化，自動保存
+        function setupAutoSaveFormData() {
+            // 需要監聽的表單欄位
+            const formFields = [
+                'email',
+                'deliveryFirstName',
+                'deliveryLaName',
+                'deliveryTel',
+                'city',
+                'district',
+                'zipcode-input',
+                'addressName',
+                'cardNum',
+                'cardMonth',
+                'cardYear',
+                'cvv',
+                'nameOnCard',
+                'sendemail'
+            ];
+
+            formFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    // 監聽輸入變化
+                    if (field.type === 'checkbox') {
+                        field.addEventListener('change', debounce(saveFormData, 500));
+                    } else if (field.tagName === 'SELECT') {
+                        field.addEventListener('change', debounce(saveFormData, 500));
+                    } else {
+                        field.addEventListener('input', debounce(saveFormData, 500));
+                    }
                 }
             });
         }

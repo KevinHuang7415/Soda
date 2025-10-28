@@ -100,23 +100,50 @@ async function getProductInfo(productId, size) {
 // --- 備用商品資料（API 失敗時使用）---
 function getFallbackProducts() {
     return [
-        { id: 1, name: '檸檬能量飲', size: '6', price: 199, imageUrl: './images/lemon-lime_mockup.png', stock: 100 },
-        { id: 2, name: '檸檬能量飲', size: '24', price: 599, imageUrl: './images/lemon-lime_mockup.png', stock: 100 },
-        { id: 3, name: '葡萄能量飲', size: '6', price: 199, imageUrl: './images/grape_mockup.png', stock: 100 },
-        { id: 4, name: '葡萄能量飲', size: '24', price: 599, imageUrl: './images/grape_mockup.png', stock: 100 },
-        { id: 5, name: '草莓能量飲', size: '6', price: 199, imageUrl: './images/strawberry-lemonade_mockup.png', stock: 100 },
-        { id: 6, name: '草莓能量飲', size: '24', price: 599, imageUrl: './images/strawberry-lemonade_mockup.png', stock: 100 }
+        { id: 1, name: '檸檬能量飲', size: '6入', price: 199, imageUrl: './images/lemon-lime_mockup.png', stock: 100 },
+        { id: 2, name: '檸檬能量飲', size: '24入', price: 599, imageUrl: './images/lemon-lime_mockup.png', stock: 100 },
+        { id: 3, name: '葡萄能量飲', size: '6入', price: 199, imageUrl: './images/grape_mockup.png', stock: 100 },
+        { id: 4, name: '葡萄能量飲', size: '24入', price: 599, imageUrl: './images/grape_mockup.png', stock: 100 },
+        { id: 5, name: '草莓能量飲', size: '6入', price: 199, imageUrl: './images/strawberry-lemonade_mockup.png', stock: 100 },
+        { id: 6, name: '草莓能量飲', size: '24入', price: 599, imageUrl: './images/strawberry-lemonade_mockup.png', stock: 100 }
     ];
 }
 
-// --- 獲取商品背景顏色（根據名稱）---
+// --- 獲取商品背景顏色（根據名稱）- 保持向後兼容 ---
 function getProductBackground(productName) {
     const bgMap = {
         '檸檬能量飲': 'var(--product-green-light)',
-        '葡萄能量飲': 'var(--product-purple-light)',
         '草莓能量飲': 'var(--product-pink-light)'
+        '葡萄能量飲': 'var(--product-purple-light)',
+        
     };
     return bgMap[productName] || 'var(--main-gray-light)';
+}
+
+// --- 獲取商品背景顏色（根據ID）---
+function getProductBackgroundById(productId) {
+    // id: 1,2 -> 綠色; id: 3,4 -> 紫色; id: 5,6 -> 粉色
+    if (productId === 1 || productId === 2) {
+        return 'var(--product-green-light)';
+    } else if (productId === 3 || productId === 4) {
+        return 'var(--product-pink-light)';
+    } else if (productId === 5 || productId === 6) {
+        return 'var(--product-purple-light)';
+    }
+    return 'var(--main-gray-light)';
+}
+
+// --- 獲取商品圖片路徑（根據ID）---
+function getProductImageById(productId) {
+    // id: 1,2 -> 檸檬; id: 3,4 -> 葡萄; id: 5,6 -> 草莓
+    if (productId === 1 || productId === 2) {
+        return './images/lemon-lime_mockup.png';
+    } else if (productId === 3 || productId === 4) {
+        return './images/grape_mockup.png';
+    } else if (productId === 5 || productId === 6) {
+        return './images/strawberry-lemonade_mockup.png';
+    }
+    return './images/lemon-lime_mockup.png'; // 預設圖片
 }
 
 // --- 提取規格中的數字（用於顯示）---
@@ -190,21 +217,14 @@ async function preloadProductData() {
 function createFavoriteItemBox(favItem) {
     const { productId, name, size, price, imageUrl } = favItem;
     const qty = favItem.qty || 1; // 如果沒有 qty，預設為 1
-    const bg = getProductBackground(name);
+    
+    // 使用基於ID的函數來獲取背景色和圖片
+    const bg = getProductBackgroundById(productId);
+    const validImageUrl = imageUrl || getProductImageById(productId);
 
     // 使用快取資料（已在初始化時載入）
     const productNames = productNamesCache || [name];
     const productSizes = productSizesCache[name] || [size];
-
-    // 圖片路徑映射（fallback）
-    const imageMap = {
-        '檸檬能量飲': './images/lemon-lime_mockup.png',
-        '葡萄能量飲': './images/grape_mockup.png',
-        '草莓能量飲': './images/strawberry-lemonade_mockup.png'
-    };
-
-    // 確保圖片路徑有效
-    const validImageUrl = imageUrl || imageMap[name] || './images/lemon-lime_mockup.png';
 
     const box = document.createElement('div');
     box.className = 'item-box favorite-item';
@@ -215,16 +235,16 @@ function createFavoriteItemBox(favItem) {
         `<option value="${pName}"${pName === name ? ' selected' : ''}>${pName}</option>`
     ).join('');
 
-    // 生成規格選項（只顯示數字）
+    // 生成規格選項（顯示完整格式如"6入"、"24入"）
     const sizeOptions = productSizes.map(pSize =>
-        `<option value="${pSize}"${pSize === size ? ' selected' : ''}>${extractSizeNumber(pSize)}</option>`
+        `<option value="${pSize}"${pSize === size ? ' selected' : ''}>${pSize}</option>`
     ).join('');
 
     box.innerHTML = `
         <div class="cart-item-img" style="background-color:${bg}">
             <h2>${extractSizeNumber(size)}</h2>
             <a href="/products/${productId}" target="_blank">
-                <img src="${validImageUrl}" alt="${name}" onerror="this.src='${imageMap[name] || './images/lemon-lime_mockup.png'}'">     
+                <img src="${validImageUrl}" alt="${name}" onerror="this.src='${getProductImageById(productId)}'">     
             </a>
         </div>
         <div class="cart-item-info">
@@ -265,21 +285,14 @@ function createFavoriteItemBox(favItem) {
 // --- 建立商品項目 ---
 function createItemBox(cartItem) {
     const { productId, name, size, qty, price, imageUrl } = cartItem;
-    const bg = getProductBackground(name);
+    
+    // 使用基於ID的函數來獲取背景色和圖片
+    const bg = getProductBackgroundById(productId);
+    const validImageUrl = imageUrl || getProductImageById(productId);
 
     // 使用快取資料（已在初始化時載入）
     const productNames = productNamesCache || [name];
     const productSizes = productSizesCache[name] || [size];
-
-    // 圖片路徑映射（fallback）
-    const imageMap = {
-        '檸檬能量飲': './images/lemon-lime_mockup.png',
-        '葡萄能量飲': './images/grape_mockup.png',
-        '草莓能量飲': './images/strawberry-lemonade_mockup.png'
-    };
-
-    // 確保圖片路徑有效
-    const validImageUrl = imageUrl || imageMap[name] || './images/lemon-lime_mockup.png';
 
     const box = document.createElement('div');
     box.className = 'item-box';
@@ -290,16 +303,16 @@ function createItemBox(cartItem) {
         `<option value="${pName}"${pName === name ? ' selected' : ''}>${pName}</option>`
     ).join('');
 
-    // 生成規格選項（只顯示數字）
+    // 生成規格選項（顯示完整格式如"6入"、"24入"）
     const sizeOptions = productSizes.map(pSize =>
-        `<option value="${pSize}"${pSize === size ? ' selected' : ''}>${extractSizeNumber(pSize)}</option>`
+        `<option value="${pSize}"${pSize === size ? ' selected' : ''}>${pSize}</option>`
     ).join('');
 
     box.innerHTML = `
         <div class="cart-item-img" style="background-color:${bg}">
             <h2>${extractSizeNumber(size)}</h2>
             <a href="/products/${productId}" target="_blank">
-                <img src="${validImageUrl}" alt="${name}" onerror="this.src='${imageMap[name] || './images/lemon-lime_mockup.png'}'">     
+                <img src="${validImageUrl}" alt="${name}" onerror="this.src='${getProductImageById(productId)}'">     
             </a>
         </div>
         <div class="cart-item-info">
@@ -481,7 +494,7 @@ function bindItemEvents(box) {
         // 從快取獲取規格（已預先載入）
         const newSizes = productSizesCache[newName] || [currentSize];
         sizeSel.innerHTML = newSizes.map(s =>
-            `<option value="${s}">${extractSizeNumber(s)}</option>`
+            `<option value="${s}">${s}</option>`
         ).join('');
 
         // 如果當前規格不存在於新商品中，選擇第一個規格
@@ -518,25 +531,18 @@ async function updateItemProduct(box, newName, newSize) {
     const newProduct = products.find(p => p.name === newName && p.size === newSize);
 
     if (newProduct) {
-        // 圖片路徑映射（fallback）
-        const imageMap = {
-            '檸檬能量飲': './images/lemon-lime_mockup.png',
-            '葡萄能量飲': './images/grape_mockup.png',
-            '草莓能量飲': './images/strawberry-lemonade_mockup.png'
-        };
-
-        // 確保圖片路徑有效
-        const imageUrl = newProduct.imageUrl || imageMap[newProduct.name] || './images/lemon-lime_mockup.png';
+        // 確保圖片路徑有效（使用基於ID的函數）
+        const imageUrl = newProduct.imageUrl || getProductImageById(newProduct.id);
 
         // 更新顯示
         img.src = imageUrl;
         img.alt = newProduct.name;
         img.onerror = function () {
             // 如果圖片載入失敗，使用備用圖片
-            this.src = imageMap[newProduct.name] || './images/lemon-lime_mockup.png';
+            this.src = getProductImageById(newProduct.id);
             console.warn(`圖片載入失敗，使用備用圖片: ${newProduct.name}`);
         };
-        imgWrap.style.backgroundColor = getProductBackground(newProduct.name);
+        imgWrap.style.backgroundColor = getProductBackgroundById(newProduct.id);
         sizeLabel.textContent = extractSizeNumber(newProduct.size);
         priceDisplay.textContent = newProduct.price;
         qtyDisplay.textContent = qtyInput.value;
@@ -633,17 +639,12 @@ async function updateFavoriteItemProduct(box, oldProductId, newName, newSize, ne
     if (!productInfo) {
         // 離線模式：使用預設資料
         const priceMap = { '6': 199, '24': 599 };
-        const imageMap = {
-            '檸檬能量飲': './images/lemon-lime_mockup.png',
-            '葡萄能量飲': './images/grape_mockup.png',
-            '草莓能量飲': './images/strawberry-lemonade_mockup.png'
-        };
         productInfo = {
             id: newProduct.id,
             name: newName,
             size: newSize,
             price: priceMap[extractSizeNumber(newSize)] || 199,
-            imageUrl: imageMap[newName] || './images/lemon-lime_mockup.png'
+            imageUrl: getProductImageById(newProduct.id)
         };
     }
 
@@ -663,22 +664,15 @@ async function updateFavoriteItemProduct(box, oldProductId, newName, newSize, ne
         localStorage.setItem('favorites', JSON.stringify(favorites));
     }
 
-    // 更新 UI
-    const bg = getProductBackground(newName);
+    // 更新 UI（使用基於ID的函數）
+    const bg = getProductBackgroundById(productInfo.id);
     const priceSpan = box.querySelector('.cart-item-price');
     const imgDiv = box.querySelector('.cart-item-img');
     const img = box.querySelector('.cart-item-img img');
     const sizeH2 = box.querySelector('.cart-item-img h2');
 
-    // 圖片路徑映射（fallback）
-    const imageMap = {
-        '檸檬能量飲': './images/lemon-lime_mockup.png',
-        '葡萄能量飲': './images/grape_mockup.png',
-        '草莓能量飲': './images/strawberry-lemonade_mockup.png'
-    };
-
-    // 確保圖片路徑有效
-    const imageUrl = productInfo.imageUrl || imageMap[newName] || './images/lemon-lime_mockup.png';
+    // 確保圖片路徑有效（使用基於ID的函數）
+    const imageUrl = productInfo.imageUrl || getProductImageById(productInfo.id);
 
     priceSpan.textContent = productInfo.price;
     imgDiv.style.backgroundColor = bg;
@@ -686,7 +680,7 @@ async function updateFavoriteItemProduct(box, oldProductId, newName, newSize, ne
     img.alt = newName;
     img.onerror = function () {
         // 如果圖片載入失敗，使用備用圖片
-        this.src = imageMap[newName] || './images/lemon-lime_mockup.png';
+        this.src = getProductImageById(productInfo.id);
         console.warn(`圖片載入失敗，使用備用圖片: ${newName}`);
     };
     sizeH2.textContent = extractSizeNumber(newSize);
@@ -708,18 +702,13 @@ async function addToFavorites(productId, productName, size) {
         console.warn('無法連接 API，使用預設資料');
         // 使用假資料（當 API 無法連接時）
         const priceMap = { '6': 199, '24': 599 };
-        const imageMap = {
-            '檸檬能量飲': './images/lemon-lime_mockup.png',
-            '葡萄能量飲': './images/grape_mockup.png',
-            '草莓能量飲': './images/strawberry-lemonade_mockup.png'
-        };
         productInfo = {
             id: productId,
             name: productName,
             size: size,
             price: priceMap[extractSizeNumber(size)] || 599,
             stock: 999,
-            imageUrl: imageMap[productName] || './images/lemon-lime_mockup.png'
+            imageUrl: getProductImageById(productId)
         };
     }
 
@@ -803,18 +792,13 @@ async function addToCart(productId, productName, size, quantity) {
         console.warn('無法連接 API，使用預設資料');
         // 使用假資料（當 API 無法連接時）
         const priceMap = { '6': 199, '24': 599 };
-        const imageMap = {
-            '檸檬能量飲': './images/lemon-lime_mockup.png',
-            '葡萄能量飲': './images/grape_mockup.png',
-            '草莓能量飲': './images/strawberry-lemonade_mockup.png'
-        };
         productInfo = {
             id: productId,
             name: productName,
             size: size,
             price: priceMap[extractSizeNumber(size)] || 199,
             stock: 999, // 假設庫存充足
-            imageUrl: imageMap[productName] || './images/lemon-lime_mockup.png'
+            imageUrl: getProductImageById(productId)
         };
     }
 
