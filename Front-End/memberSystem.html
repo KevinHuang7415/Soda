@@ -214,6 +214,10 @@
         <h3 class="mgt alc">修改密碼</h3>
         <button type="button" class="btn-l btn-2" onclick="navigateTo('resetPassword.html')">前往</button>
       </div>
+      <div class="side2 bdr">
+        <h3 class="mgt alc">訂單查詢</h3>
+        <button type="button" class="btn-l btn-2" onclick="navigateTo('orderHistory.html')">前往</button>
+      </div>
       <div class="side2 bdr" id="adminPanel" style="display: none;">
         <h3 class="mgt alc">用戶管理</h3>
         <button type="button" class="btn-l btn-2" onclick="navigateTo('Dashboard.html?tab=users')">前往</button>
@@ -359,6 +363,10 @@
         if (logoutBtn) {
           logoutBtn.style.display = 'none';
         }
+        
+        // 保存當前頁面，以便登入後返回
+        localStorage.setItem('redirectAfterLogin', './memberSystem.html');
+        
         return;
       }
 

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>訂單查詢</title>
+    <!-- Reset -->
+    <link rel="stylesheet" href="./css/Reset.css">
+    <!-- main_setting -->
+    <link rel="stylesheet" href="./css/main_setting.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/orderHistory_style.css">
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- 身份驗證輔助函數 -->
+    <script src="./js/auth-helper.js"></script>
+</head>
+
+<body>
+    <!-- 頁首 -->
+    <div class="orderHistory-header">
+        <a href="./index.html"><img class="logo" src="./images/logo.png" alt="logo" title="返回首頁"></a>
+        <a href="./memberSystem.html" class="back-btn">返回會員中心</a>
+    </div>
+
+    <!-- 主要內容 -->
+    <div class="orderHistory-main">
+        <div class="container">
+            <h1 class="page-title">訂單查詢</h1>
+            <p class="user-info">會員：<span id="user-name">載入中...</span></p>
+
+            <!-- 載入提示 -->
+            <div id="loading-indicator" class="loading-indicator">
+                <p>載入訂單資料中...</p>
+            </div>
+
+            <!-- 錯誤提示 -->
+            <div id="error-message" class="error-message" style="display: none;">
+                <p>無法載入訂單資料，請稍後再試</p>
+            </div>
+
+            <!-- 無訂單提示 -->
+            <div id="no-orders" class="no-orders" style="display: none;">
+                <p>您目前沒有任何訂單</p>
+                <a href="./product.html" class="btn-primary">前往購物</a>
+            </div>
+
+            <!-- 訂單列表 -->
+            <div id="orders-container" class="orders-container" style="display: none;">
+                <!-- 訂單將由 JavaScript 動態生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 訂單詳情彈窗 -->
+    <div id="order-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>訂單詳情</h2>
+            <div id="order-details">
+                <!-- 訂單詳情將由 JavaScript 動態生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/orderHistory.js"></script>
+</body>
+
+</html>
+

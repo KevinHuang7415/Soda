@@ -195,17 +195,20 @@
             const userRole = user.role || 'User';
             const redirectUrl = localStorage.getItem('redirectAfterLogin');
 
-            if (userRole === 'Admin') {
+            // 優先處理返回原頁面的需求
+            if (redirectUrl) {
+              localStorage.removeItem('redirectAfterLogin');
+              window.location.href = redirectUrl;
+            } else if (userRole === 'Admin') {
+              // 如果是管理員且沒有要返回的頁面，才詢問是否前往後台
               if (confirm('現在將引導您前往管理者畫面')) {
                 window.open('./Dashboard.html', '_blank'); // 新視窗開啟後台
                 window.location.href = './index.html'; // 導向首頁
               } else {
                 window.location.href = './index.html';
               }
-            } else if (redirectUrl) {
-              localStorage.removeItem('redirectAfterLogin');
-              window.location.href = redirectUrl;
             } else {
+              // 一般用戶且沒有要返回的頁面，導向會員資料頁
               window.location.href = './UpdateUser.html';
             }
             // ==================================
