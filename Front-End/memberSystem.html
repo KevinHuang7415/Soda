@@ -6,14 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>會員系統</title>
   <!-- Reset -->
-  <link rel="stylesheet" href="../css/Reset.css">
+  <link rel="stylesheet" href="./css/Reset.css">
   <!-- main_setting -->
-  <link rel="stylesheet" href="../css/main_setting.css">
+  <link rel="stylesheet" href="./css/main_setting.css">
+  <!-- shoppingCart_style.css -->
+  <link rel="stylesheet" href="./css/shoppingCart_style.css">
+  <!-- 導航欄組件（包含身份驗證功能）-->
+  <script src="./js/nav.js"></script>
+  <!-- ShoppingCart (新版 - API 版本) -->
+  <script src="./js/shoppingCart_v2.js"></script>
   <!-- axios -->
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
   <style>
-    /* register CSS */
+    /* memberSystem.html CSS */
     body {
       background: var(--light-yellow);
     }
@@ -24,7 +30,7 @@
       /* 在 480px 寬螢幕時寬度約為 300px
          在 1200px 寬螢幕時寬度約為 800px
          之間會平滑變化 */
-         position: relative;
+      position: relative;
     }
 
     .titleAcc {
@@ -36,6 +42,30 @@
       font-weight: bold;
       margin-bottom: 20px;
       line-height: 1.1;
+    }
+
+    .logout-btn {
+      display: none;
+      cursor: pointer;
+      color: var(--main-orange);
+      text-decoration: underline;
+      margin-left: 10px;
+    }
+
+    .email-verification-link {
+      cursor: pointer;
+      color: var(--main-orange);
+      text-decoration: underline;
+      transition: color 0.3s ease;
+    }
+
+    .email-verification-link:hover {
+      color: #ff6b35;
+      font-weight: bold;
+    }
+
+    .email-verified {
+      margin-top: 20px;
     }
 
     .containerAcc label {
@@ -80,17 +110,22 @@
     }
 
     .side2 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       width: 300px;
     }
 
     .fr {
+      margin: 20px auto;
       font-size: 30px;
       display: flex;
       border-radius: 40px;
       justify-content: center;
       align-items: center;
       background-color: var(--light-orange);
-      position: relative;  
+      position: relative;
     }
 
     .btn-2 {
@@ -103,6 +138,19 @@
       border: 1px solid var(--main-black);
     }
 
+    @font-face {
+      font-family: "FakePearl-regular";
+      /* 自訂名稱 */
+      src: url("./fonts/FakePearl-regular.ttf") format("truetype");
+      /* 字體檔路徑 */
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* 套用字體 */
+    body {
+      font-family: "FakePearl-regular", sans-serif;
+    }
 
     @media (max-width: 1120px) {
       .fr {
@@ -143,10 +191,7 @@
       }
     }
 
-
-
-
-    /* register CSS end */
+    /* memberSystem.html CSS end */
   </style>
 </head>
 
@@ -154,24 +199,202 @@
   <div class="containerAcc">
     <div class="titleAcc">
       <h1 class="alc mgt">會員系統</h1>
-      <p class="alc">歡迎會員 <span>user_name</span> !!</p>
+      <p class="alc">歡迎會員
+        <span id="user_name" class="user_name">user_name</span>
+        <span id="logout-btn" class="logout-btn" onclick="logout()">登出</span>
+      </p>
+      <p class="alc" id="email-verification-status"></p>
     </div>
     <div class="fr mgt">
       <div class="side2 bdr">
-        <h3 class="mgt alc">會員資訊</h3>
-        <button type="submit" class="btn-l btn-2">前往</button>
+        <h3 class="mgt alc">修改會員資訊</h3>
+        <button type="button" class="btn-l btn-2" onclick="navigateTo('UpdateUser.html')">前往</button>
       </div>
       <div class="side2 bdr">
         <h3 class="mgt alc">修改密碼</h3>
-        <button type="submit" class="btn-l btn-2">前往</button>
+        <button type="button" class="btn-l btn-2" onclick="navigateTo('resetPassword.html')">前往</button>
       </div>
-      <div class="side2">
+      <div class="side2 bdr" id="adminPanel" style="display: none;">
         <h3 class="mgt alc">用戶管理</h3>
-        <button type="submit" class="btn-l btn-2">前往</button>
+        <button type="button" class="btn-l btn-2" onclick="navigateTo('Dashboard.html?tab=users')">前往</button>
       </div>
     </div>
   </div>
   </div>
+
+  <script>
+    // 導航函數：檢查登入狀態後再跳轉
+    function navigateTo(url) {
+      if (!isLoggedIn()) {
+        alert('請先登入才能使用此功能');
+        // 記錄想要前往的頁面
+        localStorage.setItem('redirectAfterLogin', url);
+        window.location.href = './login.html';
+      } else {
+        window.location.href = url;
+      }
+    }
+
+    // 重新發送驗證郵件
+    async function resendVerificationEmail() {
+      const user = getCurrentUser();
+
+      if (!user || !user.email) {
+        alert('無法取得用戶郵件地址');
+        return;
+      }
+
+      // 顯示載入提示
+      const statusElement = document.getElementById('email-verification-status');
+      if (statusElement) {
+        statusElement.innerHTML = '發送中...';
+      }
+
+      try {
+        // 呼叫 API
+        const response = await axios.post('https://localhost:7085/api/Auth/resend-verification', {
+          email: user.email
+        });
+
+        console.log('重新發送驗證郵件回應:', response.data);
+
+        if (response.data.success) {
+          alert('✅ 驗證郵件已重新發送！\n請檢查您的郵箱：' + user.email);
+        } else {
+          alert('❌ ' + (response.data.message || '發送失敗，請稍後再試'));
+        }
+
+        // 重新獲取用戶資訊以更新驗證狀態
+        await refreshUserInfo();
+        updateEmailVerificationStatus();
+
+      } catch (error) {
+        console.error('重新發送驗證郵件錯誤:', error);
+
+        if (error.response && error.response.data && error.response.data.message) {
+          alert('❌ ' + error.response.data.message);
+        } else {
+          alert('❌ 發送驗證郵件時發生錯誤，請稍後再試');
+        }
+
+        // 恢復顯示
+        updateEmailVerificationStatus();
+      }
+    }
+
+    // 更新郵件驗證狀態顯示
+    function updateEmailVerificationStatus() {
+      const user = getCurrentUser();
+      const statusElement = document.getElementById('email-verification-status');
+
+      if (!statusElement || !user) {
+        return;
+      }
+
+      // 檢查用戶是否有 emailVerified 屬性
+      if (user.emailVerified === true) {
+        // 已驗證
+        statusElement.innerHTML = '<span class="email-verified">✓ 郵件已驗證</span>';
+      } else {
+        // 未驗證 - 顯示可點擊的連結
+        statusElement.innerHTML =
+          '<span class="email-verification-link" onclick="resendVerificationEmail()" title="點擊重新發送驗證郵件">' +
+          '⚠ 郵件未驗證（點此重新發送驗證郵件）' +
+          '</span>';
+      }
+    }
+
+    // 從後端重新獲取最新的用戶資訊
+    async function refreshUserInfo() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        return null;
+      }
+
+      try {
+        const response = await axios.get('https://localhost:7085/api/User/me', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        if (response.data) {
+          const user = response.data;
+          // 更新 localStorage 中的用戶資訊
+          const existingUser = getCurrentUser();
+          localStorage.setItem('user', JSON.stringify({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            emailVerified: user.isEmailVerified || false,
+            token: existingUser?.token || token
+          }));
+          
+          console.log('✅ 用戶資訊已更新:', user);
+          return user;
+        }
+      } catch (error) {
+        console.error('❌ 獲取用戶資訊失敗:', error);
+        // 如果是 401 錯誤，可能是 token 過期
+        if (error.response && error.response.status === 401) {
+          console.log('Token 可能已過期，請重新登入');
+        }
+      }
+      return null;
+    }
+
+    // 頁面載入時檢查登入狀態並更新顯示
+    document.addEventListener('DOMContentLoaded', async function () {
+      const userNameElement = document.getElementById('user_name');
+      const logoutBtn = document.getElementById('logout-btn');
+
+      // 檢查是否登入
+      if (!isLoggedIn()) {
+        // 未登入時顯示訪客
+        if (userNameElement) {
+          userNameElement.textContent = '訪客（未登入）';
+        }
+        // 隱藏登出按鈕
+        if (logoutBtn) {
+          logoutBtn.style.display = 'none';
+        }
+        return;
+      }
+
+      // 已登入：從後端重新獲取最新的用戶資訊
+      const updatedUser = await refreshUserInfo();
+      
+      // 如果無法獲取最新資訊，使用本地儲存的資訊
+      const user = updatedUser || getCurrentUser();
+
+      if (user) {
+        // 顯示用戶名稱或ID
+        if (userNameElement) {
+          // 優先顯示用戶名稱，如果沒有則顯示 email 或 ID
+          userNameElement.textContent = user.username || user.email || user.userId || '會員';
+        }
+
+        // 顯示登出按鈕
+        if (logoutBtn) {
+          logoutBtn.style.display = 'inline';
+        }
+
+        // 更新郵件驗證狀態
+        updateEmailVerificationStatus();
+
+        // 檢查是否為管理員
+        const userRole = getUserRole();
+        if (userRole === 'Admin') {
+          // 如果是管理員，顯示"用戶管理"區塊
+          const adminPanel = document.getElementById('adminPanel');
+          if (adminPanel) {
+            adminPanel.style.display = 'flex';
+          }
+        }
+      }
+    });
+  </script>
 </body>
 
 </html>

@@ -175,11 +175,17 @@
           if (response.data.success) {
             const token = response.data.token;
             const user = response.data.user;
+            
+            // 儲存 token 到 localStorage（供 nav.js 的 isLoggedIn() 使用）
+            localStorage.setItem('token', token);
+            
+            // 儲存用戶資訊（包含 emailVerified）
             localStorage.setItem('user', JSON.stringify({
               id: user.id,
               username: user.username,
               email: user.email,
               role: user.role,
+              emailVerified: user.isEmailVerified || false,
               token: token
             }));
 

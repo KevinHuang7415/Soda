@@ -1,3 +1,126 @@
+// ==================== 身份驗證輔助函數 ====================
+// 用於處理登入狀態、權限檢查、導向等
+
+// ========== 檢查登入狀態 ==========
+function isLoggedIn() {
+  const token = localStorage.getItem('token');
+  return token !== null && token !== '';
+}
+
+// ========== 取得當前使用者資訊 ==========
+function getCurrentUser() {
+  const userJson = localStorage.getItem('user');
+  return userJson ? JSON.parse(userJson) : null;
+}
+
+// ========== 取得當前使用者角色 ==========
+function getUserRole() {
+  const user = getCurrentUser();
+  return user?.role || 'Guest';
+}
+
+// ========== 需要登入才能訪問（用於購物車、結帳頁） ==========
+function requireLogin(redirectBackHere = true) {
+  if (!isLoggedIn()) {
+    if (redirectBackHere) {
+      // 記錄當前頁面路徑，登入後導回來
+      const currentPage = window.location.pathname.split('/').pop();
+      localStorage.setItem('redirectAfterLogin', './' + currentPage);
+    }
+    // 導向登入頁
+    alert('請先登入會員');
+    window.location.href = './login.html';
+    return false;
+  }
+  return true;
+}
+
+// ========== 只允許管理員訪問（用於 Dashboard） ==========
+function requireAdmin() {
+  if (!isLoggedIn()) {
+    alert('請先登入');
+    window.location.href = './login.html';
+    return false;
+  }
+  
+  if (getUserRole() !== 'Admin') {
+    alert('您沒有權限訪問此頁面');
+    window.location.href = './index.html';
+    return false;
+  }
+  
+  return true;
+}
+
+// ========== 登出 ==========
+function logout() {
+  const token = localStorage.getItem('token');
+  
+  if (token) {
+    // 呼叫後端登出 API（可選）
+    // 檢查 axios 是否存在
+    if (typeof axios !== 'undefined') {
+      axios.post('https://localhost:7085/api/Auth/logout', {}, {
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      })
+      .then(() => {
+        console.log('已從伺服器登出');
+      })
+      .catch((error) => {
+        console.error('登出時發生錯誤:', error);
+      })
+      .finally(() => {
+        // 無論 API 呼叫成功與否，都清除本地資料
+        clearAuthData();
+        alert('已登出');
+        window.location.href = './login.html';
+      });
+    } else {
+      // 如果 axios 未載入，直接清除資料
+      clearAuthData();
+      alert('已登出');
+      window.location.href = './login.html';
+    }
+  } else {
+    clearAuthData();
+    window.location.href = './login.html';
+  }
+}
+
+// ========== 清除身份驗證資料 ==========
+function clearAuthData() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  localStorage.removeItem('redirectAfterLogin');
+}
+
+// ========== 設定 Axios 預設 Header ==========
+function setupAxiosAuth() {
+  const token = localStorage.getItem('token');
+  if (token && typeof axios !== 'undefined') {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+  }
+}
+
+// ========== 取得 Token（用於 API 請求） ==========
+function getAuthToken() {
+  return localStorage.getItem('token');
+}
+
+// ========== 更新顯示使用者名稱（可選） ==========
+function updateUserDisplay() {
+  const user = getCurrentUser();
+  if (user) {
+    // 尋找頁面中顯示使用者名稱的元素並更新
+    const userNameElements = document.querySelectorAll('.user-name');
+    userNameElements.forEach(el => {
+      el.textContent = user.username || user.email;
+    });
+  }
+}
+
 // ==================== 導航欄組件 ====================
 // 用於在所有頁面中動態插入統一的導航欄
 
@@ -10,10 +133,10 @@
             box-sizing:content-box;
             background-color: var(--main-color);
             height: 40px;
+            font-family: Arial, Helvetica, sans-serif;
             font-weight: bold;
             display: flex;
             justify-content: space-between;
-            align-items: center;
             padding: 20px 30px;
             position: relative;
             list-style: none;
@@ -77,6 +200,7 @@
         }
 
         .navUl {
+            margin-top: auto;
             list-style: none;
             display: flex;
             gap: 10px;
@@ -91,6 +215,7 @@
         .navUl a {
             color: #000;
             text-decoration: none;
+            font-family: Arial, Helvetica, sans-serif;
             font-weight: bold;
         }
 
@@ -394,7 +519,37 @@
             });
         }
 
+        // ========== 檢查登入狀態並動態修改登入連結 ==========
+        updateLoginLinks();
+
         console.log('✅ 導航欄已成功插入');
+    }
+
+    // 更新登入連結的函數
+    function updateLoginLinks() {
+        // 檢查是否已登入
+        function isUserLoggedIn() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            return token !== null && token !== '' && user !== null && user !== '';
+        }
+
+        if (isUserLoggedIn()) {
+            // 已登入：將所有登入連結改為會員系統
+            const loginLinks = document.querySelectorAll('a[href="./login.html"]');
+            loginLinks.forEach(function(link) {
+                link.href = './memberSystem.html';
+                // 如果是圖標連結，保持圖標
+                // 如果是文字連結，可以選擇改變文字（可選）
+                if (link.textContent === '登入') {
+                    link.textContent = '會員中心';
+                }
+                console.log('✅ 已將登入連結改為會員中心');
+            });
+        } else {
+            // 未登入：保持原樣
+            console.log('ℹ️ 用戶未登入，保持登入連結');
+        }
     }
 
     // 確保 body 存在後才插入導航欄
