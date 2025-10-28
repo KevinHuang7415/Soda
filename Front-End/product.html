@@ -96,10 +96,32 @@
             width: 84%;
             height: 70%;
             inset: 0;
-            background: url('./img/backgroundPicture.png') no-repeat center/100% 100%;
+            background: url('./images/backgroundPicture.png') no-repeat center/100% 100%;
             margin: 15% 0 0 8%;
+
             /* 若想讓背景往下移可自行調整 */
         }
+        #favoriteBtn {
+            position: absolute;
+            top: 2vw;
+            right: 2vw;
+            z-index: 100;
+            display: block;
+        }
+        .heartIcon {
+            width: 6vw;
+            display: block;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        .heartIcon:hover {
+            transform: scale(1.1);
+        }
+        .heartIcon.favorited {
+            filter: invert(27%) sepia(99%) saturate(7118%) hue-rotate(344deg) brightness(100%) contrast(100%) drop-shadow(0 2px 4px rgba(255,0,0,0.3));
+        }
+
 
         /* Carousel (Bootstrap) */
         #carouselExampleIndicators {
@@ -467,7 +489,7 @@
         /* 按鈕、下拉選單 */
         .sodaType {
             margin-top: 2vw;
-            width: 10vw;
+            width: 15vw;
         }
 
 
@@ -557,6 +579,9 @@
         <!-- 左側：Carousel -->
         <div class="left">
             <div class="backgroundPicture"></div>
+            <a href="javascript:void(0);" id="favoriteBtn">
+                <img src="./images/product/show1.png" class="heartIcon" id="heartIcon">
+            </a>
 
             <div id="carouselExampleIndicators" class="carousel slide">
                 <div class="carousel-indicators">
@@ -731,7 +756,7 @@
                 </table>
                 <div>
                     <select id="sodaType" class="sodaType">
-                        <option value="12 x 355">12 x 355</option>
+                        <option value="6 x 355">6 x 355</option>
                         <option value="24 x 355">24 x 355</option>
                     </select>
 
@@ -742,6 +767,7 @@
 
 
                 <button class="btn btn-l">add to cart</button>
+                
             </div>
         </div>
     </div>
@@ -858,29 +884,132 @@
             rows[5].querySelector('td:last-child').textContent = product.dailyValue.calcium + '%';
         }
 
+        // 當前選中的產品鍵值（全局變數，供購物車腳本使用）
+        let currentProductKey = 'lemon';
+
+        // 產品ID映射（用於收藏功能）
+        const productIdMap = {
+            'lemon': 1,
+            'grape': 3,
+            'strawberry': 5
+        };
+
+        // 產品名稱映射（將 productData 的 key 映射到實際商品名稱）
+        const favoriteProductNameMap = {
+            'lemon': '檸檬能量飲',
+            'grape': '葡萄能量飲',
+            'strawberry': '草莓能量飲'
+        };
+
+        // 檢查商品是否已在我的最愛中
+        function isFavorite(productId) {
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            return favorites.some(item => item.productId === productId);
+        }
+
+        // 更新收藏按鈕狀態
+        function updateFavoriteButton() {
+            const productId = productIdMap[currentProductKey];
+            const heartIcon = document.getElementById('heartIcon');
+            
+            if (!heartIcon || !productId) return;
+            
+            if (isFavorite(productId)) {
+                heartIcon.classList.add('favorited');
+            } else {
+                heartIcon.classList.remove('favorited');
+            }
+        }
+
+        // 切換收藏狀態
+        async function toggleFavorite() {
+            if (typeof window.addToFavorites !== 'function' || typeof window.removeFavoriteItem !== 'function') {
+                alert('收藏功能載入中，請稍候再試');
+                return;
+            }
+
+            const productId = productIdMap[currentProductKey];
+            const productName = favoriteProductNameMap[currentProductKey];
+            
+            if (!productId || !productName) {
+                console.error('無法獲取產品資訊');
+                return;
+            }
+
+            const size = '6'; // 預設使用6規格
+            
+            try {
+                if (isFavorite(productId)) {
+                    // 已收藏，則移除
+                    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+                    const itemToRemove = favorites.find(item => item.productId === productId);
+                    
+                    if (itemToRemove) {
+                        // 使用購物車的移除函數
+                        if (typeof window.removeFavoriteItem === 'function') {
+                            window.removeFavoriteItem(itemToRemove.productId);
+                        }
+                        
+                        // 手動移除（備用方案）
+                        const updatedFavorites = favorites.filter(item => item.productId !== productId);
+                        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+                        
+                        alert(`已將「${productName}」從我的最愛中移除`);
+                        console.log('已移除我的最愛');
+                    }
+                } else {
+                    // 未收藏，則添加
+                    await window.addToFavorites(productId, productName, size);
+                    alert(`已將「${productName}」加入我的最愛！`);
+                    console.log('已加入我的最愛');
+                }
+                
+                updateFavoriteButton(); // 更新按鈕狀態
+            } catch (error) {
+                console.error('切換收藏失敗:', error);
+                alert('操作失敗，請稍後再試');
+            }
+        }
+
         // 監聽輪播圖切換事件
         document.addEventListener('DOMContentLoaded', function () {
             const carousel = document.getElementById('carouselExampleIndicators');
             const productKeys = ['lemon', 'grape', 'strawberry'];
 
             // 監聽輪播圖切換
-            carousel.addEventListener('slide.bs.carousel', function (event) {
-                const activeIndex = event.to;
-                const productKey = productKeys[activeIndex];
-                updateProductInfo(productKey);
-            });
+            if (carousel) {
+                carousel.addEventListener('slide.bs.carousel', function (event) {
+                    const activeIndex = event.to;
+                    const productKey = productKeys[activeIndex];
+                    currentProductKey = productKey; // 更新當前產品鍵值
+                    updateProductInfo(productKey);
+                    updateFavoriteButton(); // 更新收藏按鈕狀態
+                });
+            }
 
             // 監聽指示器點擊
             const indicators = document.querySelectorAll('.carousel-indicators button');
             indicators.forEach((indicator, index) => {
                 indicator.addEventListener('click', function () {
                     const productKey = productKeys[index];
+                    currentProductKey = productKey; // 更新當前產品鍵值
                     updateProductInfo(productKey);
+                    updateFavoriteButton(); // 更新收藏按鈕狀態
                 });
             });
 
+            // 綁定收藏按鈕點擊事件
+            const favoriteBtn = document.getElementById('favoriteBtn');
+            if (favoriteBtn) {
+                favoriteBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    toggleFavorite();
+                });
+            }
+
             // 初始化顯示第一個產品
             updateProductInfo('lemon');
+            updateFavoriteButton(); // 初始化收藏按鈕狀態
         });
     </script>
 
@@ -921,8 +1050,90 @@
         });
     </script>
 
-    <!-- ShoppingCart (新版 - API 版本) -->
+    <!-- ShoppingCart (新版 - API 版本) - 需要先載入 -->
     <script src="./js/shoppingCart_v2.js"></script>
+
+    <script>
+        // 產品名稱映射（將 productData 的 key 映射到實際商品名稱）
+        const productNameMap = {
+            'lemon': '檸檬能量飲',
+            'grape': '葡萄能量飲',
+            'strawberry': '草莓能量飲'
+        };
+
+        // 根據商品名稱和規格獲取產品ID
+        function getProductId(productName, size) {
+            const sizeNumber = size.match(/\d+/)?.[0] || '6'; // 提取數字部分
+            
+            const productIdMap = {
+                '檸檬能量飲': { '6': 1, '24': 2 },
+                '葡萄能量飲': { '6': 3, '24': 4 },
+                '草莓能量飲': { '6': 5, '24': 6 }
+            };
+            
+            return productIdMap[productName]?.[sizeNumber] || 1;
+        }
+
+        // 處理「加入購物車」按鈕點擊
+        window.addEventListener('load', function () {
+            const addToCartBtn = document.querySelector('.btn.btn-l');
+            
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    
+                    // 檢查 addToCart 函數是否已定義
+                    if (typeof window.addToCart !== 'function') {
+                        alert('購物車功能載入中，請稍候再試');
+                        return;
+                    }
+                    
+                    // 獲取當前產品資訊
+                    const productName = productNameMap[currentProductKey] || '檸檬能量飲';
+                    
+                    // 獲取規格
+                    const sodaTypeSelect = document.getElementById('sodaType');
+                    const size = sodaTypeSelect ? sodaTypeSelect.value : '6 x 355';
+                    
+                    // 獲取數量
+                    const numSpan = document.getElementById('num');
+                    const quantity = numSpan ? parseInt(numSpan.textContent) : 1;
+                    
+                    // 檢查數量是否有效
+                    if (quantity <= 0) {
+                        alert('請至少選擇 1 件商品！');
+                        return;
+                    }
+                    
+                    // 獲取產品ID
+                    const productId = getProductId(productName, size);
+                    
+                    console.log('加入購物車:', {
+                        productId: productId,
+                        productName: productName,
+                        size: size,
+                        quantity: quantity
+                    });
+                    
+                    // 調用購物車函數
+                    try {
+                        await window.addToCart(productId, productName, size, quantity);
+                        console.log('✅ 商品已成功加入購物車');
+                    } catch (error) {
+                        console.error('加入購物車失敗:', error);
+                        alert('加入購物車失敗，請稍後再試');
+                    }
+                });
+                
+                // 修改按鈕文字以確保用戶知道這是加入購物車的按鈕
+                if (addToCartBtn.textContent.toLowerCase().includes('add to cart')) {
+                    addToCartBtn.textContent = '加入購物車';
+                }
+            } else {
+                console.warn('找不到加入購物車按鈕');
+            }
+        });
+    </script>
 
 </body>
 

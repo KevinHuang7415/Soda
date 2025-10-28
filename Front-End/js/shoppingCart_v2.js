@@ -1143,4 +1143,5 @@ window.addToCart = addToCart;
 window.addToFavorites = addToFavorites;
 window.toggleCart = toggleCart;
 window.updateCartBadge = updateCartBadge;
+window.removeFavoriteItem = removeFavoriteItem;
 
