@@ -175,24 +175,6 @@ namespace Soda.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Coupons", "dbo");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Code = "DISCOUNT10",
-                            Discount = 60m,
-                            DiscountType = "P",
-                            Status = "active"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Code = "DISCOUNT20",
-                            Discount = 600m,
-                            DiscountType = "A",
-                            Status = "active"
-                        });
                 });
 
             modelBuilder.Entity("WebApplication1.Models.Order", b =>
@@ -297,62 +279,6 @@ namespace Soda.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products", "dbo");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ImageUrl = "test.com",
-                            Name = "紅茶",
-                            Price = 25m,
-                            Size = "4*355",
-                            Stock = 100
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ImageUrl = "test.com",
-                            Name = "紅茶",
-                            Price = 30m,
-                            Size = "12*355",
-                            Stock = 80
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ImageUrl = "test.com",
-                            Name = "綠茶",
-                            Price = 35m,
-                            Size = "4*355",
-                            Stock = 60
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ImageUrl = "test.com",
-                            Name = "綠茶",
-                            Price = 35m,
-                            Size = "12*355",
-                            Stock = 60
-                        },
-                        new
-                        {
-                            Id = 5,
-                            ImageUrl = "test.com",
-                            Name = "清茶",
-                            Price = 40m,
-                            Size = "4*355",
-                            Stock = 60
-                        },
-                        new
-                        {
-                            Id = 6,
-                            ImageUrl = "test.com",
-                            Name = "清茶",
-                            Price = 35m,
-                            Size = "12*355",
-                            Stock = 60
-                        });
                 });
 #pragma warning restore 612, 618
         }
