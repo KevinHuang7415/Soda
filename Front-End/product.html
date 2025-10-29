@@ -19,6 +19,13 @@
     <script src="./js/jquery-3.4.1.min.js"></script>
     <!-- Footer -->
     <script src="./js/footer.js"></script>
+    <!-- Reset -->
+    <link rel="stylesheet" href="./css/Reset.css">
+    <!-- style.css -->
+    <link rel="stylesheet" href="./css/shoppingCar.css">
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 
     <style>
         html,
@@ -41,6 +48,7 @@
             overflow-y: auto;
             /* 讓頁面可以往下拉 */
         }
+
 
         .fontB {
             font-size: 28px;
@@ -94,6 +102,7 @@
 
             /* 若想讓背景往下移可自行調整 */
         }
+
         #favoriteBtn {
             position: absolute;
             top: 1vw;
@@ -101,18 +110,21 @@
             z-index: 100;
             display: block;
         }
+
         .heartIcon {
             width: 5vw;
             display: block;
             cursor: pointer;
             transition: all 0.3s ease;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
             object-fit: contain;
         }
+
         .heartIcon:hover {
             transform: scale(1.1);
             object-fit: contain;
         }
+
         .heartIcon.favorited {
             background-color: rgb(255, 3, 3);
             clip-path: circle(40%);
@@ -559,9 +571,10 @@
             .dropdown-content.show {
                 display: block;
             }
+
             .bubbles-container {
-            left: 50%;
-        }
+                left: 50%;
+            }
         }
     </style>
 
@@ -764,7 +777,7 @@
 
 
                 <button class="btn btn-l">add to cart</button>
-                
+
             </div>
         </div>
     </div>
@@ -908,9 +921,9 @@
         function updateFavoriteButton() {
             const productId = productIdMap[currentProductKey];
             const heartIcon = document.getElementById('heartIcon');
-            
+
             if (!heartIcon || !productId) return;
-            
+
             if (isFavorite(productId)) {
                 heartIcon.classList.add('favorited');
             } else {
@@ -927,30 +940,30 @@
 
             const productId = productIdMap[currentProductKey];
             const productName = favoriteProductNameMap[currentProductKey];
-            
+
             if (!productId || !productName) {
                 console.error('無法獲取產品資訊');
                 return;
             }
 
             const size = '6'; // 預設使用6規格
-            
+
             try {
                 if (isFavorite(productId)) {
                     // 已收藏，則移除
                     const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
                     const itemToRemove = favorites.find(item => item.productId === productId);
-                    
+
                     if (itemToRemove) {
                         // 使用購物車的移除函數
                         if (typeof window.removeFavoriteItem === 'function') {
                             window.removeFavoriteItem(itemToRemove.productId);
                         }
-                        
+
                         // 手動移除（備用方案）
                         const updatedFavorites = favorites.filter(item => item.productId !== productId);
                         localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-                        
+
                         alert(`已將「${productName}」從我的最愛中移除`);
                         console.log('已移除我的最愛');
                     }
@@ -960,7 +973,7 @@
                     alert(`已將「${productName}」加入我的最愛！`);
                     console.log('已加入我的最愛');
                 }
-                
+
                 updateFavoriteButton(); // 更新按鈕狀態
             } catch (error) {
                 console.error('切換收藏失敗:', error);
@@ -998,7 +1011,7 @@
             // 綁定收藏按鈕點擊事件
             const favoriteBtn = document.getElementById('favoriteBtn');
             if (favoriteBtn) {
-                favoriteBtn.addEventListener('click', function(e) {
+                favoriteBtn.addEventListener('click', function (e) {
                     e.preventDefault();
                     toggleFavorite();
                 });
@@ -1061,57 +1074,57 @@
         // 根據商品名稱和規格獲取產品ID
         function getProductId(productName, size) {
             const sizeNumber = size.match(/\d+/)?.[0] || '6'; // 提取數字部分
-            
+
             const productIdMap = {
                 '檸檬能量飲': { '6': 1, '24': 2 },
                 '葡萄能量飲': { '6': 3, '24': 4 },
                 '草莓能量飲': { '6': 5, '24': 6 }
             };
-            
+
             return productIdMap[productName]?.[sizeNumber] || 1;
         }
 
         // 處理「加入購物車」按鈕點擊
         window.addEventListener('load', function () {
             const addToCartBtn = document.querySelector('.btn.btn-l');
-            
+
             if (addToCartBtn) {
                 addToCartBtn.addEventListener('click', async function (e) {
                     e.preventDefault();
-                    
+
                     // 檢查 addToCart 函數是否已定義
                     if (typeof window.addToCart !== 'function') {
                         alert('購物車功能載入中，請稍候再試');
                         return;
                     }
-                    
+
                     // 獲取當前產品資訊
                     const productName = productNameMap[currentProductKey] || '檸檬能量飲';
-                    
+
                     // 獲取規格
                     const sodaTypeSelect = document.getElementById('sodaType');
                     const size = sodaTypeSelect ? sodaTypeSelect.value : '6 x 355';
-                    
+
                     // 獲取數量
                     const numSpan = document.getElementById('num');
                     const quantity = numSpan ? parseInt(numSpan.textContent) : 1;
-                    
+
                     // 檢查數量是否有效
                     if (quantity <= 0) {
                         alert('請至少選擇 1 件商品！');
                         return;
                     }
-                    
+
                     // 獲取產品ID
                     const productId = getProductId(productName, size);
-                    
+
                     console.log('加入購物車:', {
                         productId: productId,
                         productName: productName,
                         size: size,
                         quantity: quantity
                     });
-                    
+
                     // 調用購物車函數
                     try {
                         await window.addToCart(productId, productName, size, quantity);
@@ -1121,7 +1134,7 @@
                         alert('加入購物車失敗，請稍後再試');
                     }
                 });
-                
+
                 // 修改按鈕文字以確保用戶知道這是加入購物車的按鈕
                 if (addToCartBtn.textContent.toLowerCase().includes('add to cart')) {
                     addToCartBtn.textContent = '加入購物車';

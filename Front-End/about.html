@@ -62,7 +62,7 @@
 			border: 4px solid #FFD700;
 			border-radius: 20px;
 			padding: 1.5rem;
-			margin: 0.5rem;
+			margin: 0.5rem 0;
 			box-shadow: 8px 8px 0px #FFD700, 0 4px 15px rgba(255, 215, 0, 0.3);
 			transform: rotate(-1deg);
 			transition: all 0.3s ease;
@@ -93,7 +93,7 @@
 			border: 4px solid #FFD700;
 			border-radius: 20px;
 			padding: 1rem;
-			margin: 0.25rem;
+			margin: 0.25rem 0;
 			box-shadow: 6px 6px 0px #FFD700, 0 3px 10px rgba(255, 215, 0, 0.2);
 			transform: rotate(-0.5deg);
 			transition: all 0.3s ease;
@@ -380,9 +380,9 @@
 		/* 版面排版優化 - 去掉邊距/內距，使內容更貼齊邊緣 */
 		.container {
 			/* 解除預設寬度與內邊距，讓 container 可滿寬或貼齊父層 */
-			max-width: 100%;
+			max-width: calc(100vw - 20px);
 			overflow-x: hidden;
-			margin: 0;
+			margin: 0 10px;
 			padding: 0;
 			/* 移除左右 15px 內距 */
 		}
@@ -396,9 +396,9 @@
 		.col-md-6,
 		.col-md-8,
 		.col-md-4 {
-			/* 去掉欄位的內邊距與底部間距，讓欄位緊密排列 */
-			padding-left: 0;
-			padding-right: 0;
+			/* 恢復欄位的內邊距，讓卡片有適當間距 */
+			padding-left: 10px;
+			padding-right: 10px;
 			margin-bottom: 0;
 		}
 

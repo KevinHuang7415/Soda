@@ -372,8 +372,6 @@
         </div>
     </div>
 
-    <div id="container3D"></div>
-
     <!-- jQuery主程式 -->
     <script src="./jquary/js/jquery-1.11.3.min.js"></script>
     <!-- 轉場主程式 -->
@@ -633,138 +631,7 @@
     <!-- Footer -->
     <script src="./js/footer.js"></script>
 
-     <!-- Three.js Import Map -->
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
-      }
-    }
-  </script>
-
-  <!-- Three.js 模型載入 -->
-  <script type="module">
-    console.log('頁面載入完成，開始初始化 Three.js');
-    console.log('當前協議:', window.location.protocol);  
-    
-    import * as THREE from "three";
-    import { MTLLoader } from "three/addons/loaders/MTLLoader.js";
-    import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
-    
-    console.log('Three.js 模塊載入成功');
-
-    const scene = new THREE.Scene();
-    scene.background = null; // 透明背景
-    console.log('場景創建成功');
-    
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    console.log('相機創建成功，視角:', camera.fov, '寬高比:', camera.aspect);
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    const container = document.getElementById("container3D");
-    console.log('找到 3D 容器:', container);
-    container.appendChild(renderer.domElement);
-    console.log('渲染器已添加到 DOM，渲染器大小:', renderer.getSize(new THREE.Vector2()));
-
-    // 燈光
-    const ambient = new THREE.AmbientLight(0xffffff, 1.0); // 增強環境光
-    scene.add(ambient);
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    dirLight.position.set(5, 10, 5);
-    scene.add(dirLight);
-
-  // 設置相機位置（可調，增大會讓整體畫面看起來更遠）
-  camera.position.set(0, 0, 15); // 相機在z軸5的位置
-
-  // 儲存模型對象以便動畫使用
-  let canModel = null;
-  // 用於滾輪控制的目標與當前 Y
-  let targetY = 0;
-  let currentY = 0;
-  const WHEEL_SENSITIVITY = 0.0025; // 滾輪靈敏度，可調
-  const MIN_Y = -15.0;
-  const MAX_Y = 15.0;
-
-    // 載入 MTL + OBJ
-    const mtlLoader = new MTLLoader();
-    mtlLoader.setPath('./Texture/');
-    console.log('開始載入 MTL 材質文件: ./Texture/Soda_Can.mtl');
-    mtlLoader.load('Soda_Can.mtl', (materials) => {
-      console.log('MTL 材質載入成功');
-      materials.preload();
-      const objLoader = new OBJLoader();
-      objLoader.setMaterials(materials);
-      objLoader.setPath('./Texture/');
-      console.log('開始載入 OBJ 模型文件: ./Texture/Soda_Can.obj');
-      objLoader.load('Soda_Can.obj', (object) => {
-        console.log('OBJ 模型載入成功，添加到場景');
-        console.log('模型初始位置:', object.position);
-        console.log('模型範圍:', object);
-        
-        // 調整罐子大小與深度（如果罐子看起來太大或太靠前，可調整下列常數）
-        const CAN_SCALE = 0.3; // 調小一點
-        const CAN_POSITION = new THREE.Vector3(-14, 0, 0); // 放在中心
-        object.scale.set(CAN_SCALE, CAN_SCALE, CAN_SCALE);
-        object.position.copy(CAN_POSITION);
-        scene.add(object);
-        canModel = object;
-        
-        // 相機看向模型
-        camera.lookAt(0, 0, 0);
-        
-        // 初始化滾輪目標與目前位置，讓物件立刻在預期高度
-        targetY = -7;
-        currentY = 0;
-        console.log('模型已添加到場景，當前場景對象數量:', scene.children.length);
-      }, (progress) => {
-        if (progress.total > 0) {
-          console.log('載入進度:', Math.round((progress.loaded / progress.total) * 100) + '%');
-        }
-      }, (error) => {
-        console.error('載入模型時發生錯誤:', error);
-        alert('載入模型失敗，請檢查文件路徑。錯誤: ' + error);
-      });
-    }, (progress) => {
-      if (progress.total > 0) {
-        console.log('MTL 載入進度:', Math.round((progress.loaded / progress.total) * 100) + '%');
-      }
-    }, (error) => {
-      console.error('載入材質時發生錯誤:', error);
-      alert('載入材質失敗，請檢查文件路徑。錯誤: ' + error);
-    });
-
-    // 監聽滾輪事件：在 3D 容器上滾動時控制罐子上下移動（阻止預設滾動）
-    // 使用 passive: false 以便可以 preventDefault()
-    if (renderer.domElement) {
-      renderer.domElement.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        // deltaY > 0 表示向下滾（內容上移），我們取反讓向下滾使罐子往下（y 減小）
-        targetY += -e.deltaY * WHEEL_SENSITIVITY;
-        // 限制範圍
-        if (targetY < MIN_Y) targetY = MIN_Y;
-        if (targetY > MAX_Y) targetY = MAX_Y;
-      }, { passive: false });
-    }
-
-    // 立即啟動動畫循環
-    function animate() {
-      requestAnimationFrame(animate);
-      if (canModel) {
-        // 保持直立（強制 x, z 為 0），僅繞 y 軸旋轉
-        canModel.rotation.y = 0* Math.PI / 180;;
-        canModel.rotation.x = 285* Math.PI / 180;
-        canModel.rotation.z += 0.3* Math.PI / 180;;
-
-        // 平滑插值位置（緩動）
-        currentY += (targetY - currentY) * 0.12; // 緩動係數可調
-        canModel.position.y = currentY;
-      }
-      renderer.render(scene, camera);
-    }
-    animate();
-
-  </script>
+ 
 </body>
 
 </html>
