@@ -153,14 +153,15 @@
     }
 
     // 初始化泡泡動畫
-    function initBubbles() {
+    function initBubbles(config) {
         // 確保結構已插入
         if (!document.getElementById('bubbles-styles')) {
             injectBubbles();
         }
 
         console.clear();
-        var maxBubbles = 25; //25
+        // 從配置中讀取 maxBubbles，如果沒有提供則使用默認值 25
+        var maxBubbles = (config && config.maxBubbles !== undefined) ? config.maxBubbles : 25;
         var container = document.querySelector('.demo');
 
         if (!container) {

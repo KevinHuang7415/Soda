@@ -113,9 +113,8 @@ function getFallbackProducts() {
 function getProductBackground(productName) {
     const bgMap = {
         '檸檬能量飲': 'var(--product-green-light)',
-        '草莓能量飲': 'var(--product-pink-light)'
-        '葡萄能量飲': 'var(--product-purple-light)',
-        
+        '草莓能量飲': 'var(--product-pink-light)',
+        '葡萄能量飲': 'var(--product-purple-light)'
     };
     return bgMap[productName] || 'var(--main-gray-light)';
 }

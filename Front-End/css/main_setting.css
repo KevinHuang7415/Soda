@@ -95,21 +95,21 @@ body {
 }
 
 .scale-in-center1{
-    animation:scale-in-center .5s cubic-bezier(.25,.46,.45,.94) both
+    animation:scale-in-center .5s cubic-bezier(.25,.46,.45,.94) both;
 }
 .scale-in-center2{
-    animation:scale-in-center .6s cubic-bezier(.25,.46,.45,.94) both
+    animation:scale-in-center .6s cubic-bezier(.25,.46,.45,.94) both;
 }
 .scale-in-center3{
-    animation:scale-in-center .7s cubic-bezier(.25,.46,.45,.94) both
+    animation:scale-in-center .7s cubic-bezier(.25,.46,.45,.94) both;
 }
 .scale-in-center4{
-    animation:scale-in-center .8s cubic-bezier(.25,.46,.45,.94) both
+    animation:scale-in-center .8s cubic-bezier(.25,.46,.45,.94) both;
 }
 @font-face {
         font-family: 'coolFont';
         /* 自訂的字體名稱 */
-        src: url('./fonts/字幫玩酷體.ttf') format('truetype'),
+        src: url('../fonts/字幫玩酷體.ttf') format('truetype'),
             /* 優先使用ttf */
             url('../fonts/搖滾樂.ttf') format('woff'),
             /* 備用woff */
@@ -146,8 +146,4 @@ body {
 
         padding: 12px 0;
     }
-
-    
-
-    .btn-s {}
 }
