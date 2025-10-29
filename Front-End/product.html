@@ -766,12 +766,12 @@
                 </table>
                 <div>
                     <select id="sodaType" class="sodaType">
-                        <option value="6 x 355">6 x 355</option>
-                        <option value="24 x 355">24 x 355</option>
+                        <option value="6">6 x 355</option>
+                        <option value="24">24 x 355</option>
                     </select>
 
                     <button id="dec">-</button>
-                    <span id="num">0</span>
+                    <span id="num">1</span>
                     <button id="inc">+</button>
                 </div>
 
@@ -1103,7 +1103,7 @@
 
                     // 獲取規格
                     const sodaTypeSelect = document.getElementById('sodaType');
-                    const size = sodaTypeSelect ? sodaTypeSelect.value : '6 x 355';
+                    const size = sodaTypeSelect ? sodaTypeSelect.value : '6';
 
                     // 獲取數量
                     const numSpan = document.getElementById('num');
