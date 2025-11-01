@@ -1,792 +1,761 @@
 * {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 :root {
-  --main-black: #333333;
+    --main-black: #333333;
+   
 }
 
 body {
-  width: 1920px;
-  margin: auto;
-  box-sizing: border-box;
+    width: 100vw;
+    height: 100vh;
+    margin: auto;
+    box-sizing: border-box;
 }
-/* 預設桌機版 */
-.orbit-mobile { display: none; }
-
 .wrap {
-  width: 1920px;
-  height: 2160px;
-  margin: auto;
-  overflow: hidden;
+    width: 100vw;
+    height: calc(100vh - (80 / 1080 * 100vh));
+    /* 扣掉導覽列的高度 */
+    margin: auto;
+    overflow: hidden;
 }
 
 h2,
 h3,
 p {
-  color: aliceblue;
-  text-align: center;
+    color: aliceblue;
+    text-align: center;
 }
 
 #group {
-  width: 5760px;
-  scroll-behavior: smooth;
-  overflow-x: hidden;
+    width: 300vw;
+    height: calc(100vh - (80 / 1080 * 100vh));
+    /* 扣掉導覽列的高度 */
+    scroll-behavior: smooth;
+    display: flex;
+
 }
 
 #group1,
 #group2,
 #group3 {
-  width: 1920px;
-  height: 2160px;
-  overflow: hidden;
-  float: left;
-}
-
-
-.box1 {
-  background-color: #2BAD2F;
-}
-
-.box2 {
-  background-color: #DDA2F2;
-
-}
-
-.box3 {
-  background-color: #FE3489;
-}
-
-.box1,
-.box2,
-.box3 {
-  width: 1920px;
-  height: 1080px;
-  position: relative;
-  box-sizing: border-box;
-}
-
-.box1 h2,
-.box2 h2,
-.box3 h2 {
-  font-family: "Mogra", system-ui;
-  font-weight: 400;
-  font-style: normal;
-  width: 400px;
-  font-size: 120px;
-  position: absolute;
-  left: 190px;
-  top: 110px;
-  transform: rotate3d(1, 2, 1, -12deg);
-}
-
-.box1 h3,
-.box2 h3,
-.box3 h3 {
-  width: 500px;
-  font-weight: 700;
-  font-size: 60px;
-  position: absolute;
-  right: 100px;
-  top: 210px;
-  transform: rotate3d(1, 2, 1, 12deg);
-}
-
-.box1 p,
-.box2 p,
-.box3 p {
-  width: 400px;
-  font-weight: 700;
-  font-size: 36px;
-  position: absolute;
-  right: 160px;
-  top: 300px;
-  transform: rotate3d(1, 2, 1, 14deg);
-}
-
-.lomen1 {
-  position: absolute;
-  left: 170px;
-  top: 320px;
-}
-
-.lomen2 {
-  position: absolute;
-  left: 1700px;
-  bottom: 100px;
-}
-
-.can1 {
-  position: absolute;
-  right: 740px;
-  bottom: 240px;
-  z-index: 99999;
-}
-
-.downBg {
-  position: absolute;
-  width: 1920px;
-  height: 350px;
-  top: 770px;
-  box-sizing: border-box;
-
-}
-
-nav.downbtn {
-  width: 1920px;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  position: absolute;
-  top: 790px;
-}
-
-.btn-l {
-  background: var(--light-green-mid);
-}
-
-
-nav a {
-  margin: 10px;
-  display: inline-block;
-  text-decoration: none;
-}
-
-.boxBody1,
-.boxBody2,
-.boxBody3 {
-  width: 1920px;
-  height: 1080px;
-  position: relative;
-}
-
-.boxBody1 {
-  background-color: #1A871D;
-
-}
-
-.boxBody2 {
-  background-color: #E33DDC;
-
-}
-
-.boxBody3 {
-  background-color: #D21670;
-
-}
-
-.boxBody1 img,
-.boxBody2 img,
-.boxBody3 img {
-  position: absolute;
-  right: 760px;
-  bottom: 0;
-  z-index: 10;
-}
-
-.contentBg {
-  width: 1920px;
-  height: 956px;
-  background: url(../images/contentbg.png);
-  position: absolute;
-  bottom: 0;
-}
-
-.boxBody1 .contentTitle {
-  background-color: #1A871D;
-}
-
-.boxBody2 .contentTitle {
-  background-color: #6B438B;
-}
-
-.boxBody3 .contentTitle {
-  background-color: #D21670;
-}
-
-.contentTitle {
-  display: flex;
-  width: 900px;
-  height: 160px;
-  font-size: 60px;
-  border-radius: 40px;
-  justify-content: center;
-  align-items: center;
-  line-height: 90px;
-  margin: auto;
-  margin-top: 160px;
-}
-
-.contentTitle h2 {
-  color: aliceblue;
-  margin: 30px;
-}
-
-.boxBody1 .contentMain {
-  background-color: #2BAD2F;
-
-}
-
-.boxBody2 .contentMain {
-  background-color: #E33DDC;
-}
-
-.boxBody3 .contentMain {
-  background-color: #FE3489;
-}
-
-.contentMain {
-  width: 900px;
-  height: 500px;
-  margin: auto;
-  border-radius: 50px;
-}
-
-.contentMain p {
-  width: 700px;
-  margin: auto;
-  padding-top: 70px;
-  font-size: 32px;
-  font-family: Noto Sans TC;
-  text-align: left;
-}
-
-.product {
-  width: 1920px;
-  height: 1080px;
-  display: flex;
-}
-
-.soda1,
-.soda2,
-.soda3 {
-  width: 640px;
-  height: 1080px;
-  position: relative;
-}
-
-.soda1 {
-  background-color: #2BAD2F;
-}
-
-.product h2 {
-  margin-top: 50px;
-  font-size: 46px;
-}
-
-.product .price {
-  width: 300px;
-  display: flex;
-  flex-wrap: wrap;
-  padding-top: 10px;
-  font-size: 20px;
-  line-height: 1.8;
-  margin: auto;
-}
-
-.product .price p {
-  width: 50%;
-  box-sizing: border-box;
-}
-
-#sodaPhoto1,
-#sodaPhoto2,
-#sodaPhoto3,
-#sodaPhoto4,
-#sodaPhoto5,
-#sodaPhoto6,
-#sodaPhoto7,
-#sodaPhoto8,
-#sodaPhoto9 {
-  position: absolute;
-}
-
-#sodaPhoto1 {
-  top: 100px;
-  left: 0px;
-}
-
-#sodaPhoto2,
-#sodaPhoto5,
-#sodaPhoto8 {
-  bottom: 40px;
-  left: 180px;
-}
-
-#sodaPhoto3,
-#sodaPhoto6,
-#sodaPhoto9 {
-  bottom: 30px;
-  right: 20px;
-}
-
-.soda2 {
-  background-color: #FE2D7E;
-}
-
-#sodaPhoto4 {
-  top: 180px;
-  left: -60px;
-}
-
-.soda3 {
-  background-color: #D5A5E6;
-}
-
-#sodaPhoto7 {
-  top: 220px;
-  right: 180px;
-}
-
-.soda1 .show,
-.soda2 .show,
-.soda3 .show {
-  width: 640px;
-  text-align: center;
-  justify-content: center;
-  position: absolute;
-  top: 460px;
-  display: none;
-}
-
-.show a {
-  text-decoration: none;
-}
-
-
-.soda1:hover .show,
-.soda2:hover .show,
-.soda3:hover .show {
-  display: block;
-}
-
-
-/* ======== 第五部分 ======== */
-
-.sect5 {
-  background-color: #f6f884;
-  display: flex;
-  height: 50vh;
-  justify-content: center;
-  margin-top: 0;
-}
-
-.part5 {
-  width: 100%;
-  height: 50vh;
-  display: flex;
-  justify-content: center;
-  color: #fff;
-  text-align: center;
-  letter-spacing: 0.3em;
-  margin-top: 0;
-}
-
-.part5 .text-34 {
-  font-size: 34px;
-  letter-spacing: 0.02em
-}
-
-.part5 .text-14 {
-  font-size: 14px;
-}
-
-.text-shadow {
-  text-shadow: 1px 1px #000, 1px -1px #000,
-    -1px 1px #000, -1px -1px #000;
-}
-
-.discount {
-  width: 30%;
-  background-color: #f5cb11;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 2vw;
-  padding: 2vw;
-  border-radius: 20px;
-}
-
-.discount img {
-  width: 10vw;
-  object-fit: contain;
-}
-
-.coupon {
-  background-color: #fff;
-  max-width: 80%;
-  margin: 0 auto;
-}
-
-.marginTop {
-  margin-top: 1vw;
-}
-
-.marginDown {
-  margin-top: 3vw;
-}
-
-
-/* ========全域樣式======= */
-.sec1 {
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  background-color: #FEE832;
-}
-
-.hidden {
-  display: none;
-}
-
-.show {
-  display: block;
-}
-
-/* 第一部分 */
-
-.part1 {
-  position: relative;
-  width: 100%;
-  height: auto ;
-  /* 統一使用 100vh */
-  background-color: #FEE832;
-  display: flex;
-  min-height: none;
-  flex: 1;
-  min-height: 100vh; /* 保持最小高度 */
-}
-
-
-@media screen and (max-height: 450px) {
-  .overlay {
-    overflow-y: auto;
-  }
-
-  .overlay a {
-    font-size: 20px
-  }
-
-  .overlay .closebtn {
-    font-size: 40px;
-    top: 15px;
-    right: 35px;
-  }
-}
-
-/* ======== 星星動畫 ======== */
-@keyframes floatStar {
-  0% {
-    transform: translateY(0) rotate(0deg);
-  }
-
-  50% {
-    transform: translateY(-1vw) rotate(10deg);
-  }
-
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-}
-
-@keyframes floatStarReverse {
-  0% {
-    transform: translateY(0) rotate(0deg);
-  }
-
-  50% {
-    transform: translateY(1vw) rotate(-10deg);
-  }
-
-  100% {
-    transform: translateY(0) rotate(0deg);
-  }
-}
-
-.star {
-  position: absolute;
-  width: 8vw;
-  animation: floatStar 4s ease-in-out infinite;
-}
-
-.star.reverse {
-  animation: floatStarReverse 5s ease-in-out infinite;
-}
-
-/* ======== 主視覺圖片 ======== */
-.soda-title-big {
-  position: absolute;
-  top: 7vw;
-  left: 33vw;
-  width: 38vw;
-}
-
-.union {
-  position: absolute;
-  top: 20vw;
-  left: 48vw;
-  width: 8vw;
-}
-
-.saja {
-  position: absolute;
-  top: 27vw;
-  left: 18vw;
-  width: 30vw;
-}
-
-.boys {
-  position: absolute;
-  top: 28vw;
-  left: 50vw;
-  width: 30vw;
-}
-
-/* 星星分布位置 */
-.star1 {
-  top: 12vw;
-  left: 8vw;
-  width: 8vw;
-}
-
-.star2 {
-  top: 11vw;
-  right: 14vw;
-  width: 8vw;
-}
-
-.star3 {
-  top: 30vw;
-  left: 5vw;
-  width: 8vw;
-}
-
-.star4 {
-  top: 20vw;
-  left: 18vw;
-  width: 8vw;
-}
-
-.star5 {
-  top: 40vw;
-  right: 15vw;
-  width: 8vw;
-}
-
-
-/* 小尺寸：639px 以下 */
-@media (max-width: 640px) {
-  body {
-    width: 320px;
-    height: 1707px;
-}
-
-.wrap {
-    width: 320px;
-    height: 1138px;
-    /*手機尺寸*/
-}
-
-#group {
-    width: 960px;
-    display: block;
-}
-
-#group1,
-#group2,
-#group3 {
+    width: 100vw;
+    height: calc(100vh - (80 / 1080 * 100vh));
+    /* 扣掉導覽列的高度 */
     overflow: hidden;
-    width: 320px;
-    height: 1138px;
-    float: left;
+    flex: 0 0 100vw;
+    position: relative;
+    box-sizing: border-box;
 }
 
-.box1,
-.box2,
-.box3 {
-    width: 320px;
-    height: 569px;
+
+#group1 {
+    background-color: #2BAD2F;
 }
 
-.box1 h2,
-.box2 h2,
-.box3 h2 {
-    width: 320px;
-    font-size: 32px;
-    position: static;
+#group2 {
+    background-color: #DDA2F2;
+
+}
+
+#group3 {
+    background-color: #FE3489;
+}
+
+#group1 h2,
+#group2 h2,
+#group3 h2 {
+    font-family: "Mogra", system-ui;
+    font-weight: 400;
     font-style: normal;
-    transform: none;
-    padding-top: 20px;
-    padding-bottom: 10px;
+    width: 20vw;
+    font-size: 6vw;
+    position: absolute;
+    left: 10vw;
+    top: 8vh;
+    transform: rotate3d(1, 2, 1, -12deg);
 }
 
-.box1 h3,
-.box2 h3,
-.box3 h3 {
-    transform: none;
-    font-style: normal;
-    font-size: 18px;
-    position: static;
-    width: 320px;
-    padding-bottom: 10px;
+#group1 h3,
+#group2 h3,
+#group3 h3 {
+    width: 25vw;
+    font-weight: 700;
+    font-size: 3.5vw;
+    position: absolute;
+    right: 10vw;
+    top: 10vh;
+    transform: rotate3d(1, 2, 1, 14deg);
 }
 
-.box1 p,
-.box2 p,
-.box3 p {
-    transform: none;
-    font-style: normal;
-    font-size: 18px;
-    position: static;
-    width: 320px;
+#group1 p,
+#group2 p,
+#group3 p {
+    width: 20vw;
+    font-weight: 700;
+    font-size: 2vw;
+    position: absolute;
+    right: 13vw;
+    top: 22vh;
+    transform: rotate3d(1, 2, 1, 14deg);
 }
 
-.lomen1 img,
-.lomen2 img {
-    width: 250px;
+.lomen1,
+.lomen2 {
     position: absolute;
 }
 
 .lomen1 {
-    left: -120px;
-    top: 250px;
+    left: 10vw;
+    top: 28vh;
 }
 
 .lomen2 {
-    left: 220px;
-    top: 420px;
+    left: 68vw;
+    bottom: 10vh;
 }
 
-.can1 img {
-    width: 200px;
-    height: 320px;
+/* =============================
+       旋轉罐動畫設定
+============================= */
+.sodaCan {
+    width: 12vw;
+    height: 46.3vh;
+    position: relative;
+    margin: 0 auto;
+    margin-top: 20vh;
+    --left: 0vw;
+    transition: 0.7s;
+    display: flex;
+    justify-content: center;
+    z-index: 2;
+    /* 罐子底圖不要覆蓋按鈕*/
 }
 
-.can1 {
-    position: static;
-    text-align: center;
-    padding-top: 10px;
-    padding-left: 20px;
-    transform: rotate3d(1, 2, 1, 10deg);
-    z-index: 9999999;
+.can {
+    background:
+        var(--url) var(--left) 0,
+        url(../images/can.png);
+    /*罐子底圖*/
+    background-size: auto 100%, auto 100%;
+    width: 13.58vw;
+    aspect-ratio: 2/4;
+    /*罐子比例*/
+    background-blend-mode: multiply;
+    mask-image: url(../images/can.png);
+    mask-size: auto 100%;
+    transition: 2s;
+    /* 控制旋轉速度 */
+    pointer-events: none;
+    /* 罐子不吃滑鼠事件，按鈕就能點 */
 }
 
-.downBg {
+/* 加上 rotating 時，背景會水平移動形成旋轉感 */
+.sodaCan.rotating .can {
+    --left: -52.08vw;
+    /* 控制旋轉角度 */
+}
+
+/* group 顯示/隱藏 */
+.flavor-group {
     display: none;
 }
 
-nav.downbtn {
-    width: 320px;
-    top: 440px;
+.flavor-group.active {
+    display: block;
+}
+
+.downBg {
+    position: absolute;
+    width: 100vw;
+    height: 18vh;
+    top: 71vh;
+    box-sizing: border-box;
+}
+
+.downbtn {
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    position: absolute;
+    top: 73vh;
+    z-index: 5;
+    /* 按鈕不要覆蓋罐子*/
 }
 
 .btn-l {
-    font-size: 18px;
-    width: 100px;
-    line-height: 40px;
-    height: 40px;
-
+    background: var(--light-green-mid);
+    line-height: 2;
 }
 
-.btn-s {
-    width: 60px;
-    height: 60px;
+/* 旋轉容器 */
+.orbit-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #2BAD2F;
+    /* 預設綠色 */
+}
+
+/* 圓形背景 */
+.circle-background {
+    position: absolute;
+    bottom: -40%;
+    left: 50%;
+    width: min(308.34vw, 250vh);
+    height: min(308.34vw, 250vh);
+    transform: translate(-50%, 50%);
+    transform-origin: center center;
+    border-radius: 50%;
+    background: #FFF9B9;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* 視覺軌道顯示卡片旋轉的邊界 */
+.orbit-path {
+    position: absolute;
+    bottom: 200px;
+    left: 50%;
+    width: 60vw;
+    height: 80vh;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 1;
+}
+
+/* 實際卡片軌道 */
+.card-orbit {
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    width: 60vw;
+    height: 70vh;
+    transform: translate(-50%, -50%);
+    transition: transform 0.3s ease-out;
+    z-index: 10;
+}
+
+/* 卡片位置 */
+.card-orbit .boxBody1 {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .boxBody1,
 .boxBody2,
-.boxBody3,
+.boxBody3 {
+    width: 25vw;
+    height: 56vh;
+    position: relative;
+    z-index: 9 !important;
+}
+
 .boxBody1 img,
 .boxBody2 img,
 .boxBody3 img {
-    display: none !important;
-    /* 手機版隱藏 */
+    width: 50%;
+    position: absolute;
+    bottom: 0%;
+    left: 25%;
+    z-index: 10 !important;
+}
+
+.boxBody1 {
+    top: calc(50% - 68vh);
+    left: calc(50% - 0vw);
+    transform: translate(-50%, -50%) rotate(0deg) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+.boxBody2 {
+    top: calc(50% - 55vh);
+    left: calc(50% - 38vw);
+    transform: translate(-50%, -50%) rotate(-90deg) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+.boxBody3 {
+    top: calc(50% - 45vh);
+    left: calc(50% + 0vh);
+    transform: translate(-50%, -50%) rotate(-180deg) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+.contentBg {
+    width: 320px;
+    height: 400px;
+}
+
+.contentTitle {
+    width: 150%;
+    height: 30%;
+    border-radius: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.contentTitle h2 {
+    color: aliceblue;
+    margin: 5px;
+    padding: 5px 22px;
+    float: left;
+    line-height: 1.5;
+    font-size: 3.5vw;
+}
+
+.contentMain {
+    width: 150%;
+    height: 91%;
+    border-radius: 15px;
+    color: aliceblue;
+}
+
+.contentMain p {
+    width: 85%;
+    padding: 35px;
+    font-size: 1.5vw;
+    text-align: justify;
+}
+
+.boxBody1 .contentTitle {
+    background-color: #1A871D;
+}
+
+.boxBody2 .contentTitle {
+    background-color: #6B438B;
+}
+
+.boxBody3 .contentTitle {
+    background-color: #D21670;
+}
+
+.boxBody1 .contentMain {
+    background-color: #2BAD2F;
+}
+
+.boxBody2 .contentMain {
+    background-color: #E33DDC;
+}
+
+.boxBody3 .contentMain {
+    background-color: #FE3489;
 }
 
 .product {
-    width: 320px;
-    height: 1707px;
-    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
 }
 
-.soda1,
-.soda2,
-.soda3 {
-    width: 320px;
-    height: 569px;
+.soda {
+    flex: 1;
+    height: 100vh;
+    position: relative;
+}
+
+.soda.sodaGreen {
+    background-color: #2BAD2F;
 }
 
 .product h2 {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    font-size: 36px;
+    margin-top: 4.63vh;
+    font-size: 2.4vw;
 }
 
 .product .price {
-    width: 320px;
-    font-size: 20px;
-    line-height: 1.5;
-    padding: 0;
+    width: 15.63vw;
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: 0.93vh;
+    font-size: 1.04vw;
+    line-height: 1.8;
+    margin: auto;
 }
 
-#sodaPhoto1,
-#sodaPhoto4,
-#sodaPhoto7 {
-    width: 250px;
+.product .price p {
+    width: 50%;
+    box-sizing: border-box;
 }
 
-#sodaPhoto1 {
-    top: 70px;
-    left: 5px;
+.character {
+    position: absolute;
 }
 
-#sodaPhoto2,
-#sodaPhoto5,
-#sodaPhoto8 {
-    width: 170px;
-    top: 280px;
-    left: 85px;
+#photo1 {
+    top: 12vh;
+    left: 0%;
 }
 
-#sodaPhoto3,
-#sodaPhoto6,
-#sodaPhoto9 {
-    width: 90px;
-    bottom: 15px;
-    right: 5px;
+.char-left {
+    top: 20vh;
+    left: -3%;
+    width: 60%;
+    height: auto;
 }
 
-#sodaPhoto4 {
-    top: 110px;
-    left: -30px;
+.char-center {
+    bottom: 5vh;
+    left: 28%;
+    width: 45%;
+    height: auto;
 }
 
-#sodaPhoto7 {
-    top: 130px;
-    left: -25px;
+.char-right {
+    bottom: 3vh;
+    right: 5%;
+    width: 25%;
+    height: auto;
 }
 
-.soda1 .show,
-.soda2 .show,
-.soda3 .show {
-    width: 320px;
-    top: 250px
+.soda.sodaPink {
+    background-color: #FE2D7E;
 }
 
-.show img {
-    width: 60px;
-    padding: 2px;
+.soda.sodaPurple {
+    background-color: #D5A5E6;
 }
 
-
-
-
-
-.part1 {
-  width: 100%;
-  height: 100vh;
-  min-height: 360px;
+.soda .show {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    position: absolute;
+    top: 47.59vh;
+    display: none;
+    z-index: 11;
 }
 
+.show a {
+    text-decoration: none;
+    padding: 0.5vw;
+}
 
+.coverBlack {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(128, 128, 128, 0.6);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    display: none;
+    transition: opacity 0.3s ease;
+}
+
+.soda.sodaGreen:hover .show,
+.soda.sodaPink:hover .show,
+.soda.sodaPurple:hover .show {
+    display: block;
+}
+
+.soda.sodaGreen:hover .coverBlack,
+.soda.sodaPink:hover .coverBlack,
+.soda.sodaPurple:hover .coverBlack {
+    display: block;
+}
+
+/* ==================== 手機版 RWD (最大 640px，以 320px 為基準) ==================== */
+@media screen and (max-width: 640px) {
+
+    .wrap {
+        height: calc(100vh - (80 / 569 * 100vh));
+    }
+
+    /* Group 區塊保持水平滾動 */
+    #group {
+        width: 300vw;
+        height: calc(100vh - (80 / 569 * 100vh));
+        /* 扣掉導覽列的高度 */
+        display: flex;
+        flex-direction: row;
+    }
+
+    #group1,
+    #group2,
+    #group3 {
+        width: 100vw;
+        height: calc(100vh - (80 / 569 * 100vh));
+        /* 扣掉導覽列的高度 */
+        flex: 0 0 100vw;
+    }
+
+    /* 標題文字 - 針對小螢幕優化 */
+    #group1 h2,
+    #group2 h2,
+    #group3 h2 {
+        width: 100vw;
+        font-size: 10vw;
+        position: static;
+        transform: none;
+        margin-top: 0.5vh;
+    }
+
+    #group1 h3,
+    #group2 h3,
+    #group3 h3 {
+        width: 100vw;
+        font-size: 5vw;
+        position: static;
+        transform: none;
+        margin-top: -1vh;
+    }
+
+    #group1 p,
+    #group2 p,
+    #group3 p {
+        width: 100vw;
+        font-size: 5vw;
+        position: static;
+        transform: none;
+    }
+
+    /* 檸檬圖片調整 */
+    .lomen1 img {
+        width: 65%;
+    }
+
+    .lomen2 img {
+        width: 220%;
+    }
+
+    .lomen1 {
+        left: -45vw;
+        top: 18vh;
+    }
+
+    .lomen2 {
+        left: 65vw;
+        bottom: -12vh;
+    }
+
+    /* =============================
+       旋轉罐動畫設定
+     ============================= */
+    .sodaCan {
+        width: 60vw;
+        height: calc(2 * 50vw);
+        /* 保持 1:2 比例 */
+        margin-top: 1vh;
+    }
+
+    .can {
+        width: 50vw;
+    }
+
+    /* 加上 rotating 時，背景會水平移動形成旋轉感 */
+    .sodaCan.rotating .can {
+        --left: -450px;
+        /* 控制旋轉角度 */
+    }
+
+    /* 底部背景和按鈕 */
+    .downBg {
+        display: none;
+    }
+
+    .downbtn {
+        width: 100vw;
+        top: 66vh;
+        z-index: 5;
+        /* 按鈕不要覆蓋罐子*/
+    }
+
+    .btn-l {
+        width: 70%;
+        padding: 0;
+        height: 12vh;
+        line-height: 12.5vh;
+        border-radius: 13.33vw;
+        font-size: 10vw;
+    }
+
+    /* 旋轉容器 */
+    .orbit-container {
+        width: 100vw;
+        height: 100vh;
+    }
+
+    /* 圓形背景 */
+    .circle-background {
+        bottom: -10%;
+        right: -30%;
+    }
+
+    /* 視覺軌道顯示卡片旋轉的邊界 */
+    .orbit-path {
+        width: 360vw;
+        height: 350vh;
+    }
+
+    /* 實際卡片軌道 */
+    .card-orbit {
+        width: 360vw;
+        height: 350vh;
+        bottom: -160%;
+    }
+
+    /* 卡片位置 */
+    .boxBody1,
+    .boxBody2,
+    .boxBody3 {
+        width: 80vw;
+        height: 56vh;
+        position: relative;
+        z-index: 9 !important;
+    }
+
+    .boxBody1 img,
+    .boxBody2 img,
+    .boxBody3 img {
+        display: none;
+    }
+
+    .boxBody1 {
+        top: calc(50% - 47vh);
+        left: calc(50% + 1vw);
+        transform: translate(-50%, -50%) rotate(0deg) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+
+    .boxBody2 {
+        top: calc(50% - 33.5vh);
+        left: calc(50% - 72vw);
+        transform: translate(-50%, -50%) rotate(-120deg) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+
+    .boxBody3 {
+        top: calc(50% - 87vh);
+        left: calc(50% + 40vh);
+        transform: translate(-50%, -50%) rotate(122deg) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+
+    .contentTitle {
+        width: 80%;
+        height: 20%;
+    }
+
+    .contentTitle h2 {
+        margin: 0px;
+        padding: 2vh 3.6vw;
+        line-height: 1.5;
+        font-size: 12vw;
+    }
+
+    .contentMain {
+        width: 80%;
+        height: 60%;
+    }
+
+    .contentMain p {
+        width: 75%;
+        font-size: 5vw;
+    }
+
+    /* Product 區塊改為垂直堆疊 */
+    .product {
+        flex-direction: column;
+        height: auto;
+        width: 100vw;
+    }
+
+    .soda {
+        width: 100vw;
+        min-height: 100vh;
+        /* 使用 min-height 避免內容被截斷 */
+    }
+
+    /* 產品標題和價格 */
+    .product h2 {
+        margin-top: 4vh;
+        font-size: 6vw;
+        /* 改成相對螢幕寬度 */
+        text-align: center;
+    }
+
+    .product .price {
+        width: 85vw;
+        font-size: 4.5vw;
+        padding-top: 2vh;
+        max-width: 400px;
+        /* 大手機上不會過寬 */
+    }
+
+    .product .price p {
+        padding: 0.5vh 0;
+    }
+
+    .character {
+        width: 100%;
+    }
+
+    /* 角色圖片重新排版 - 針對小螢幕 */
+    .char-left {
+        top: 24vh;
+        left: 32%;
+        transform: translateX(-50%);
+        width: 75vw;
+        max-width: 280px;
+    }
+
+    .char-center {
+        bottom: 15vh;
+        left: 38%;
+        width: 38vw;
+        max-width: 150px;
+    }
+
+    .char-right {
+        bottom: 3vh;
+        right: 3%;
+        width: 30vw;
+        max-width: 150px;
+    }
+
+    #photo1 {
+        top: 15vh;
+        left: 40%;
+        transform: translateX(-50%);
+        width: 75vw;
+        max-width: 280px;
+    }
+
+    /* hover 改為點擊可用狀態（手機沒有 hover） */
+    .soda .show {
+        width: 100%;
+        top: 40vh;
+        display: block;
+        /* 手機直接顯示 */
+    }
+
+    .show a {
+        font-size: 4vw;
+        display: inline-block;
+    }
+
+    .coverBlack {
+        display: none;
+        /* 手機版不顯示遮罩，避免誤觸 */
+    }
 }

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mogra&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/main_setting.css">
+    <link rel="stylesheet" href="./css/indexPart234.css">
+    <script src="./js/nav.js"></script>
+</head>
+
+<body>
+    <div class="wrap">
+        <div id="group">
+            <!-- group1：檸檬 -->
+            <div id="group1" class="flavor-group active" data-group="1">
+                <h2>檸檬</h2>
+                <h3>清爽酸甜</h3>
+                <p>帶來沁涼暢快的口感</p>
+
+                <div class="lomen1"><img src="./images/box1/Lemon1.png"></div>
+                <div class="lomen2"><img src="./images/box1/Lemon2.png"></div>
+
+                <!-- 罐子動畫 -->
+                <div class="canTurn">
+                    <div class="sodaCan">
+                        <div class="can" style="--url: url(../images/box1/lemon.png);"></div>
+                    </div>
+                </div>
+
+                <div class="box1-down">
+                    <div class="downBg"><img src="./images/box1/Lemondown.png"></div>
+                    <nav class="downbtn">                   
+                        <!-- 按鈕觸發旋轉罐子 -->
+                        <div class="btn btn-l rotate-btn" data-group="1">檸檬能量飲</div>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- group2：葡萄 -->
+            <div id="group2" class="flavor-group" data-group="2">
+                <h2>葡萄</h2>
+                <h3>飽滿果香</h3>
+                <p>氣泡中藏著微醺的浪漫</p>
+
+                <div class="lomen1"><img src="./images/box2/Grape1.png"></div>
+                <div class="lomen2"><img src="./images/box2/Grape2.png"></div>
+
+                <div class="canTurn">
+                    <div class="sodaCan">
+                        <div class="can" style="--url: url(../images/box2/grape.png);"></div>
+                    </div>
+                </div>
+
+                <div class="box1-down">
+                    <div class="downBg"><img src="./images/box2/Grapedown.png"></div>
+                    <nav class="downbtn">
+                        <div class="btn btn-l rotate-btn" data-group="2">葡萄能量飲</div>  
+                    </nav>
+                </div>
+            </div>
+
+            <!-- group3：草莓 -->
+            <div id="group3" class="flavor-group" data-group="3">
+                <h2>草莓</h2>
+                <h3>粉嫩香甜</h3>
+                <p>每一口都是戀愛的感覺</p>
+
+                <div class="lomen1"><img src="./images/box3/strawberry1.png"></div>
+                <div class="lomen2"><img src="./images/box3/strawberry2.png"></div>
+
+                <div class="canTurn">
+                    <div class="sodaCan">
+                        <div class="can" style="--url: url(../images/box3/strawberry.png);"></div>
+                    </div>
+                </div>
+
+                <div class="box1-down">
+                    <div class="downBg"><img src="./images/box3/strawberrydown.png"></div>
+                    <nav class="downbtn"> 
+                        <div class="btn btn-l rotate-btn" data-group="3">草莓能量飲</div> 
+                    </nav>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--旋轉專用容器 -->
+    <div class="orbit-container" id="orbit-container">
+        <!-- 軌道路徑 -->
+        <div class="orbit-path"></div>
+        <!-- 圓形背景 - 這個會轉動 -->
+        <div class="circle-background" id="circle-background">
+            <!-- 卡片 1 -->
+            <div class="boxBody1">
+                <div class="contentBg">
+                    <div class="contentTitle">
+                        <h2>檸檬</h2>
+                        <h2>X</h2>
+                        <h2>振宇</h2>
+                    </div>
+                    <div class="contentMain">
+                        <p>檸檬:清爽酸甜,一口喚醒夏日活力。振宇:充滿活力的小隊長,總是帶著自信的笑容,用勇氣帶領朋友們迎接挑戰。</p>
+                    </div>
+                </div>
+                <img src="./images/box1/candown1.png">
+            </div>
+
+            <!-- 卡片 2 -->
+            <div class="boxBody2">
+                <div class="contentBg">
+                    <div class="contentTitle">
+                        <h2>葡萄</h2>
+                        <h2>X</h2>
+                        <h2>神秘</h2>
+                    </div>
+                    <div class="contentMain">
+                        <p>葡萄:飽滿果香,氣泡中藏著微醺的浪漫。神秘:總是隱藏在面紗後,帶著神秘氣息,沒人能完全看透他。</p>
+                    </div>
+                </div>
+                <img src="./images/box2/candown2.png">
+            </div>
+
+            <!-- 卡片 3 -->
+            <div class="boxBody3">
+                <div class="contentBg">
+                    <div class="contentTitle">
+                        <h2>草莓</h2>
+                        <h2>X</h2>
+                        <h2>貝比</h2>
+                    </div>
+                    <div class="contentMain">
+                        <p>草莓:粉嫩香甜,每一口都是戀愛的感覺。貝比:可愛又單純,總是帶來歡笑和溫暖,是大家的小太陽。</p>
+                    </div>
+                </div>
+                <img src="./images/box3/candown3.png">
+            </div>
+        </div>
+    </div>
+    <div class="product">
+        <div class="soda sodaGreen">
+            <h2>檸檬能量飲</h2>
+            <div class="price">
+                <p>4 X 355ml</p>
+                <p>$199</p>
+                <p>12 X 355ml</p>
+                <p>$499</p>
+            </div>
+            <img class="character char-left" id="photo1" src="./images/product/soda1.png">
+            <img class="character char-center" src="./images/product/soda1_2.png">
+            <img class="character char-right" src="./images/product/soda1_3.png">
+            <nav class="show">
+                <a href="#">
+                    <img src="./images/product/show1.png">
+                </a>
+                <a href="#">
+                    <img src="./images/product/show2.png">
+                </a>
+                <a href="#">
+                    <img src="./images/product/show3.png">
+                </a>
+            </nav>
+            <div class="coverBlack"></div>
+        </div>
+        <div class="soda sodaPink">
+            <h2>草莓能量飲</h2>
+            <div class="price">
+                <p>4 X 355ml</p>
+                <p>$199</p>
+                <p>12 X 355ml</p>
+                <p>$499</p>
+            </div>
+            <img class="character char-left" src="./images/product/soda2.png">
+            <img class="character char-center" src="./images/product/soda2_2.png">
+            <img class="character char-right" src="./images/product/soda2_3.png">
+            <nav class="show">
+                <a href="#">
+                    <img src="./images/product/show1.png">
+                </a>
+                <a href="#">
+                    <img src="./images/product/show2.png">
+                </a>
+                <a href="#">
+                    <img src="./images/product/show3.png">
+                </a>
+            </nav>
+            <div class="coverBlack"></div>
+        </div>
+        <div class="soda sodaPurple">
+            <h2>葡萄能量飲</h2>
+            <div class="price">
+                <p>4 X 355ml</p>
+                <p>$199</p>
+                <p>12 X 355ml</p>
+                <p>$499</p>
+            </div>
+            <img class="character char-left" src="./images/product/soda3.png">
+            <img class="character char-center" src="./images/product/soda3_2.png">
+            <img class="character char-right" src="./images/product/soda3_3.png">
+            <nav class="show">
+                <a href="#">
+                    <img src="./images/product/show1.png">
+                </a>
+                <a href="#">
+                    <img src="./images/product/show2.png">
+                </a>
+                <a href="#">
+                    <img src="./images/product/show3.png">
+                </a>
+            </nav>
+            <div class="coverBlack"></div>
+        </div>
+    </div>
+
+
+    <!-- jQuery主程式 -->
+    <script src="./jquary/js/jquery-1.11.3.min.js"></script>
+    <!-- 轉場主程式 -->
+    <script src="./jquary/js/jquery.localScroll.min.js"></script>
+    <!-- 滑動主程式-->
+    <script src="./jquary/js/jquery.scrollTo.min.js"></script>
+    <!--撰寫瓶身旋轉的jQuery -->
+    <script src="./js/can.js"></script>
+    <!--撰寫卡片轉動的jQuery -->
+    <script src="./js/circle.js"></script>
+
+
+</body>
+
+</html>
