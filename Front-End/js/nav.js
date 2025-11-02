@@ -237,6 +237,18 @@ function updateUserDisplay() {
             height: 20px;
         }
 
+        .navIconBtn .user-initial {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+            text-transform: uppercase;
+        }
+
         .navBtn {
             transition: transform 0.2s ease-in-out;
         }
@@ -525,7 +537,35 @@ function updateUserDisplay() {
         console.log('✅ 導航欄已成功插入');
     }
 
-    // 更新登入連結的函數
+    // 獲取使用者首字母
+    function getUserInitial() {
+        const user = getCurrentUser();
+        if (!user) return '';
+        
+        // 優先使用 username，如果沒有則使用 email
+        const name = user.username || user.email || '';
+        if (!name) return '';
+        
+        // 取得第一個字母（英文字母）
+        const firstChar = name.charAt(0).toUpperCase();
+        // 如果第一個字符不是英文字母，嘗試找到第一個英文字母
+        if (!/[A-Za-z]/.test(firstChar)) {
+            for (let i = 0; i < name.length; i++) {
+                if (/[A-Za-z]/.test(name[i])) {
+                    return name[i].toUpperCase();
+                }
+            }
+            // 如果完全沒有英文字母，返回第一個字符
+            return firstChar;
+        }
+        return firstChar;
+    }
+
+    // 更新登入連結的函數（可從外部調用）
+    window.updateNavLoginStatus = function() {
+        updateLoginLinks();
+    };
+
     function updateLoginLinks() {
         // 檢查是否已登入
         function isUserLoggedIn() {
@@ -539,16 +579,89 @@ function updateUserDisplay() {
             const loginLinks = document.querySelectorAll('a[href="./login.html"]');
             loginLinks.forEach(function(link) {
                 link.href = './memberSystem.html';
-                // 如果是圖標連結，保持圖標
-                // 如果是文字連結，可以選擇改變文字（可選）
-                if (link.textContent === '登入') {
-                    link.textContent = '會員中心';
+                
+                // 檢查是否在 navIconBtn 中（使用者圖標按鈕）
+                const parentBtn = link.closest('.navIconBtn');
+                if (parentBtn) {
+                    // 如果是圖標按鈕，將圖片替換為使用者首字母
+                    const img = link.querySelector('img');
+                    const existingInitial = link.querySelector('.user-initial');
+                    
+                    // 如果已經有首字母，更新它；如果有圖片，替換它
+                    if (existingInitial) {
+                        // 已經有首字母，只需要更新
+                        const initial = getUserInitial();
+                        existingInitial.textContent = initial || '?';
+                    } else if (img) {
+                        // 有圖片，替換為首字母
+                        const initial = getUserInitial();
+                        const initialSpan = document.createElement('span');
+                        initialSpan.className = 'user-initial';
+                        initialSpan.textContent = initial || '?';
+                        img.replaceWith(initialSpan);
+                        console.log('✅ 已將使用者圖標改為首字母:', initial);
+                    }
+                } else {
+                    // 如果是文字連結，可以選擇改變文字（可選）
+                    if (link.textContent === '登入') {
+                        link.textContent = '會員中心';
+                    }
+                    console.log('✅ 已將登入連結改為會員中心');
                 }
-                console.log('✅ 已將登入連結改為會員中心');
             });
         } else {
-            // 未登入：保持原樣
+            // 未登入：恢復圖片（如果之前被替換了）
+            const loginLinks = document.querySelectorAll('a[href="./memberSystem.html"]');
+            loginLinks.forEach(function(link) {
+                link.href = './login.html';
+                
+                // 檢查是否在 navIconBtn 中
+                const parentBtn = link.closest('.navIconBtn');
+                if (parentBtn) {
+                    const existingInitial = link.querySelector('.user-initial');
+                    // 如果有首字母，恢復為圖片
+                    if (existingInitial) {
+                        const img = document.createElement('img');
+                        img.src = './images/user.svg';
+                        img.alt = '';
+                        existingInitial.replaceWith(img);
+                        console.log('✅ 已恢復使用者圖標');
+                    }
+                } else {
+                    // 如果是文字連結，恢復為登入
+                    if (link.textContent === '會員中心') {
+                        link.textContent = '登入';
+                    }
+                }
+            });
             console.log('ℹ️ 用戶未登入，保持登入連結');
+            
+            // 為登入連結添加點擊事件，保存當前頁面以便登入後返回
+            loginLinks.forEach(function(link) {
+                // 檢查是否已經有監聽器（避免重複添加）
+                if (link.hasAttribute('data-redirect-listener')) {
+                    return;
+                }
+                link.setAttribute('data-redirect-listener', 'true');
+                
+                // 添加點擊事件監聽器
+                link.addEventListener('click', function(e) {
+                    // 如果已經有 redirectAfterLogin（例如由其他頁面設置的），則不覆蓋
+                    if (!localStorage.getItem('redirectAfterLogin')) {
+                        // 獲取當前頁面的完整 URL（包含路徑和查詢參數）
+                        const currentPath = window.location.pathname.split('/').pop();
+                        const currentSearch = window.location.search;
+                        const returnUrl = './' + currentPath + currentSearch;
+                        
+                        // 如果是登入頁面本身，則不保存
+                        if (currentPath !== 'login.html') {
+                            localStorage.setItem('redirectAfterLogin', returnUrl);
+                            console.log('✅ 已保存當前頁面以便登入後返回:', returnUrl);
+                        }
+                    }
+                    // 讓連結正常執行跳轉
+                });
+            });
         }
     }
 

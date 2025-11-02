@@ -72,7 +72,9 @@ namespace WebApplication1.Models
         [MaxLength(50)]
         public string ReceiverName { get; set; } = string.Empty; 
 
-        [MaxLength(200)]
+        // OrderItems 儲存 JSON 字串，可能很長，所以使用 max 長度
+        // 或者設定一個足夠大的長度（如 2000 或 4000）
+        [MaxLength(4000)]
         public string OrderItems { get; set; } = string.Empty; 
 
         [MaxLength(500)]

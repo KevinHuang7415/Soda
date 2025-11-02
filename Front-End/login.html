@@ -151,6 +151,61 @@
     const password = document.querySelector('.password');
     const formAcc = document.getElementById('formAcc');
 
+    // 頁面載入時，自動保存來源頁面（如果還沒有設置 redirectAfterLogin）
+    (function saveReferrerForRedirect() {
+      // 如果已經有 redirectAfterLogin（由其他頁面設置），則不覆蓋
+      if (localStorage.getItem('redirectAfterLogin')) {
+        console.log('已有 redirectAfterLogin，保持原設定');
+        return;
+      }
+
+      // 獲取來源頁面
+      const referrer = document.referrer;
+      if (!referrer) {
+        console.log('無來源頁面，跳過設置 redirectAfterLogin');
+        return;
+      }
+
+      try {
+        // 解析來源 URL
+        const referrerUrl = new URL(referrer);
+        const currentUrl = new URL(window.location.href);
+        
+        // 確保來源頁面是同一個網站（同域名）
+        if (referrerUrl.origin !== currentUrl.origin) {
+          console.log('來源頁面為外部網站，跳過設置');
+          return;
+        }
+
+        // 如果來源頁面就是登入頁面本身，則不設置
+        const referrerPath = referrerUrl.pathname;
+        if (referrerPath.includes('login.html')) {
+          console.log('來源頁面為登入頁面本身，跳過設置');
+          return;
+        }
+
+        // 構建返回 URL（包含完整路徑和查詢參數）
+        const returnUrl = referrerPath + referrerUrl.search;
+        
+        // 轉換為相對路徑（如果需要的話）
+        // 例如：/Front-End/product.html?param=value -> ./product.html?param=value
+        let relativePath = returnUrl;
+        if (relativePath.startsWith('/')) {
+          // 找到最後一個斜線後的文件名
+          const fileName = relativePath.split('/').pop();
+          relativePath = './' + fileName;
+        } else if (!relativePath.startsWith('./')) {
+          relativePath = './' + relativePath;
+        }
+
+        // 保存為 redirectAfterLogin
+        localStorage.setItem('redirectAfterLogin', relativePath);
+        console.log('✅ 已自動保存來源頁面:', relativePath);
+      } catch (error) {
+        console.error('解析來源頁面時發生錯誤:', error);
+      }
+    })();
+
     // 監聽表單提交事件
     formAcc.addEventListener('submit', function (e) {
       e.preventDefault(); // 阻止表單默認提交行為
@@ -190,14 +245,36 @@
 
             // ========== 智能導向邏輯 ==========
             const userRole = user.role || 'User';
-            const redirectUrl = localStorage.getItem('redirectAfterLogin');
+            let redirectUrl = localStorage.getItem('redirectAfterLogin');
+
+            // 如果沒有保存的 redirectAfterLogin，嘗試從 URL 參數獲取
+            if (!redirectUrl) {
+              const urlParams = new URLSearchParams(window.location.search);
+              redirectUrl = urlParams.get('returnUrl');
+              if (redirectUrl) {
+                localStorage.setItem('redirectAfterLogin', redirectUrl);
+              }
+            }
 
             // 優先處理返回原頁面的需求
             if (redirectUrl) {
               localStorage.removeItem('redirectAfterLogin');
-              window.location.href = redirectUrl;
+              console.log('🔙 導向回上一個頁面:', redirectUrl);
+              
+              // 更新導航欄狀態（如果函數存在）
+              if (typeof window.updateNavLoginStatus === 'function') {
+                window.updateNavLoginStatus();
+              }
+              
+              // 延遲一小段時間，讓導航欄有時間更新
+              setTimeout(() => {
+                window.location.href = redirectUrl;
+              }, 100);
             } else if (userRole === 'Admin') {
               // 如果是管理員且沒有要返回的頁面，才詢問是否前往後台
+              if (typeof window.updateNavLoginStatus === 'function') {
+                window.updateNavLoginStatus();
+              }
               if (confirm('現在將引導您前往管理者畫面')) {
                 window.open('./Dashboard.html', '_blank'); // 新視窗開啟後台
                 window.location.href = './index.html'; // 導向首頁
@@ -205,8 +282,12 @@
                 window.location.href = './index.html';
               }
             } else {
-              // 一般用戶且沒有要返回的頁面，導向會員資料頁
-              window.location.href = './UpdateUser.html';
+              // 一般用戶且沒有要返回的頁面，導向首頁或會員中心
+              if (typeof window.updateNavLoginStatus === 'function') {
+                window.updateNavLoginStatus();
+              }
+              // 導向首頁，讓用戶可以繼續瀏覽
+              window.location.href = './index.html';
             }
             // ==================================
           } else {

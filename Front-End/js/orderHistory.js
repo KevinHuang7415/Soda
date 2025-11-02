@@ -203,10 +203,19 @@ function showOrderDetailsModal(order) {
 
     // 解析訂單明細
     let orderItemsHtml = '<p>暫無明細資料</p>';
+    let subtotal = 0; // 計算小計總額
+    
     if (order.orderItems) {
         try {
             const items = JSON.parse(order.orderItems);
             if (Array.isArray(items) && items.length > 0) {
+                // 計算小計
+                subtotal = items.reduce((sum, item) => {
+                    const quantity = item.qty || item.quantity || 0;
+                    const price = item.price || 0;
+                    return sum + (quantity * price);
+                }, 0);
+                
                 orderItemsHtml = `
                     <table class="order-items-table">
                         <thead>
@@ -218,14 +227,22 @@ function showOrderDetailsModal(order) {
                             </tr>
                         </thead>
                         <tbody>
-                            ${items.map(item => `
+                            ${items.map(item => {
+                                // 使用正確的欄位名稱：qty 而不是 quantity，name 而不是 productName
+                                const productName = item.name || item.productName || '未知商品';
+                                const quantity = item.qty || item.quantity || 0;
+                                const price = item.price || 0;
+                                const itemSubtotal = quantity * price;
+                                
+                                return `
                                 <tr>
-                                    <td>${item.productName || item.name || '未知商品'}</td>
-                                    <td>${item.quantity || 0}</td>
-                                    <td>$${formatCurrency(item.price || 0)}</td>
-                                    <td>$${formatCurrency((item.quantity || 0) * (item.price || 0))}</td>
+                                    <td>${productName}${item.size ? ` (${item.size})` : ''}</td>
+                                    <td>${quantity}</td>
+                                    <td>$${formatCurrency(price)}</td>
+                                    <td>$${formatCurrency(itemSubtotal)}</td>
                                 </tr>
-                            `).join('')}
+                                `;
+                            }).join('')}
                         </tbody>
                     </table>
                 `;
@@ -236,10 +253,121 @@ function showOrderDetailsModal(order) {
         }
     }
 
-    // 備註內容
-    const notesHtml = order.notes ? `
+    // 解析折扣資訊
+    let discountDetailsHtml = '';
+    let totalDiscount = 0;
+    let discounts = [];
+    
+    if (order.notes) {
+        // 嘗試解析 JSON 格式的折扣資訊
+        // 找到 DISCOUNTS_JSON: 後面的 JSON 字串
+        const discountJsonIndex = order.notes.indexOf('DISCOUNTS_JSON:');
+        if (discountJsonIndex !== -1) {
+            try {
+                // 從 DISCOUNTS_JSON: 後面開始提取 JSON
+                const jsonStart = discountJsonIndex + 'DISCOUNTS_JSON:'.length;
+                let jsonEnd = jsonStart;
+                let braceCount = 0;
+                let foundFirstBrace = false;
+                
+                // 找到完整的 JSON 物件
+                for (let i = jsonStart; i < order.notes.length; i++) {
+                    if (order.notes[i] === '{') {
+                        braceCount++;
+                        foundFirstBrace = true;
+                    } else if (order.notes[i] === '}') {
+                        braceCount--;
+                        if (foundFirstBrace && braceCount === 0) {
+                            jsonEnd = i + 1;
+                            break;
+                        }
+                    }
+                }
+                
+                if (jsonEnd > jsonStart) {
+                    const jsonString = order.notes.substring(jsonStart, jsonEnd);
+                    const discountData = JSON.parse(jsonString);
+                    discounts = discountData.discounts || [];
+                    totalDiscount = discountData.totalDiscount || 0;
+                }
+            } catch (e) {
+                console.error('解析折扣 JSON 時發生錯誤:', e);
+            }
+        }
+        
+        // 如果沒有 JSON 格式，嘗試從文字中解析（向後兼容）
+        if (discounts.length === 0) {
+            const discountMatch = order.notes.match(/使用優惠:([^|,\n]+)/);
+            if (discountMatch) {
+                // 舊格式：只有名稱，沒有金額
+                // 計算總折扣 = 小計 - 總金額
+                totalDiscount = subtotal - (order.totalAmount || 0);
+                if (totalDiscount > 0) {
+                    const discountNames = discountMatch[1].split(',').map(s => s.trim());
+                    // 平均分配折扣（無法獲得準確金額）
+                    const avgDiscount = discountNames.length > 0 ? Math.floor(totalDiscount / discountNames.length) : 0;
+                    discounts = discountNames.map(name => ({
+                        name: name,
+                        amount: avgDiscount
+                    }));
+                }
+            }
+        }
+    }
+    
+    // 生成折扣明細 HTML
+    if (discounts.length > 0) {
+        discountDetailsHtml = `
+            <div class="discount-details" style="margin-top: 15px;">
+                <h4 style="margin-bottom: 10px; color: var(--main-gray);">折扣詳情</h4>
+                ${discounts.map(discount => `
+                    <div class="discount-item-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                        <span style="color: var(--main-gray);">使用優惠：${discount.name}</span>
+                        <span style="color: var(--main-orange); font-weight: bold;">-$${formatCurrency(discount.amount)}</span>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    // 備註內容（排除折扣 JSON 資訊，因為已經單獨顯示）
+    let cleanNotes = order.notes || '';
+    if (cleanNotes) {
+        // 移除折扣 JSON 部分（使用更可靠的方式）
+        const discountJsonIndex = cleanNotes.indexOf('DISCOUNTS_JSON:');
+        if (discountJsonIndex !== -1) {
+            // 找到 JSON 結束位置
+            let jsonStart = discountJsonIndex + 'DISCOUNTS_JSON:'.length;
+            let jsonEnd = jsonStart;
+            let braceCount = 0;
+            let foundFirstBrace = false;
+            
+            for (let i = jsonStart; i < cleanNotes.length; i++) {
+                if (cleanNotes[i] === '{') {
+                    braceCount++;
+                    foundFirstBrace = true;
+                } else if (cleanNotes[i] === '}') {
+                    braceCount--;
+                    if (foundFirstBrace && braceCount === 0) {
+                        jsonEnd = i + 1;
+                        break;
+                    }
+                }
+            }
+            
+            // 移除 | DISCOUNTS_JSON:... 部分
+            const beforeJson = cleanNotes.substring(0, discountJsonIndex).replace(/\s*\|\s*$/, '');
+            const afterJson = cleanNotes.substring(jsonEnd);
+            cleanNotes = (beforeJson + afterJson).trim();
+        }
+        
+        // 移除折扣文字部分（因為已經在折扣詳情中顯示）
+        cleanNotes = cleanNotes.replace(/,\s*使用優惠:[^|,\n]+/, '');
+    }
+    
+    const notesHtml = cleanNotes && cleanNotes.trim() ? `
         <div class="notes-section">
-            <p>${order.notes}</p>
+            <p>${cleanNotes}</p>
         </div>
     ` : '<p class="detail-value">無備註</p>';
 
@@ -273,9 +401,36 @@ function showOrderDetailsModal(order) {
                     <span class="detail-label">付款狀態</span>
                     <span class="detail-value">${getStatusBadge(order.paymentStatus || '未付款', 'payment')}</span>
                 </div>
-                <div class="detail-item">
-                    <span class="detail-label">訂單總金額</span>
-                    <span class="detail-value" style="color: var(--main-orange); font-size: 1.3em;">$${formatCurrency(order.totalAmount)}</span>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <h3>金額明細</h3>
+            <div class="amount-breakdown" style="padding: 15px; background-color: #f9f9f9; border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #ddd;">
+                    <span class="detail-label">小計</span>
+                    <span class="detail-value">$${formatCurrency(subtotal)}</span>
+                </div>
+                ${discounts.length > 0 ? `
+                    ${discounts.map(discount => `
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                            <span class="detail-label" style="color: var(--main-gray);">使用優惠：${discount.name}</span>
+                            <span class="detail-value" style="color: var(--main-orange);">-$${formatCurrency(discount.amount)}</span>
+                        </div>
+                    `).join('')}
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-top: 2px solid #ddd; margin-top: 5px;">
+                        <span class="detail-label" style="font-weight: bold;">折扣總計</span>
+                        <span class="detail-value" style="color: var(--main-orange); font-weight: bold;">-$${formatCurrency(totalDiscount)}</span>
+                    </div>
+                ` : `
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                        <span class="detail-label" style="color: var(--main-gray);">折扣</span>
+                        <span class="detail-value" style="color: var(--main-gray);">-$0</span>
+                    </div>
+                `}
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-top: 2px solid var(--main-orange); margin-top: 10px;">
+                    <span class="detail-label" style="font-size: 1.2em; font-weight: bold;">訂單總金額</span>
+                    <span class="detail-value" style="color: var(--main-orange); font-size: 1.3em; font-weight: bold;">$${formatCurrency(order.totalAmount)}</span>
                 </div>
             </div>
         </div>
@@ -345,19 +500,39 @@ function setupModalEvents() {
 }
 
 /**
- * 格式化日期
+ * 格式化日期（轉換為台灣時間 UTC+8）
  */
 function formatDate(dateString) {
     if (!dateString) return '未知日期';
     
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    
-    return `${year}-${month}-${day} ${hours}:${minutes}`;
+    try {
+        // 創建日期對象
+        const date = new Date(dateString);
+        
+        // 檢查日期是否有效
+        if (isNaN(date.getTime())) {
+            return '無效日期';
+        }
+        
+        // 轉換為台灣時間（UTC+8）
+        // 使用 toLocaleString 是最簡單可靠的方法
+        const taiwanTimeString = date.toLocaleString('zh-TW', {
+            timeZone: 'Asia/Taipei',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
+        
+        // 格式：YYYY/MM/DD HH:MM:SS -> YYYY-MM-DD HH:MM:SS
+        return taiwanTimeString.replace(/\//g, '-');
+    } catch (error) {
+        console.error('日期格式化錯誤:', error);
+        return '日期格式錯誤';
+    }
 }
 
 /**

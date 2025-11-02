@@ -1115,6 +1115,15 @@
             
             // 💾 設置表單資料自動保存功能
             setupAutoSaveFormData();
+
+            // 🍎 初始化 Apple Pay 按鈕
+            initApplePayButton();
+
+            // 🔵 初始化 Google Pay 按鈕
+            initGooglePayButton();
+
+            // 🟠 初始化 Amazon Pay 按鈕
+            initAmazonPayButton();
         });
 
         // === 全台縣市與郵遞區號資料 ===
@@ -1260,6 +1269,783 @@
             payNowBtn.addEventListener('click', handleOrderSubmit);
         }
 
+        // ==================== Apple Pay 功能 ====================
+
+        // 檢查 Apple Pay 是否可用
+        function checkApplePayAvailable() {
+            // 檢查是否在支持的瀏覽器中（Safari、Chrome on macOS/iOS）
+            if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
+                return true;
+            }
+            return false;
+        }
+
+        // 初始化 Apple Pay 按鈕
+        function initApplePayButton() {
+            const applePayBtn = document.querySelector('.applePay');
+            if (!applePayBtn) return;
+
+            // 檢查是否支持 Apple Pay
+            if (!checkApplePayAvailable()) {
+                // 如果不支持，隱藏按鈕或顯示提示
+                applePayBtn.style.opacity = '0.5';
+                applePayBtn.style.cursor = 'not-allowed';
+                applePayBtn.title = '您的設備不支持 Apple Pay';
+                return;
+            }
+
+            // 綁定點擊事件
+            applePayBtn.style.cursor = 'pointer';
+            applePayBtn.addEventListener('click', handleApplePay);
+        }
+
+        // 處理 Apple Pay 支付
+        async function handleApplePay(event) {
+            event.preventDefault();
+
+            // 檢查是否支持 Apple Pay
+            if (!checkApplePayAvailable()) {
+                pauseMarquee();
+                alert('您的設備不支持 Apple Pay，請使用其他付款方式。');
+                resumeMarquee();
+                return;
+            }
+
+            // 0. 檢查登入狀態
+            if (!getCurrentUser()) {
+                const confirmLogin = confirm('結帳需要登入會員，是否前往登入？');
+                if (confirmLogin) {
+                    sessionStorage.setItem('returnUrl', window.location.href);
+                    window.location.href = './login.html';
+                }
+                return;
+            }
+
+            // 1. 驗證基本表單（只驗證收件資料，不需要信用卡資料）
+            const email = document.getElementById('email').value.trim();
+            const firstName = document.getElementById('deliveryFirstName').value.trim();
+            const lastName = document.getElementById('deliveryLaName').value.trim();
+            const tel = document.getElementById('deliveryTel').value.trim();
+            const city = document.getElementById('city').value;
+            const district = document.getElementById('district').value;
+            const address = document.getElementById('addressName').value.trim();
+
+            if (!firstName || !lastName || !tel || !city || !district || !address) {
+                alert('請完整填寫收件人資料');
+                return;
+            }
+
+            if (email && !isValidEmail(email)) {
+                alert('請輸入有效的電子郵件地址');
+                return;
+            }
+
+            if (!isValidPhone(tel)) {
+                alert('請輸入有效的聯絡電話');
+                return;
+            }
+
+            // 2. 收集訂單資料並檢查金額限制
+            let orderData;
+            try {
+                orderData = collectOrderData('Apple Pay');
+            } catch (error) {
+                pauseMarquee();
+                alert(error.message);
+                resumeMarquee();
+                return;
+            }
+
+            // 3. 計算最終金額
+            const totalDiscount = calculateDiscounts();
+            const finalAmount = subtotal - totalDiscount;
+
+            // 4. 創建 Apple Pay 支付請求
+            try {
+                pauseMarquee();
+
+                const request = {
+                    countryCode: 'TW',
+                    currencyCode: 'TWD',
+                    supportedNetworks: ['visa', 'masterCard', 'amex', 'discover'],
+                    merchantCapabilities: ['supports3DS'],
+                    total: {
+                        label: 'Soda 能量飲',
+                        amount: finalAmount.toFixed(2),
+                        type: 'final'
+                    },
+                    requiredShippingContactFields: ['postalAddress', 'name', 'phone', 'email'],
+                    lineItems: []
+                };
+
+                // 添加購物車項目到 lineItems（可選，用於顯示明細）
+                if (AppState.cartData && AppState.cartData.cart) {
+                    AppState.cartData.cart.forEach(item => {
+                        const itemTotal = item.price * item.qty;
+                        request.lineItems.push({
+                            label: `${item.name} ${item.size}`,
+                            amount: itemTotal.toFixed(2),
+                            type: 'final'
+                        });
+                    });
+
+                    // 如果有折扣，顯示折扣項目
+                    if (totalDiscount > 0) {
+                        request.lineItems.push({
+                            label: '折扣',
+                            amount: (-totalDiscount).toFixed(2),
+                            type: 'final'
+                        });
+                    }
+                }
+
+                // 創建 Apple Pay Session
+                const session = new ApplePaySession(3, request);
+
+                // 處理驗證商家
+                session.onvalidatemerchant = async (event) => {
+                    try {
+                        // 在實際生產環境中，這裡應該調用後端 API 來驗證商家
+                        // 目前使用模擬驗證
+                        const merchantSession = {
+                            epochTimestamp: Date.now(),
+                            expiresAt: Date.now() + 3600000,
+                            merchantSessionIdentifier: 'merchant.session.' + Date.now(),
+                            nonce: 'nonce-' + Date.now(),
+                            merchantIdentifier: 'merchant.com.soda',
+                            domainName: window.location.hostname,
+                            displayName: 'Soda 能量飲'
+                        };
+
+                        session.completeMerchantValidation(merchantSession);
+                    } catch (error) {
+                        console.error('商家驗證失敗:', error);
+                        session.abort();
+                        alert('Apple Pay 驗證失敗，請使用其他付款方式。');
+                        resumeMarquee();
+                    }
+                };
+
+                // 處理支付授權
+                session.onpaymentauthorized = async (event) => {
+                    try {
+                        // 這裡應該將支付令牌發送到後端進行處理
+                        // 在實際環境中，應該使用後端 API 來處理支付
+                        console.log('Apple Pay 授權成功:', event.payment);
+
+                        // 更新訂單資料（使用 Apple Pay 提供的聯絡資訊，如果有的話）
+                        if (event.payment.shippingContact) {
+                            const contact = event.payment.shippingContact;
+                            if (contact.givenName && contact.familyName) {
+                                orderData.ReceiverName = `${contact.familyName} ${contact.givenName}`;
+                            }
+                            if (contact.postalAddress) {
+                                const addr = contact.postalAddress;
+                                orderData.ShippingAddress = `${addr.postalCode || ''} ${addr.country || ''}${addr.state || ''}${addr.city || ''}${addr.street || ''}`;
+                            }
+                        }
+
+                        // 提交訂單到後端
+                        const response = await submitOrder(orderData);
+
+                        if (response.success) {
+                            // 支付成功
+                            session.completePayment({
+                                status: ApplePaySession.STATUS_SUCCESS
+                            });
+
+                            alert(`訂單建立成功！\n訂單編號：${response.orderId}\n\n感謝您的訂購！`);
+
+                            // 清除購物車資料和表單資料
+                            localStorage.removeItem('cartData');
+                            clearDiscountState();
+                            clearSavedFormData();
+
+                            // 導向訂單歷史頁面
+                            window.location.href = './orderHistory.html';
+                        } else {
+                            // 訂單建立失敗
+                            session.completePayment({
+                                status: ApplePaySession.STATUS_FAILURE
+                            });
+                            alert('訂單建立失敗：' + response.message);
+                        }
+                        resumeMarquee();
+                    } catch (error) {
+                        console.error('處理 Apple Pay 支付時發生錯誤:', error);
+                        session.completePayment({
+                            status: ApplePaySession.STATUS_FAILURE
+                        });
+                        alert('處理支付時發生錯誤：' + error.message);
+                        resumeMarquee();
+                    }
+                };
+
+                // 處理取消
+                session.oncancel = () => {
+                    console.log('Apple Pay 已取消');
+                    resumeMarquee();
+                };
+
+                // 開始 Apple Pay 流程
+                session.begin();
+
+            } catch (error) {
+                console.error('啟動 Apple Pay 失敗:', error);
+                alert('無法啟動 Apple Pay，請使用其他付款方式。');
+                resumeMarquee();
+            }
+        }
+
+        // ==================== Google Pay 功能 ====================
+
+        // 檢查 Payment Request API 是否可用（Google Pay 使用此 API）
+        function checkGooglePayAvailable() {
+            // 檢查是否支援 Payment Request API
+            if (window.PaymentRequest) {
+                // 檢查是否支援 Google Pay
+                try {
+                    const paymentRequest = new PaymentRequest(
+                        [{
+                            supportedMethods: 'https://google.com/pay',
+                            data: {
+                                environment: 'TEST',
+                                apiVersion: 2,
+                                apiVersionMinor: 0,
+                                merchantInfo: {
+                                    merchantId: 'merchant.com.soda',
+                                    merchantName: 'Soda 能量飲'
+                                },
+                                allowedPaymentMethods: [{
+                                    type: 'CARD',
+                                    parameters: {
+                                        allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+                                        allowedCardNetworks: ['VISA', 'MASTERCARD', 'AMEX']
+                                    }
+                                }]
+                            }
+                        }],
+                        {
+                            total: {
+                                label: 'Soda 能量飲',
+                                amount: {
+                                    currency: 'TWD',
+                                    value: '1.00'
+                                }
+                            }
+                        }
+                    );
+
+                    // 檢查是否可以使用
+                    return paymentRequest.canMakePayment().then(result => {
+                        paymentRequest.abort();
+                        return result !== null;
+                    }).catch(() => false);
+                } catch (error) {
+                    console.log('Google Pay 檢查錯誤:', error);
+                    return Promise.resolve(false);
+                }
+            }
+            return Promise.resolve(false);
+        }
+
+        // 初始化 Google Pay 按鈕
+        async function initGooglePayButton() {
+            const googlePayBtn = document.querySelector('.googlePay');
+            if (!googlePayBtn) return;
+
+            // 檢查是否支持 Google Pay
+            try {
+                const isAvailable = await checkGooglePayAvailable();
+                if (!isAvailable) {
+                    // 如果不支持，降低透明度並顯示提示
+                    googlePayBtn.style.opacity = '0.5';
+                    googlePayBtn.style.cursor = 'not-allowed';
+                    googlePayBtn.title = '您的設備不支持 Google Pay';
+                    return;
+                }
+            } catch (error) {
+                console.log('檢查 Google Pay 可用性時發生錯誤:', error);
+                googlePayBtn.style.opacity = '0.5';
+                googlePayBtn.style.cursor = 'not-allowed';
+                googlePayBtn.title = '無法檢查 Google Pay 支援狀態';
+                return;
+            }
+
+            // 綁定點擊事件
+            googlePayBtn.style.cursor = 'pointer';
+            googlePayBtn.addEventListener('click', handleGooglePay);
+        }
+
+        // 處理 Google Pay 支付
+        async function handleGooglePay(event) {
+            event.preventDefault();
+
+            // 0. 檢查登入狀態
+            if (!getCurrentUser()) {
+                const confirmLogin = confirm('結帳需要登入會員，是否前往登入？');
+                if (confirmLogin) {
+                    sessionStorage.setItem('returnUrl', window.location.href);
+                    window.location.href = './login.html';
+                }
+                return;
+            }
+
+            // 1. 驗證基本表單（只驗證收件資料，不需要信用卡資料）
+            const email = document.getElementById('email').value.trim();
+            const firstName = document.getElementById('deliveryFirstName').value.trim();
+            const lastName = document.getElementById('deliveryLaName').value.trim();
+            const tel = document.getElementById('deliveryTel').value.trim();
+            const city = document.getElementById('city').value;
+            const district = document.getElementById('district').value;
+            const address = document.getElementById('addressName').value.trim();
+
+            if (!firstName || !lastName || !tel || !city || !district || !address) {
+                alert('請完整填寫收件人資料');
+                return;
+            }
+
+            if (email && !isValidEmail(email)) {
+                alert('請輸入有效的電子郵件地址');
+                return;
+            }
+
+            if (!isValidPhone(tel)) {
+                alert('請輸入有效的聯絡電話');
+                return;
+            }
+
+            // 2. 收集訂單資料並檢查金額限制
+            let orderData;
+            try {
+                orderData = collectOrderData('Google Pay');
+            } catch (error) {
+                pauseMarquee();
+                alert(error.message);
+                resumeMarquee();
+                return;
+            }
+
+            // 3. 計算最終金額
+            const totalDiscount = calculateDiscounts();
+            const finalAmount = subtotal - totalDiscount;
+
+            // 4. 創建 Google Pay 支付請求
+            try {
+                pauseMarquee();
+
+                // 準備購物車明細
+                const displayItems = [];
+                if (AppState.cartData && AppState.cartData.cart) {
+                    AppState.cartData.cart.forEach(item => {
+                        const itemTotal = item.price * item.qty;
+                        displayItems.push({
+                            label: `${item.name} ${item.size}`,
+                            amount: {
+                                currency: 'TWD',
+                                value: itemTotal.toFixed(2)
+                            }
+                        });
+                    });
+
+                    // 如果有折扣，顯示折扣項目
+                    if (totalDiscount > 0) {
+                        displayItems.push({
+                            label: '折扣',
+                            amount: {
+                                currency: 'TWD',
+                                value: (-totalDiscount).toFixed(2)
+                            }
+                        });
+                    }
+                }
+
+                // 建立 Payment Request
+                const paymentRequest = new PaymentRequest(
+                    [
+                        {
+                            supportedMethods: 'https://google.com/pay',
+                            data: {
+                                environment: 'TEST', // 生產環境改為 'PRODUCTION'
+                                apiVersion: 2,
+                                apiVersionMinor: 0,
+                                merchantInfo: {
+                                    merchantId: 'merchant.com.soda',
+                                    merchantName: 'Soda 能量飲'
+                                },
+                                allowedPaymentMethods: [
+                                    {
+                                        type: 'CARD',
+                                        parameters: {
+                                            allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+                                            allowedCardNetworks: ['VISA', 'MASTERCARD', 'AMEX', 'DISCOVER']
+                                        },
+                                        tokenizationSpecification: {
+                                            type: 'PAYMENT_GATEWAY',
+                                            parameters: {
+                                                gateway: 'example',
+                                                gatewayMerchantId: 'exampleGatewayMerchantId'
+                                            }
+                                        }
+                                    }
+                                ],
+                                transactionInfo: {
+                                    totalPriceStatus: 'FINAL',
+                                    totalPrice: finalAmount.toFixed(2),
+                                    totalPriceLabel: '總計',
+                                    currencyCode: 'TWD',
+                                    countryCode: 'TW'
+                                },
+                                shippingAddressRequired: false, // 我們使用表單中的地址
+                                emailRequired: false // 我們使用表單中的 email
+                            }
+                        }
+                    ],
+                    {
+                        total: {
+                            label: 'Soda 能量飲',
+                            amount: {
+                                currency: 'TWD',
+                                value: finalAmount.toFixed(2)
+                            }
+                        },
+                        displayItems: displayItems.length > 0 ? displayItems : undefined
+                    },
+                    {
+                        requestShipping: false, // 不需要 Google Pay 的地址，使用表單地址
+                        requestPayerEmail: false,
+                        requestPayerPhone: false,
+                        requestPayerName: false
+                    }
+                );
+
+                // 檢查是否可以使用
+                if (!await paymentRequest.canMakePayment()) {
+                    pauseMarquee();
+                    alert('您的設備不支持 Google Pay，請使用其他付款方式。');
+                    resumeMarquee();
+                    return;
+                }
+
+                // 顯示支付界面
+                try {
+                    const paymentResponse = await paymentRequest.show();
+
+                    // 處理支付響應
+                    console.log('Google Pay 支付響應:', paymentResponse);
+
+                    // 這裡應該將支付令牌發送到後端進行處理
+                    // 在實際環境中，應該使用後端 API 來處理支付
+                    // paymentResponse.details 包含支付令牌和資訊
+
+                    // 使用 Google Pay 提供的聯絡資訊（如果有）
+                    if (paymentResponse.details && paymentResponse.details.shippingAddress) {
+                        const addr = paymentResponse.details.shippingAddress;
+                        // 可以選擇使用 Google Pay 提供的地址或表單地址
+                        // orderData.ShippingAddress = formatAddressFromGooglePay(addr);
+                    }
+
+                    // 模擬處理支付（在實際環境中，應該調用後端 API）
+                    // 提交訂單到後端
+                    const response = await submitOrder(orderData);
+
+                    if (response.success) {
+                        // 支付成功
+                        await paymentResponse.complete('success');
+
+                        alert(`訂單建立成功！\n訂單編號：${response.orderId}\n\n感謝您的訂購！`);
+
+                        // 清除購物車資料和表單資料
+                        localStorage.removeItem('cartData');
+                        clearDiscountState();
+                        clearSavedFormData();
+
+                        // 導向訂單歷史頁面
+                        window.location.href = './orderHistory.html';
+                    } else {
+                        // 訂單建立失敗
+                        await paymentResponse.complete('fail');
+                        alert('訂單建立失敗：' + response.message);
+                    }
+                    resumeMarquee();
+
+                } catch (error) {
+                    // 用戶取消或發生錯誤
+                    if (error.name === 'AbortError') {
+                        console.log('Google Pay 已取消');
+                    } else {
+                        console.error('Google Pay 支付錯誤:', error);
+                        alert('處理支付時發生錯誤：' + error.message);
+                    }
+                    resumeMarquee();
+                }
+
+            } catch (error) {
+                console.error('啟動 Google Pay 失敗:', error);
+                alert('無法啟動 Google Pay，請使用其他付款方式。');
+                resumeMarquee();
+            }
+        }
+
+        // ==================== Amazon Pay 功能 ====================
+
+        // 檢查 Amazon Pay 是否可用
+        function checkAmazonPayAvailable() {
+            // 檢查是否支援 Payment Request API
+            if (window.PaymentRequest) {
+                // 檢查是否支援 Amazon Pay
+                try {
+                    const paymentRequest = new PaymentRequest(
+                        [{
+                            supportedMethods: 'https://pay.amazon.com',
+                            data: {
+                                merchantId: 'merchant.com.soda',
+                                ledgerCurrency: 'TWD',
+                                sandbox: true, // 生產環境改為 false
+                                storeId: 'soda-store'
+                            }
+                        }],
+                        {
+                            total: {
+                                label: 'Soda 能量飲',
+                                amount: {
+                                    currency: 'TWD',
+                                    value: '1.00'
+                                }
+                            }
+                        }
+                    );
+
+                    // 檢查是否可以使用
+                    return paymentRequest.canMakePayment().then(result => {
+                        paymentRequest.abort();
+                        return result !== null;
+                    }).catch(() => false);
+                } catch (error) {
+                    console.log('Amazon Pay 檢查錯誤:', error);
+                    return Promise.resolve(false);
+                }
+            }
+            return Promise.resolve(false);
+        }
+
+        // 初始化 Amazon Pay 按鈕
+        async function initAmazonPayButton() {
+            const amazonPayBtn = document.querySelector('.amazonPay');
+            if (!amazonPayBtn) return;
+
+            // 檢查是否支持 Amazon Pay
+            try {
+                const isAvailable = await checkAmazonPayAvailable();
+                if (!isAvailable) {
+                    // 如果不支持，降低透明度並顯示提示
+                    amazonPayBtn.style.opacity = '0.5';
+                    amazonPayBtn.style.cursor = 'not-allowed';
+                    amazonPayBtn.title = '您的設備不支持 Amazon Pay';
+                    return;
+                }
+            } catch (error) {
+                console.log('檢查 Amazon Pay 可用性時發生錯誤:', error);
+                amazonPayBtn.style.opacity = '0.5';
+                amazonPayBtn.style.cursor = 'not-allowed';
+                amazonPayBtn.title = '無法檢查 Amazon Pay 支援狀態';
+                return;
+            }
+
+            // 綁定點擊事件
+            amazonPayBtn.style.cursor = 'pointer';
+            amazonPayBtn.addEventListener('click', handleAmazonPay);
+        }
+
+        // 處理 Amazon Pay 支付
+        async function handleAmazonPay(event) {
+            event.preventDefault();
+
+            // 0. 檢查登入狀態
+            if (!getCurrentUser()) {
+                const confirmLogin = confirm('結帳需要登入會員，是否前往登入？');
+                if (confirmLogin) {
+                    sessionStorage.setItem('returnUrl', window.location.href);
+                    window.location.href = './login.html';
+                }
+                return;
+            }
+
+            // 1. 驗證基本表單（只驗證收件資料，不需要信用卡資料）
+            const email = document.getElementById('email').value.trim();
+            const firstName = document.getElementById('deliveryFirstName').value.trim();
+            const lastName = document.getElementById('deliveryLaName').value.trim();
+            const tel = document.getElementById('deliveryTel').value.trim();
+            const city = document.getElementById('city').value;
+            const district = document.getElementById('district').value;
+            const address = document.getElementById('addressName').value.trim();
+
+            if (!firstName || !lastName || !tel || !city || !district || !address) {
+                alert('請完整填寫收件人資料');
+                return;
+            }
+
+            if (email && !isValidEmail(email)) {
+                alert('請輸入有效的電子郵件地址');
+                return;
+            }
+
+            if (!isValidPhone(tel)) {
+                alert('請輸入有效的聯絡電話');
+                return;
+            }
+
+            // 2. 收集訂單資料並檢查金額限制
+            let orderData;
+            try {
+                orderData = collectOrderData('Amazon Pay');
+            } catch (error) {
+                pauseMarquee();
+                alert(error.message);
+                resumeMarquee();
+                return;
+            }
+
+            // 3. 計算最終金額
+            const totalDiscount = calculateDiscounts();
+            const finalAmount = subtotal - totalDiscount;
+
+            // 4. 創建 Amazon Pay 支付請求
+            try {
+                pauseMarquee();
+
+                // 準備購物車明細
+                const displayItems = [];
+                if (AppState.cartData && AppState.cartData.cart) {
+                    AppState.cartData.cart.forEach(item => {
+                        const itemTotal = item.price * item.qty;
+                        displayItems.push({
+                            label: `${item.name} ${item.size}`,
+                            amount: {
+                                currency: 'TWD',
+                                value: itemTotal.toFixed(2)
+                            }
+                        });
+                    });
+
+                    // 如果有折扣，顯示折扣項目
+                    if (totalDiscount > 0) {
+                        displayItems.push({
+                            label: '折扣',
+                            amount: {
+                                currency: 'TWD',
+                                value: (-totalDiscount).toFixed(2)
+                            }
+                        });
+                    }
+                }
+
+                // 建立 Payment Request
+                const paymentRequest = new PaymentRequest(
+                    [
+                        {
+                            supportedMethods: 'https://pay.amazon.com',
+                            data: {
+                                merchantId: 'merchant.com.soda',
+                                ledgerCurrency: 'TWD',
+                                sandbox: true, // 生產環境改為 false
+                                storeId: 'soda-store',
+                                version: 2,
+                                chargeAmount: {
+                                    amount: finalAmount.toFixed(2),
+                                    currencyCode: 'TWD'
+                                },
+                                paymentAction: 'AuthorizeAndCapture',
+                                scopes: ['name', 'email', 'phone']
+                            }
+                        }
+                    ],
+                    {
+                        total: {
+                            label: 'Soda 能量飲',
+                            amount: {
+                                currency: 'TWD',
+                                value: finalAmount.toFixed(2)
+                            }
+                        },
+                        displayItems: displayItems.length > 0 ? displayItems : undefined
+                    },
+                    {
+                        requestShipping: false, // 不需要 Amazon Pay 的地址，使用表單地址
+                        requestPayerEmail: false,
+                        requestPayerPhone: false,
+                        requestPayerName: false
+                    }
+                );
+
+                // 檢查是否可以使用
+                if (!await paymentRequest.canMakePayment()) {
+                    pauseMarquee();
+                    alert('您的設備不支持 Amazon Pay，請使用其他付款方式。');
+                    resumeMarquee();
+                    return;
+                }
+
+                // 顯示支付界面
+                try {
+                    const paymentResponse = await paymentRequest.show();
+
+                    // 處理支付響應
+                    console.log('Amazon Pay 支付響應:', paymentResponse);
+
+                    // 這裡應該將支付令牌發送到後端進行處理
+                    // 在實際環境中，應該使用後端 API 來處理支付
+                    // paymentResponse.details 包含支付令牌和資訊
+
+                    // 使用 Amazon Pay 提供的聯絡資訊（如果有）
+                    if (paymentResponse.details && paymentResponse.details.shippingAddress) {
+                        const addr = paymentResponse.details.shippingAddress;
+                        // 可以選擇使用 Amazon Pay 提供的地址或表單地址
+                        // orderData.ShippingAddress = formatAddressFromAmazonPay(addr);
+                    }
+
+                    // 模擬處理支付（在實際環境中，應該調用後端 API）
+                    // 提交訂單到後端
+                    const response = await submitOrder(orderData);
+
+                    if (response.success) {
+                        // 支付成功
+                        await paymentResponse.complete('success');
+
+                        alert(`訂單建立成功！\n訂單編號：${response.orderId}\n\n感謝您的訂購！`);
+
+                        // 清除購物車資料和表單資料
+                        localStorage.removeItem('cartData');
+                        clearDiscountState();
+                        clearSavedFormData();
+
+                        // 導向訂單歷史頁面
+                        window.location.href = './orderHistory.html';
+                    } else {
+                        // 訂單建立失敗
+                        await paymentResponse.complete('fail');
+                        alert('訂單建立失敗：' + response.message);
+                    }
+                    resumeMarquee();
+
+                } catch (error) {
+                    // 用戶取消或發生錯誤
+                    if (error.name === 'AbortError') {
+                        console.log('Amazon Pay 已取消');
+                    } else {
+                        console.error('Amazon Pay 支付錯誤:', error);
+                        alert('處理支付時發生錯誤：' + error.message);
+                    }
+                    resumeMarquee();
+                }
+
+            } catch (error) {
+                console.error('啟動 Amazon Pay 失敗:', error);
+                alert('無法啟動 Amazon Pay，請使用其他付款方式。');
+                resumeMarquee();
+            }
+        }
+
         // 處理訂單提交
         async function handleOrderSubmit(event) {
             event.preventDefault();
@@ -1312,8 +2098,8 @@
                     clearDiscountState();
                     clearSavedFormData();  // 清除保存的表單資料
                     
-                    // 導向訂單完成頁面或首頁
-                    window.location.href = './indexPart234.html';
+                    // 導向訂單歷史頁面
+                    window.location.href = './orderHistory.html';
                 } else {
                     alert('訂單建立失敗：' + response.message);
                 }
@@ -1406,11 +2192,16 @@
         }
 
         // 收集訂單資料
-        function collectOrderData() {
+        function collectOrderData(paymentMethod = 'Credit Card') {
             // 取得使用者資訊
             const userJson = localStorage.getItem('user');
             const user = userJson ? JSON.parse(userJson) : null;
-            const userId = user?.id || 0;
+            const userId = user?.id;
+            
+            // 確保用戶已登入
+            if (!userId || userId <= 0) {
+                throw new Error('無法取得使用者資訊，請重新登入');
+            }
 
             // 取得購物車資料 - 優先使用保存的資料，避免 URL 參數遺失
             let cartData = AppState.cartData;
@@ -1467,25 +2258,57 @@
             if (sendEmail) {
                 notes += ', 訂閱電子報';
             }
+            
+            // 儲存折扣詳細資訊（包含名稱和金額）
             if (appliedDiscounts.length > 0) {
-                const discountInfo = appliedDiscounts
-                    .filter(d => !d.isInvalid && !d.isReplaced)
-                    .map(d => d.code || d.name)
-                    .join(', ');
-                notes += `, 使用優惠: ${discountInfo}`;
+                const validDiscounts = appliedDiscounts.filter(d => !d.isInvalid && !d.isReplaced);
+                if (validDiscounts.length > 0) {
+                    // 儲存為 JSON 格式，方便後續解析
+                    const discountData = {
+                        discounts: validDiscounts.map(d => ({
+                            name: d.name || d.code || '未知優惠',
+                            amount: d.amount || 0,
+                            code: d.code || null
+                        })),
+                        totalDiscount: totalDiscount
+                    };
+                    notes += ` | DISCOUNTS_JSON:${JSON.stringify(discountData)}`;
+                    
+                    // 同時保留文字格式以便向後兼容
+                    const discountInfo = validDiscounts
+                        .map(d => d.code || d.name)
+                        .join(', ');
+                    notes += `, 使用優惠: ${discountInfo}`;
+                }
             }
 
             // 組合訂單資料（JSON 格式）- 使用帕斯卡式命名以匹配後端 C# 模型
-            return {
+            // 確保所有必要的欄位都有值
+            const orderData = {
                 UserID: userId,
-                ProductList: productList,
-                TotalAmount: finalAmount,
-                OrderItems: orderItems,
-                PaymentMethod: 'Credit Card',
-                ShippingAddress: fullAddress,
-                ReceiverName: receiverName,
-                Notes: notes
+                ProductList: productList || '',
+                TotalAmount: finalAmount || 0,
+                OrderItems: orderItems || '[]',
+                PaymentMethod: paymentMethod || 'Credit Card',
+                ShippingAddress: fullAddress || '',
+                ReceiverName: receiverName || '',
+                Notes: notes || '',
+                Status: 'Pending',
+                PaymentStatus: 'Unpaid',
+                ShippingMethod: '宅配', // 設定運送方式為宅配
+                ShippingStatus: 'Pending'
             };
+
+            // 最終驗證
+            if (!orderData.ProductList || orderData.ProductList.trim() === '') {
+                throw new Error('購物車為空，無法建立訂單');
+            }
+
+            if (orderData.TotalAmount <= 0) {
+                throw new Error('訂單金額必須大於 0');
+            }
+
+            return orderData;
         }
 
         // 送出訂單到後端
@@ -1521,7 +2344,16 @@
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error('響應錯誤內容:', errorText);
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    
+                    // 嘗試解析錯誤訊息
+                    try {
+                        const errorData = JSON.parse(errorText);
+                        const errorMessage = errorData.message || errorData.error || `HTTP error! status: ${response.status}`;
+                        throw new Error(errorMessage);
+                    } catch (parseError) {
+                        // 如果無法解析 JSON，使用原始錯誤文字
+                        throw new Error(`HTTP error! status: ${response.status}\n${errorText}`);
+                    }
                 }
 
                 const data = await response.json();
