@@ -8,15 +8,13 @@
     const footerStyles = `
         <style id="footer-styles">
         footer {
-            padding: 2vw 0;
-            font-size: 1.5vw;
+            padding: 1.1vw 0;
+            font-size: 1.4vw;
             background-color: var(--main-color);
             text-align: center;
             width: 100%;
             margin: 0;
             margin-top: auto;
-            display: flex;
-            flex-direction: column;
         }
         </style>
     `;

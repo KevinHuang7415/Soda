@@ -390,7 +390,7 @@ p {
 }
 
 .boxBody1 {
-    top: calc(50% - 68vh);
+    top: calc(50% - 67vh);
     left: calc(50% - 0vw);
     transform: translate(-50%, -50%) rotate(0deg) !important;
     opacity: 1 !important;
@@ -662,10 +662,7 @@ p {
 }
 /* ==================== 手機版 RWD (最大 640px，以 320px 為基準) ==================== */
 @media screen and (max-width: 640px) {
-    body {
-        display: flex;
-        flex-direction: column;
-    }
+
 
     .wrap {
         height: calc(100vh - (80 / 569 * 100vh));
