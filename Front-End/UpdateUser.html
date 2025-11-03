@@ -237,6 +237,7 @@
     })
       .then(res => {
         alert(res.data.message || "更新成功！");
+        window.location.href = "./index.html"
       })
       .catch(err => {
         console.error("更新錯誤:", err.response || err);
