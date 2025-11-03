@@ -1,11 +1,13 @@
-* {
+html,
+body {
+    height: 100%;
     margin: 0;
     padding: 0;
 }
 
 :root {
     --main-black: #333333;
-   
+
 }
 
 body {
@@ -14,6 +16,7 @@ body {
     margin: auto;
     box-sizing: border-box;
 }
+
 .wrap {
     width: 100vw;
     height: calc(100vh - (80 / 1080 * 100vh));
@@ -27,6 +30,123 @@ h3,
 p {
     color: aliceblue;
     text-align: center;
+}
+
+
+/* ========全域樣式======= */
+.sec1 {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background-color: #FEE832;
+}
+
+
+/* 第一部分 */
+
+.part1 {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: #FEE832;
+}
+
+/* ======== 星星動畫 ======== */
+@keyframes floatStar {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-1vw) rotate(10deg);
+    }
+
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+}
+
+@keyframes floatStarReverse {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(1vw) rotate(-10deg);
+    }
+
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+}
+
+.star {
+    position: absolute;
+    width: 8vw;
+    animation: floatStar 4s ease-in-out infinite;
+}
+
+.star.reverse {
+    animation: floatStarReverse 5s ease-in-out infinite;
+}
+
+/* ======== 主視覺圖片 ======== */
+.soda-title-big {
+    position: absolute;
+    top: 7vw;
+    left: 33vw;
+    width: 38vw;
+}
+
+.union {
+    position: absolute;
+    top: 20vw;
+    left: 48vw;
+    width: 8vw;
+}
+
+.saja {
+    position: absolute;
+    top: 27vw;
+    left: 18vw;
+    width: 30vw;
+}
+
+.boys {
+    position: absolute;
+    top: 28vw;
+    left: 50vw;
+    width: 30vw;
+}
+
+/* 星星分布位置 */
+.star1 {
+    top: 12vw;
+    left: 8vw;
+    width: 8vw;
+}
+
+.star2 {
+    top: 11vw;
+    right: 14vw;
+    width: 8vw;
+}
+
+.star3 {
+    top: 30vw;
+    left: 5vw;
+    width: 8vw;
+}
+
+.star4 {
+    top: 20vw;
+    left: 18vw;
+    width: 8vw;
+}
+
+.star5 {
+    top: 40vw;
+    right: 15vw;
+    width: 8vw;
 }
 
 #group {
@@ -120,6 +240,7 @@ p {
 /* =============================
        旋轉罐動畫設定
 ============================= */
+
 .sodaCan {
     width: 12vw;
     height: 46.3vh;
@@ -468,8 +589,83 @@ p {
     display: block;
 }
 
+/* ======== 第五部分 ======== */
+
+.sect5 {
+    background-color: #f6f884;
+    display: flex;
+    height: 50vh;
+    justify-content: center;
+    margin-top: 0;
+}
+
+.part5 {
+    width: 100%;
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+    letter-spacing: 0.3em;
+    margin-top: 0;
+}
+
+.part5 .text-34 {
+    font-size: 34px;
+    letter-spacing: 0.02em
+}
+
+.part5 .text-14 {
+    font-size: 14px;
+}
+
+.text-shadow {
+    text-shadow: 1px 1px #000, 1px -1px #000,
+        -1px 1px #000, -1px -1px #000;
+}
+
+.discount {
+    width: 30%;
+    background-color: #f5cb11;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2vw;
+    padding: 2vw;
+    border-radius: 20px;
+}
+
+.discount img {
+    width: 10vw;
+    object-fit: contain;
+}
+
+.coupon {
+    background-color: #fff;
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+.marginTop {
+    margin-top: 1vw;
+}
+
+.marginDown {
+    margin-top: 3vw;
+}
+
+@media screen and (max-width: 1120px) {
+    .part1 {
+        width: 100%;
+        height: 60%;
+    }
+}
 /* ==================== 手機版 RWD (最大 640px，以 320px 為基準) ==================== */
 @media screen and (max-width: 640px) {
+    body {
+        display: flex;
+        flex-direction: column;
+    }
 
     .wrap {
         height: calc(100vh - (80 / 569 * 100vh));
@@ -758,371 +954,111 @@ p {
         display: none;
         /* 手機版不顯示遮罩，避免誤觸 */
     }
+
+
+    .part1 {
+        width: 100%;
+        height: 60vh;
+        min-height: 800px;
+    }
+
+    /* ======== 主視覺圖片 ======== */
+    .soda-title-big {
+        position: absolute;
+        top: 20vw;
+        left: 16vw;
+        width: 70vw;
+    }
+
+    .union {
+        position: absolute;
+        top: 50vw;
+        left: 42vw;
+        width: 16vw;
+    }
+
+    .saja {
+        position: absolute;
+        top: 75vw;
+        left: 0vw;
+        width: 55vw;
+        rotate: -5deg;
+    }
+
+    .boys {
+        position: absolute;
+        top: 105vw;
+        left: 37vw;
+        width: 55vw;
+        rotate: 2deg;
+    }
+
+    /* 星星分布位置 */
+    .star1 {
+        top: 8vw;
+        left: 4vw;
+        width: 15vw;
+    }
+
+    .star2 {
+        top: 40vw;
+        left: 70vw;
+        width: 15vw;
+    }
+
+    .star3 {
+        top: 60vw;
+        left: 29vw;
+        width: 15vw;
+    }
+
+    .star4 {
+        top: 80vw;
+        left: 75vw;
+        width: 15vw;
+    }
+
+    .star5 {
+        top: 115vw;
+        left: 0vw;
+        width: 15vw;
+    }
+
+
+    .sect5 {
+        height: 100vh;
+    }
+    
+    .part5 {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .discount {
+        padding-top: 7vh;
+        height: 50vh;
+        margin: 2vw;
+    }
+    .discount img {
+        width: 30vw;
+    }
+
+    .part5 .text-34 {
+        font-size: 32px;
+    }
+
+    .part5 .text-14 {
+        font-size: 16px;
+    }
+
+    .discount {
+        width: 50%;
+    }
+
+    .marginDown {
+        margin-top: 4vw;
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* 第一部分 */
-
-.part1 {
-    position: relative;
-    width: 100%;
-    height: auto ;
-    /* 統一使用 100vh */
-    background-color: #FEE832;
-    display: flex;
-    min-height: none;
-    flex: 1;
-    min-height: 100vh; /* 保持最小高度 */
-  }
-  
-  
-  @media screen and (max-height: 450px) {
-    .overlay {
-      overflow-y: auto;
-    }
-  
-    .overlay a {
-      font-size: 20px
-    }
-  
-    .overlay .closebtn {
-      font-size: 40px;
-      top: 15px;
-      right: 35px;
-    }
-  }
-  
-  /* ======== 星星動畫 ======== */
-  @keyframes floatStar {
-    0% {
-      transform: translateY(0) rotate(0deg);
-    }
-  
-    50% {
-      transform: translateY(-1vw) rotate(10deg);
-    }
-  
-    100% {
-      transform: translateY(0) rotate(0deg);
-    }
-  }
-  
-  @keyframes floatStarReverse {
-    0% {
-      transform: translateY(0) rotate(0deg);
-    }
-  
-    50% {
-      transform: translateY(1vw) rotate(-10deg);
-    }
-  
-    100% {
-      transform: translateY(0) rotate(0deg);
-    }
-  }
-  
-  .star {
-    position: absolute;
-    width: 8vw;
-    animation: floatStar 4s ease-in-out infinite;
-  }
-  
-  .star.reverse {
-    animation: floatStarReverse 5s ease-in-out infinite;
-  }
-  
-  /* ======== 主視覺圖片 ======== */
-  .soda-title-big {
-    position: absolute;
-    top: 7vw;
-    left: 33vw;
-    width: 38vw;
-  }
-  
-  .union {
-    position: absolute;
-    top: 20vw;
-    left: 48vw;
-    width: 8vw;
-  }
-  
-  .saja {
-    position: absolute;
-    top: 27vw;
-    left: 18vw;
-    width: 30vw;
-  }
-  
-  .boys {
-    position: absolute;
-    top: 28vw;
-    left: 50vw;
-    width: 30vw;
-  }
-  
-  /* 星星分布位置 */
-  .star1 {
-    top: 12vw;
-    left: 8vw;
-    width: 8vw;
-  }
-  
-  .star2 {
-    top: 11vw;
-    right: 14vw;
-    width: 8vw;
-  }
-  
-  .star3 {
-    top: 30vw;
-    left: 5vw;
-    width: 8vw;
-  }
-  
-  .star4 {
-    top: 20vw;
-    left: 18vw;
-    width: 8vw;
-  }
-  
-  .star5 {
-    top: 40vw;
-    right: 15vw;
-    width: 8vw;
-  }
-  
-  
-  /* 小尺寸：639px 以下 */
-  @media (max-width: 640px) {
-    body {
-      width: 320px;
-      height: 1707px;
-  }
-  
-  .wrap {
-      width: 320px;
-      height: 1138px;
-      /*手機尺寸*/
-  }
-  
-  #group {
-      width: 960px;
-      display: block;
-  }
-  
-  #group1,
-  #group2,
-  #group3 {
-      overflow: hidden;
-      width: 320px;
-      height: 1138px;
-      float: left;
-  }
-  
-  .box1,
-  .box2,
-  .box3 {
-      width: 320px;
-      height: 569px;
-  }
-  
-  .box1 h2,
-  .box2 h2,
-  .box3 h2 {
-      width: 320px;
-      font-size: 32px;
-      position: static;
-      font-style: normal;
-      transform: none;
-      padding-top: 20px;
-      padding-bottom: 10px;
-  }
-  
-  .box1 h3,
-  .box2 h3,
-  .box3 h3 {
-      transform: none;
-      font-style: normal;
-      font-size: 18px;
-      position: static;
-      width: 320px;
-      padding-bottom: 10px;
-  }
-  
-  .box1 p,
-  .box2 p,
-  .box3 p {
-      transform: none;
-      font-style: normal;
-      font-size: 18px;
-      position: static;
-      width: 320px;
-  }
-  
-  .lomen1 img,
-  .lomen2 img {
-      width: 250px;
-      position: absolute;
-  }
-  
-  .lomen1 {
-      left: -120px;
-      top: 250px;
-  }
-  
-  .lomen2 {
-      left: 220px;
-      top: 420px;
-  }
-  
-  .can1 img {
-      width: 200px;
-      height: 320px;
-  }
-  
-  .can1 {
-      position: static;
-      text-align: center;
-      padding-top: 10px;
-      padding-left: 20px;
-      transform: rotate3d(1, 2, 1, 10deg);
-      z-index: 9999999;
-  }
-  
-  .downBg {
-      display: none;
-  }
-  
-  nav.downbtn {
-      width: 320px;
-      top: 440px;
-  }
-  
-  .btn-l {
-      font-size: 18px;
-      width: 100px;
-      line-height: 40px;
-      height: 40px;
-  
-  }
-  
-  .btn-s {
-      width: 60px;
-      height: 60px;
-  }
-  
-  .boxBody1,
-  .boxBody2,
-  .boxBody3,
-  .boxBody1 img,
-  .boxBody2 img,
-  .boxBody3 img {
-      display: none !important;
-      /* 手機版隱藏 */
-  }
-  
-  .product {
-      width: 320px;
-      height: 1707px;
-      flex-direction: column;
-  }
-  
-  .soda1,
-  .soda2,
-  .soda3 {
-      width: 320px;
-      height: 569px;
-  }
-  
-  .product h2 {
-      margin-top: 10px;
-      margin-bottom: 10px;
-      font-size: 36px;
-  }
-  
-  .product .price {
-      width: 320px;
-      font-size: 20px;
-      line-height: 1.5;
-      padding: 0;
-  }
-  
-  #sodaPhoto1,
-  #sodaPhoto4,
-  #sodaPhoto7 {
-      width: 250px;
-  }
-  
-  #sodaPhoto1 {
-      top: 70px;
-      left: 5px;
-  }
-  
-  #sodaPhoto2,
-  #sodaPhoto5,
-  #sodaPhoto8 {
-      width: 170px;
-      top: 280px;
-      left: 85px;
-  }
-  
-  #sodaPhoto3,
-  #sodaPhoto6,
-  #sodaPhoto9 {
-      width: 90px;
-      bottom: 15px;
-      right: 5px;
-  }
-  
-  #sodaPhoto4 {
-      top: 110px;
-      left: -30px;
-  }
-  
-  #sodaPhoto7 {
-      top: 130px;
-      left: -25px;
-  }
-  
-  .soda1 .show,
-  .soda2 .show,
-  .soda3 .show {
-      width: 320px;
-      top: 250px
-  }
-  
-  .show img {
-      width: 60px;
-      padding: 2px;
-  }
-  
-  
-  
-  
-  
-  
-  
-  
-  .part1 {
-    width: 100%;
-    height: 100vh;
-    min-height: 360px;
-  }
-  
-  
-  }

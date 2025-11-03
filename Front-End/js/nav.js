@@ -129,6 +129,12 @@ function updateUserDisplay() {
     // 導航欄 CSS 樣式
     const navStyles = `
         <style id="nav-styles">
+        html,
+        body {
+             height: 100%;
+             margin: 0;
+             padding: 0;
+        }
         header {
             box-sizing:content-box;
             background-color: var(--main-color);
