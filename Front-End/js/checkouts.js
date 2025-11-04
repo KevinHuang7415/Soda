@@ -2290,10 +2290,10 @@
                     subscribeNewsletter: sendEmail
                 },
                 // products: productsInfo,
-                // discounts: {
-                //     items: discountsInfo,
-                //     totalDiscount: totalDiscount
-                // }
+                discounts: {
+                    items: discountsInfo,
+                    totalDiscount: totalDiscount
+                }
             };
             
             const notes = JSON.stringify(notesData);

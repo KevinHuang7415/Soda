@@ -291,61 +291,79 @@ function showOrderDetailsModal(order) {
     let discounts = [];
     
     if (order.notes) {
-        // 嘗試解析 JSON 格式的折扣資訊
-        // 找到 DISCOUNTS_JSON: 後面的 JSON 字串
-        const discountJsonIndex = order.notes.indexOf('DISCOUNTS_JSON:');
-        if (discountJsonIndex !== -1) {
-            try {
-                // 從 DISCOUNTS_JSON: 後面開始提取 JSON
-                const jsonStart = discountJsonIndex + 'DISCOUNTS_JSON:'.length;
-                let jsonEnd = jsonStart;
-                let braceCount = 0;
-                let foundFirstBrace = false;
-                
-                // 找到完整的 JSON 物件
-                for (let i = jsonStart; i < order.notes.length; i++) {
-                    if (order.notes[i] === '{') {
-                        braceCount++;
-                        foundFirstBrace = true;
-                    } else if (order.notes[i] === '}') {
-                        braceCount--;
-                        if (foundFirstBrace && braceCount === 0) {
-                            jsonEnd = i + 1;
-                            break;
+        try {
+            // 先嘗試解析為 JSON 格式（新格式）
+            const notesData = JSON.parse(order.notes);
+            
+            // 從 JSON 中提取折扣資訊
+            if (notesData && notesData.discounts) {
+                if (Array.isArray(notesData.discounts.items)) {
+                    discounts = notesData.discounts.items;
+                    totalDiscount = notesData.discounts.totalDiscount || 0;
+                    console.log('✅ 從 notes JSON 解析到折扣資訊:', { discounts, totalDiscount });
+                }
+            }
+        } catch (e) {
+            // 如果不是 JSON 格式，使用舊的解析方式
+            console.log('備註不是 JSON 格式，嘗試舊的解析方式');
+            
+            // 嘗試解析 DISCOUNTS_JSON: 格式（舊格式）
+            const discountJsonIndex = order.notes.indexOf('DISCOUNTS_JSON:');
+            if (discountJsonIndex !== -1) {
+                try {
+                    // 從 DISCOUNTS_JSON: 後面開始提取 JSON
+                    const jsonStart = discountJsonIndex + 'DISCOUNTS_JSON:'.length;
+                    let jsonEnd = jsonStart;
+                    let braceCount = 0;
+                    let foundFirstBrace = false;
+                    
+                    // 找到完整的 JSON 物件
+                    for (let i = jsonStart; i < order.notes.length; i++) {
+                        if (order.notes[i] === '{') {
+                            braceCount++;
+                            foundFirstBrace = true;
+                        } else if (order.notes[i] === '}') {
+                            braceCount--;
+                            if (foundFirstBrace && braceCount === 0) {
+                                jsonEnd = i + 1;
+                                break;
+                            }
                         }
                     }
+                    
+                    if (jsonEnd > jsonStart) {
+                        const jsonString = order.notes.substring(jsonStart, jsonEnd);
+                        const discountData = JSON.parse(jsonString);
+                        discounts = discountData.discounts || [];
+                        totalDiscount = discountData.totalDiscount || 0;
+                    }
+                } catch (e2) {
+                    console.error('解析 DISCOUNTS_JSON 時發生錯誤:', e2);
                 }
-                
-                if (jsonEnd > jsonStart) {
-                    const jsonString = order.notes.substring(jsonStart, jsonEnd);
-                    const discountData = JSON.parse(jsonString);
-                    discounts = discountData.discounts || [];
-                    totalDiscount = discountData.totalDiscount || 0;
-                }
-            } catch (e) {
-                console.error('解析折扣 JSON 時發生錯誤:', e);
             }
-        }
-        
-        // 如果沒有 JSON 格式，嘗試從文字中解析（向後兼容）
-        if (discounts.length === 0) {
-            const discountMatch = order.notes.match(/使用優惠:([^|,\n]+)/);
-            if (discountMatch) {
-                // 舊格式：只有名稱，沒有金額
-                // 計算總折扣 = 小計 - 總金額
-                totalDiscount = subtotal - (order.totalAmount || 0);
-                if (totalDiscount > 0) {
-                    const discountNames = discountMatch[1].split(',').map(s => s.trim());
-                    // 平均分配折扣（無法獲得準確金額）
-                    const avgDiscount = discountNames.length > 0 ? Math.floor(totalDiscount / discountNames.length) : 0;
-                    discounts = discountNames.map(name => ({
-                        name: name,
-                        amount: avgDiscount
-                    }));
+            
+            // 如果還是沒有找到折扣，嘗試從文字中解析（最舊格式）
+            if (discounts.length === 0) {
+                const discountMatch = order.notes.match(/使用優惠:([^|,\n]+)/);
+                if (discountMatch) {
+                    // 舊格式：只有名稱，沒有金額
+                    // 計算總折扣 = 小計 - 總金額
+                    totalDiscount = subtotal - (order.totalAmount || 0);
+                    if (totalDiscount > 0) {
+                        const discountNames = discountMatch[1].split(',').map(s => s.trim());
+                        // 平均分配折扣（無法獲得準確金額）
+                        const avgDiscount = discountNames.length > 0 ? Math.floor(totalDiscount / discountNames.length) : 0;
+                        discounts = discountNames.map(name => ({
+                            name: name,
+                            amount: avgDiscount
+                        }));
+                    }
                 }
             }
         }
     }
+    
+    console.log('📊 最終折扣資訊:', { discounts, totalDiscount });
     
     // 生成折扣明細 HTML
     if (discounts.length > 0) {
@@ -392,6 +410,16 @@ function showOrderDetailsModal(order) {
                         parsedNotesHtml += `<p><strong>訂閱電子報：</strong>${subscribeText}</p>`;
                     }
                     
+                    parsedNotesHtml += '</div>';
+                }
+                
+                // 顯示折扣資訊（在備註區域）
+                if (notesData.discounts && notesData.discounts.items && notesData.discounts.items.length > 0) {
+                    parsedNotesHtml += '<div class="notes-group"><h4>使用優惠</h4>';
+                    notesData.discounts.items.forEach(discount => {
+                        parsedNotesHtml += `<p><strong>${discount.name}：</strong>-$${formatCurrency(discount.amount)}</p>`;
+                    });
+                    parsedNotesHtml += `<p style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd;"><strong>折扣總計：</strong><span style="color: var(--main-orange); font-weight: bold;">-$${formatCurrency(notesData.discounts.totalDiscount)}</span></p>`;
                     parsedNotesHtml += '</div>';
                 }
                 
