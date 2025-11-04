@@ -25,7 +25,7 @@
     }
 
     .containerAcc {
-      margin: auto;
+      margin: 100px auto;
       width: calc(300px + (300) * ((100vw - 480px) / (1200 - 480)));
       /* 在 480px 寬螢幕時寬度約為 300px
          在 1200px 寬螢幕時寬度約為 800px
@@ -138,6 +138,14 @@
       border: 1px solid var(--main-black);
     }
 
+    .linkBox {
+      margin:  auto;
+      right: 0;
+      width: 100%;
+    }
+    #email-verification-status{
+      margin: 20px;
+    }
     @font-face {
       font-family: "FakePearl-regular";
       /* 自訂名稱 */
@@ -155,8 +163,6 @@
     @media (max-width: 1120px) {
       .fr {
         font-size: 30px;
-        min-width: 600px;
-        right: 30px;
       }
     }
 
@@ -175,9 +181,7 @@
       }
 
       .fr {
-        min-width: 300px;
         flex-direction: column;
-        right: 0px;
       }
 
       .side2 {
@@ -205,7 +209,7 @@
       </p>
       <p class="alc" id="email-verification-status"></p>
     </div>
-    <div class="fr mgt">
+    <div class="fr mgt linkBox">
       <div class="side2 bdr">
         <h3 class="mgt alc">修改會員資訊</h3>
         <button type="button" class="btn-l btn-2" onclick="navigateTo('UpdateUser.html')">前往</button>
@@ -334,7 +338,7 @@
             emailVerified: user.isEmailVerified || false,
             token: existingUser?.token || token
           }));
-          
+
           console.log('✅ 用戶資訊已更新:', user);
           return user;
         }
@@ -363,16 +367,16 @@
         if (logoutBtn) {
           logoutBtn.style.display = 'none';
         }
-        
+
         // 保存當前頁面，以便登入後返回
         localStorage.setItem('redirectAfterLogin', './memberSystem.html');
-        
+
         return;
       }
 
       // 已登入：從後端重新獲取最新的用戶資訊
       const updatedUser = await refreshUserInfo();
-      
+
       // 如果無法獲取最新資訊，使用本地儲存的資訊
       const user = updatedUser || getCurrentUser();
 

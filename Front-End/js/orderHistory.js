@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         return;
     }
 
+    // 清除可能殘留的舊數據（防止顯示上一個用戶的訂單）
+    clearOrderDisplay();
+
     // 更新用戶名稱顯示
     updateUserNameDisplay();
 
@@ -24,6 +27,25 @@ document.addEventListener('DOMContentLoaded', async function () {
     // 設定彈窗關閉事件
     setupModalEvents();
 });
+
+/**
+ * 清除訂單顯示（防止顯示上一個用戶的資料）
+ */
+function clearOrderDisplay() {
+    const ordersContainer = document.getElementById('orders-container');
+    const orderDetails = document.getElementById('order-details');
+    
+    if (ordersContainer) {
+        ordersContainer.innerHTML = '';
+        ordersContainer.style.display = 'none';
+    }
+    
+    if (orderDetails) {
+        orderDetails.innerHTML = '';
+    }
+    
+    console.log('✅ 已清除舊的訂單顯示資料');
+}
 
 /**
  * 更新用戶名稱顯示
@@ -59,10 +81,14 @@ async function loadOrders() {
             throw new Error('未找到登入憑證');
         }
 
-        // 呼叫 API 取得訂單列表
-        const response = await axios.get(`${API_BASE_URL}/Orders`, {
+        // 呼叫 API 取得訂單列表（添加時間戳防止快取）
+        const timestamp = new Date().getTime();
+        const response = await axios.get(`${API_BASE_URL}/Orders?_t=${timestamp}`, {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
             }
         });
 
@@ -173,10 +199,14 @@ async function viewOrderDetails(orderId) {
             throw new Error('未找到登入憑證');
         }
 
-        // 呼叫 API 取得訂單詳情
-        const response = await axios.get(`${API_BASE_URL}/Orders/${orderId}`, {
+        // 呼叫 API 取得訂單詳情（添加時間戳防止快取）
+        const timestamp = new Date().getTime();
+        const response = await axios.get(`${API_BASE_URL}/Orders/${orderId}?_t=${timestamp}`, {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
             }
         });
 
@@ -211,9 +241,10 @@ function showOrderDetailsModal(order) {
             if (Array.isArray(items) && items.length > 0) {
                 // 計算小計
                 subtotal = items.reduce((sum, item) => {
-                    const quantity = item.qty || item.quantity || 0;
-                    const price = item.price || 0;
-                    return sum + (quantity * price);
+                    // 優先使用新格式（Pascal Case），備用舊格式（camelCase）
+                    const Quantity = item.Quantity || item.qty || 0;
+                    const UnitPrice = item.UnitPrice || item.price || 0;
+                    return sum + (Quantity * UnitPrice);
                 }, 0);
                 
                 orderItemsHtml = `
@@ -228,17 +259,18 @@ function showOrderDetailsModal(order) {
                         </thead>
                         <tbody>
                             ${items.map(item => {
-                                // 使用正確的欄位名稱：qty 而不是 quantity，name 而不是 productName
-                                const productName = item.name || item.productName || '未知商品';
-                                const quantity = item.qty || item.quantity || 0;
-                                const price = item.price || 0;
-                                const itemSubtotal = quantity * price;
+                                // 優先使用新格式（Pascal Case），備用舊格式（camelCase）以支援舊訂單
+                                const ProductName = item.ProductName || item.name || '未知商品';
+                                const Quantity = item.Quantity || item.qty || 0;
+                                const UnitPrice = item.UnitPrice || item.price || 0;
+                                const Size = item.Size || item.size || '';
+                                const itemSubtotal = Quantity * UnitPrice;
                                 
                                 return `
                                 <tr>
-                                    <td>${productName}${item.size ? ` (${item.size})` : ''}</td>
-                                    <td>${quantity}</td>
-                                    <td>$${formatCurrency(price)}</td>
+                                    <td>${ProductName}${Size ? ` (${Size})` : ''}</td>
+                                    <td>${Quantity}</td>
+                                    <td>$${formatCurrency(UnitPrice)}</td>
                                     <td>$${formatCurrency(itemSubtotal)}</td>
                                 </tr>
                                 `;

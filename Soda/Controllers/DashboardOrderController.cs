@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Linq;
+using System.Security.Claims;
 using WebApplication1.Models;
 
 namespace SodaBackend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize] // 要求用戶必須登入
     public class OrdersController : ControllerBase
     {
         private readonly string connectionString = "Server=localhost;Database=SodaDB;Trusted_Connection=True;TrustServerCertificate=True;";
@@ -16,39 +19,54 @@ namespace SodaBackend.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
+            // 從 JWT Token 中獲取當前用戶的 ID
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int currentUserId))
+            {
+                return Unauthorized(new { message = "無效的用戶憑證" });
+            }
+
             var orders = new List<Order>();
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
+                // 只查詢當前用戶的訂單
                 string sql = @"SELECT OrderID, UserID, ProductList, TotalAmount, Status, 
                                       OrderDate, PaymentMethod, PaymentStatus, 
                                       ShippingAddress, ShippingMethod, ShippingStatus,
                                       ReceiverName, OrderItems, Notes
-                               FROM Orders";
+                               FROM Orders
+                               WHERE UserID = @UserID
+                               ORDER BY OrderDate DESC";
 
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
-                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    while (reader.Read())
+                    cmd.Parameters.AddWithValue("@UserID", currentUserId);
+                    
+                    using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        orders.Add(new Order
+                        while (reader.Read())
                         {
-                            OrderID = reader.GetInt32(reader.GetOrdinal("OrderID")),
-                            UserID = reader.GetInt32(reader.GetOrdinal("UserID")),
-                            ProductList = reader.GetString(reader.GetOrdinal("ProductList")),
-                            TotalAmount = reader.GetDecimal(reader.GetOrdinal("TotalAmount")),
-                            Status = reader.GetString(reader.GetOrdinal("Status")),
-                            OrderDate = reader.GetDateTime(reader.GetOrdinal("OrderDate")),
-                            PaymentMethod = reader["PaymentMethod"] as string ?? string.Empty,
-                            PaymentStatus = reader["PaymentStatus"] as string ?? string.Empty,
-                            ShippingAddress = reader["ShippingAddress"] as string ?? string.Empty,
-                            ShippingMethod = reader["ShippingMethod"] as string ?? string.Empty,
-                            ShippingStatus = reader["ShippingStatus"] as string ?? string.Empty,
-                            ReceiverName = reader["ReceiverName"] as string ?? string.Empty,
-                            OrderItems = reader["OrderItems"] as string ?? string.Empty,
-                            Notes = reader["Notes"] as string ?? string.Empty
-                        });
+                            orders.Add(new Order
+                            {
+                                OrderID = reader.GetInt32(reader.GetOrdinal("OrderID")),
+                                UserID = reader.GetInt32(reader.GetOrdinal("UserID")),
+                                ProductList = reader.GetString(reader.GetOrdinal("ProductList")),
+                                TotalAmount = reader.GetDecimal(reader.GetOrdinal("TotalAmount")),
+                                Status = reader.GetString(reader.GetOrdinal("Status")),
+                                OrderDate = reader.GetDateTime(reader.GetOrdinal("OrderDate")),
+                                PaymentMethod = reader["PaymentMethod"] as string ?? string.Empty,
+                                PaymentStatus = reader["PaymentStatus"] as string ?? string.Empty,
+                                ShippingAddress = reader["ShippingAddress"] as string ?? string.Empty,
+                                ShippingMethod = reader["ShippingMethod"] as string ?? string.Empty,
+                                ShippingStatus = reader["ShippingStatus"] as string ?? string.Empty,
+                                ReceiverName = reader["ReceiverName"] as string ?? string.Empty,
+                                OrderItems = reader["OrderItems"] as string ?? string.Empty,
+                                Notes = reader["Notes"] as string ?? string.Empty
+                            });
+                        }
                     }
                 }
             }
@@ -60,21 +78,31 @@ namespace SodaBackend.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
+            // 從 JWT Token 中獲取當前用戶的 ID
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int currentUserId))
+            {
+                return Unauthorized(new { message = "無效的用戶憑證" });
+            }
+
             Order? order = null;
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
+                // 確保訂單屬於當前用戶
                 string sql = @"SELECT OrderID, UserID, ProductList, TotalAmount, Status, 
                                       OrderDate, PaymentMethod, PaymentStatus, 
                                       ShippingAddress, ShippingMethod, ShippingStatus,
                                       ReceiverName, OrderItems, Notes
                                FROM Orders
-                               WHERE OrderID = @OrderID";
+                               WHERE OrderID = @OrderID AND UserID = @UserID";
 
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@OrderID", id);
+                    cmd.Parameters.AddWithValue("@UserID", currentUserId);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -103,7 +131,7 @@ namespace SodaBackend.Controllers
             }
 
             if (order == null)
-                return NotFound(new { message = "找不到指定的訂單" });
+                return NotFound(new { message = "找不到指定的訂單或您沒有權限查看此訂單" });
 
             return Ok(order);
         }
@@ -113,6 +141,14 @@ namespace SodaBackend.Controllers
         {
             try
             {
+                // 從 JWT Token 中獲取當前用戶的 ID（重要：使用 token 中的 UserID，不信任客戶端傳來的）
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                
+                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int currentUserId))
+                {
+                    return Unauthorized(new { success = false, message = "無效的用戶憑證" });
+                }
+
                 // 檢查模型綁定是否成功
                 if (orderRequest == null)
                     return BadRequest(new { success = false, message = "請求資料為空，請檢查 JSON 格式" });
@@ -133,10 +169,10 @@ namespace SodaBackend.Controllers
                     });
                 }
 
-                // 驗證必要的欄位
-                if (orderRequest.UserID <= 0)
-                    return BadRequest(new { success = false, message = "UserID 為必填欄位且必須大於 0，目前值：" + orderRequest.UserID });
+                // ⚠️ 安全性：強制使用 JWT token 中的 UserID，忽略客戶端傳來的 UserID
+                orderRequest.UserID = currentUserId;
 
+                // 驗證必要的欄位
                 if (string.IsNullOrEmpty(orderRequest.ProductList))
                     return BadRequest(new { success = false, message = "ProductList 為必填欄位" });
 

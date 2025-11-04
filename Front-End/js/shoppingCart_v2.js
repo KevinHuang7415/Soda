@@ -113,8 +113,8 @@ function getFallbackProducts() {
 function getProductBackground(productName) {
     const bgMap = {
         '檸檬能量飲': 'var(--product-green-light)',
+        '葡萄能量飲': 'var(--product-purple-light)',
         '草莓能量飲': 'var(--product-pink-light)',
-        '葡萄能量飲': 'var(--product-purple-light)'
     };
     return bgMap[productName] || 'var(--main-gray-light)';
 }
@@ -125,9 +125,9 @@ function getProductBackgroundById(productId) {
     if (productId === 1 || productId === 2) {
         return 'var(--product-green-light)';
     } else if (productId === 3 || productId === 4) {
-        return 'var(--product-pink-light)';
-    } else if (productId === 5 || productId === 6) {
         return 'var(--product-purple-light)';
+    } else if (productId === 5 || productId === 6) {
+        return 'var(--product-pink-light)';
     }
     return 'var(--main-gray-light)';
 }
@@ -347,7 +347,8 @@ function createItemBox(cartItem) {
 // --- 更新小計 ---
 function updateSubtotal() {
     let total = 0;
-    document.querySelectorAll('.item-box').forEach(box => {
+    // 只選擇購物車視圖中的商品（排除我的最愛）
+    document.querySelectorAll('#cart-items .item-box').forEach(box => {
         const price = parseInt(box.querySelector('.cart-item-price').textContent);
         const qty = parseInt(box.querySelector('.cart-item-nmb').value);
         total += price * qty;

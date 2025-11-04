@@ -761,13 +761,13 @@
 
             const newDiscountAmount = calculateDiscountAmount(discount);
             
-            // ⭐ 新增：檢查使用優惠券後金額是否小於 500
+            // ⭐ 新增：檢查使用優惠券後金額是否小於 10
             const currentTotalDiscount = calculateDiscounts();
             const finalAmountAfterNewDiscount = subtotal - currentTotalDiscount - newDiscountAmount;
             
-            if (finalAmountAfterNewDiscount < 500) {
+            if (finalAmountAfterNewDiscount < 10) {
                 pauseMarquee();
-                alert(`使用此優惠券後結帳金額將低於 $500，無法使用！\n\n目前小計：$${subtotal.toLocaleString()}\n使用後金額：$${finalAmountAfterNewDiscount.toLocaleString()}\n最低結帳金額：$500`);
+                alert(`使用此優惠券後結帳金額將低於 $10，無法使用！\n\n目前小計：$${subtotal.toLocaleString()}\n使用後金額：$${finalAmountAfterNewDiscount.toLocaleString()}\n最低結帳金額：$10`);
                 resumeMarquee();
                 return;
             }
@@ -819,7 +819,7 @@
                         resumeMarquee();
                     } else {
                         // 新優惠不划算，仍然添加但標記為無效
-                        alert('沒有比較優惠>_< 魔法失效了');
+                        alert('比較已使用優惠 沒有更優惠>_< 魔法失效了');
                         newDiscount.isInvalid = true;
                         appliedDiscounts.push(newDiscount);
                         updateDiscountDisplay();
@@ -2221,7 +2221,14 @@
                 ).join(', ');
 
                 // 訂單項目（轉換為 JSON 字串格式）
-                orderItems = JSON.stringify(cartData.cart);
+                // 將購物車資料的欄位名稱轉換成後端期望的 Pascal Case 格式
+                const formattedCartItems = cartData.cart.map(item => ({
+                    ProductName: item.name,
+                    Size: item.size,
+                    Quantity: item.qty,
+                    UnitPrice: item.price
+                }));
+                orderItems = JSON.stringify(formattedCartItems);
             } else {
                 // 如果沒有購物車資料，拋出錯誤
                 throw new Error('購物車資料遺失，請重新選擇商品');
@@ -2248,9 +2255,9 @@
             const totalDiscount = calculateDiscounts();
             const finalAmount = subtotal - totalDiscount;
 
-            // ⭐ 新增：最終檢查結帳金額不能小於 500
-            if (finalAmount < 500) {
-                throw new Error(`結帳金額不能低於 $500！\n\n目前結帳金額：$${finalAmount.toLocaleString()}\n請調整購物車或移除部分優惠券。`);
+            // ⭐ 新增：最終檢查結帳金額不能小於 10
+            if (finalAmount < 10) {
+                throw new Error(`結帳金額不能低於 $10！\n\n目前結帳金額：$${finalAmount.toLocaleString()}\n請調整購物車或移除部分優惠券。`);
             }
 
             // 備註（包含優惠券資訊）

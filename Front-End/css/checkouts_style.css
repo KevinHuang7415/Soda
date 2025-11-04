@@ -721,7 +721,7 @@ body {
     }
 
     .order-list {
-        background: var(--drck-yellow);
+        background: #555;
     }
 
     .list-title-box{

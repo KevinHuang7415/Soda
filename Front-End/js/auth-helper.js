@@ -88,6 +88,13 @@ function clearAuthData() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   localStorage.removeItem('redirectAfterLogin');
+  
+  // 清除 axios 預設的 Authorization header（防止使用舊 token）
+  if (typeof axios !== 'undefined') {
+    delete axios.defaults.headers.common['Authorization'];
+  }
+  
+  console.log('✅ 已清除所有身份驗證資料和 axios headers');
 }
 
 // ========== 設定 Axios 預設 Header ==========

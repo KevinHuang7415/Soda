@@ -94,6 +94,13 @@ function clearAuthData() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   localStorage.removeItem('redirectAfterLogin');
+  
+  // 清除 axios 預設的 Authorization header（防止使用舊 token）
+  if (typeof axios !== 'undefined') {
+    delete axios.defaults.headers.common['Authorization'];
+  }
+  
+  console.log('✅ 已清除所有身份驗證資料和 axios headers');
 }
 
 // ========== 設定 Axios 預設 Header ==========
@@ -144,8 +151,13 @@ function updateUserDisplay() {
             display: flex;
             justify-content: space-between;
             padding: 20px 30px;
-            position: relative;
             list-style: none;
+            width: calc(100% - 60px);
+            z-index: 99;
+            position: relative; 
+            position: fixed;
+            top: 0;
+            left: 0;
         }
         header nav {
             visibility: hidden;
@@ -219,6 +231,7 @@ function updateUserDisplay() {
         }
 
         .navUl a {
+            padding: 0;
             color: #000;
             text-decoration: none;
             font-family: Arial, Helvetica, sans-serif;
