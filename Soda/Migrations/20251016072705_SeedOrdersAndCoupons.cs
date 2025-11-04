@@ -45,9 +45,9 @@ namespace Soda.Migrations
                     "Express",
                     "Shipped",
                     "John Doe",
-                    "[{\"ProductName\":\"檸檬能量飲\",\"Size\":\"6*355\",\"Quantity\":2}," +
-                    "{\"ProductName\":\"葡萄能量飲\",\"Size\":\"24*355\",\"Quantity\":1}," +
-                    "{\"ProductName\":\"草莓能量飲\",\"Size\":\"6*355\",\"Quantity\":3}]",
+                    "[{\"productId\":2,\"name\":\"草莓能量飲\",\"size\":\"6\",\"qty\":12,\"price\":199}," +
+                    "{\"productId\":1,\"name\":\"葡萄能量飲\",\"size\":\"24\",\"qty\":8,\"price\":599}," +
+                    "{\"productId\":3,\"name\":\"檸檬能量飲\",\"size\":\"6\",\"qty\":4,\"price\":199}]",
                     "測試訂單"
                 }
             );

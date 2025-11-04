@@ -698,6 +698,40 @@
     </div>
 
     <script>
+        //驗證使用者
+        document.addEventListener("DOMContentLoaded", () => {
+            const userData = localStorage.getItem('user');
+
+            if (!userData) {
+                alert("尚未登入，請先登入");
+                window.location.href = "./login.html";
+                return;
+            }
+
+            const user = JSON.parse(userData);
+            const userId = user.id;
+            const userRole = user.role;
+            const token = user.token;
+
+            console.log("目前登入的使用者 ID:", userId);
+            console.log("目前登入的 token:", token);
+            console.log("目前登入的角色:", userRole);
+
+            if (!token) {
+                alert("登入逾時，請重新登入");
+                localStorage.removeItem('user');
+                window.location.href = "./login.html";
+                return;
+            }
+
+            if (userRole !== "Admin") {
+                alert("您沒有權限瀏覽此頁面");
+                window.location.href = "./index.html";
+                return;
+            }
+
+            loadAllUsers(token);
+        });
         //顯示點選圖標頁面
         function showTab(tabId) {
 
@@ -763,8 +797,13 @@
         }
 
         // 商品管理 API 
-        function loadProducts() {
-            axios.get('https://localhost:7085/api/products')
+        function loadProducts(token) {
+            axios.get('https://localhost:7085/api/products', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
                 .then(res => {
                     const tbody = document.querySelector('#productTable tbody');
                     tbody.innerHTML = '';
@@ -872,7 +911,7 @@
 
                         if (Array.isArray(items) && items.length > 0) {
                             itemsHTML = '<ul style="list-style:none; padding:0;">' + items.map(p => {
-                               
+
                                 const name = p.ProductName || p.name || '未知商品';
                                 const size = p.Size || p.size || '';
                                 const quantity = p.Quantity || p.qty || 0;
@@ -928,40 +967,7 @@
         }
 
         // 用戶管理 API 
-        //驗證使用者
-        document.addEventListener("DOMContentLoaded", () => {
-            const userData = localStorage.getItem('user');
 
-            if (!userData) {
-                alert("尚未登入，請先登入");
-                window.location.href = "./login.html";
-                return;
-            }
-
-            const user = JSON.parse(userData);
-            const userId = user.id;
-            const userRole = user.role;
-            const token = user.token;
-
-            console.log("目前登入的使用者 ID:", userId);
-            console.log("目前登入的 token:", token);
-            console.log("目前登入的角色:", userRole);
-
-            if (!token) {
-                alert("登入逾時，請重新登入");
-                localStorage.removeItem('user');
-                window.location.href = "./login.html";
-                return;
-            }
-
-            if (userRole !== "Admin") {
-                alert("您沒有權限瀏覽此頁面");
-                window.location.href = "./index.html";
-                return;
-            }
-
-            loadAllUsers(token);
-        });
         //讀取所有使用者
         function loadAllUsers(token) {
             axios.get(`https://localhost:7085/api/User/Users`, {
@@ -1190,15 +1196,28 @@
 
                     orders.forEach(o => {
                         let items = [];
-                        try { items = JSON.parse(o.productList); } catch { }
+                        try {
+                            items = JSON.parse(o.orderItems || "[]");
+                        } catch {
+                            console.error(`訂單 ${o.orderID} 的 orderItems 解析錯誤`);
+                        }
+
                         items.forEach(item => {
-                            const name = `${item.Size}ml${item.ProductName}`;
-                            if (!productStats[name])
-                                productStats[name] = { quantity: 0, total: 0 };
-                            productStats[name].quantity += item.Quantity;
-                            productStats[name].total += item.Quantity * item.UnitPrice;
+                            const name = item.ProductName || item.name || '未知商品';
+                            const size = item.Size || item.size || '';
+                            const quantity = item.Quantity || item.qty || 0;
+                            const price = item.UnitPrice || item.price || 0;
+
+                            const key = `${size}${name}`;
+
+                            if (!productStats[key])
+                                productStats[key] = { quantity: 0, total: 0 };
+
+                            productStats[key].quantity += quantity;
+                            productStats[key].total += quantity * price;
                         });
                     });
+
                     const labels = Object.keys(productStats);
                     const quantities = labels.map(l => productStats[l].quantity);
                     const totals = labels.map(l => productStats[l].total.toFixed(2));
@@ -1261,6 +1280,7 @@
                 })
                 .catch(err => console.error('載入銷售資料錯誤:', err));
         }
+
         showTab('products');
         loadProducts();
         loadOrders();
