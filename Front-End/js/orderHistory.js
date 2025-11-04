@@ -81,9 +81,9 @@ async function loadOrders() {
             throw new Error('未找到登入憑證');
         }
 
-        // 呼叫 API 取得訂單列表（添加時間戳防止快取）
+        // 呼叫 API 取得當前用戶的訂單列表（添加時間戳防止快取）
         const timestamp = new Date().getTime();
-        const response = await axios.get(`${API_BASE_URL}/Orders?_t=${timestamp}`, {
+        const response = await axios.get(`${API_BASE_URL}/UserOrders?_t=${timestamp}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -199,9 +199,9 @@ async function viewOrderDetails(orderId) {
             throw new Error('未找到登入憑證');
         }
 
-        // 呼叫 API 取得訂單詳情（添加時間戳防止快取）
+        // 呼叫 API 取得當前用戶的訂單詳情（添加時間戳防止快取）
         const timestamp = new Date().getTime();
-        const response = await axios.get(`${API_BASE_URL}/Orders/${orderId}?_t=${timestamp}`, {
+        const response = await axios.get(`${API_BASE_URL}/UserOrders/${orderId}?_t=${timestamp}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Cache-Control': 'no-cache, no-store, must-revalidate',
