@@ -178,7 +178,7 @@
       // Address: Address
     })
       .then(res => {
-        showMessage(res.data.message + '註冊成功！三秒後跳轉，若無跳轉請點此 <a href="./login.html">登入</a>', 'success');
+        showMessage(res.data.message + '三秒後跳轉，若無跳轉請點此 <a href="./login.html">登入</a>', 'success');
         document.getElementById('formAcc').reset();
 
         setTimeout(() => {

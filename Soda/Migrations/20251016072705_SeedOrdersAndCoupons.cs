@@ -33,8 +33,10 @@ namespace Soda.Migrations
                 {
                     1,
                     1,
-                    "[{\"ProductName\":\"紅茶\",\"Size\":\"4*355\",\"Quantity\":2,\"UnitPrice\":199.00},{\"ProductName\":\"綠茶\",\"Size\":\"12*355\",\"Quantity\":1,\"UnitPrice\":499.00}]",
-                    897.00m,
+                    "[{\"ProductName\":\"檸檬能量飲\",\"Size\":\"6*355\",\"Quantity\":2,\"UnitPrice\":199.00}," +
+                    "{\"ProductName\":\"葡萄能量飲\",\"Size\":\"24*355\",\"Quantity\":1,\"UnitPrice\":499.00}," +
+                    "{\"ProductName\":\"草莓能量飲\",\"Size\":\"6*355\",\"Quantity\":3,\"UnitPrice\":299.00}]",
+                    1794.00m,  // 199*2 + 499*1 + 299*3
                     "Paid",
                     new DateTime(2025, 10, 15, 14, 31, 3),
                     "Credit Card",
@@ -43,7 +45,9 @@ namespace Soda.Migrations
                     "Express",
                     "Shipped",
                     "John Doe",
-                    "[{\"ProductName\":\"紅茶\",\"Size\":\"4*355\",\"Quantity\":2},{\"ProductName\":\"綠茶\",\"Size\":\"12*355\",\"Quantity\":1}]",
+                    "[{\"ProductName\":\"檸檬能量飲\",\"Size\":\"6*355\",\"Quantity\":2}," +
+                    "{\"ProductName\":\"葡萄能量飲\",\"Size\":\"24*355\",\"Quantity\":1}," +
+                    "{\"ProductName\":\"草莓能量飲\",\"Size\":\"6*355\",\"Quantity\":3}]",
                     "測試訂單"
                 }
             );
