@@ -152,12 +152,7 @@ function updateUserDisplay() {
             justify-content: space-between;
             padding: 20px 30px;
             list-style: none;
-            width: calc(100% - 60px);
-            z-index: 99;
             position: relative; 
-            position: fixed;
-            top: 0;
-            left: 0;
         }
         header nav {
             visibility: hidden;
