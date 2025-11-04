@@ -474,6 +474,44 @@ function updateUserDisplay() {
                 display: none;
             }
         }
+
+        /* 回到頂部按鈕樣式 */
+        .goTop {
+            position: fixed;
+            right: 50px;
+            bottom: 50px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .goTop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .goTop img {
+            width: 120px;
+            filter: opacity(.5);
+            transition: filter 0.3s ease;
+        }
+
+        .goTop img:hover {
+            filter: opacity(1);
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 768px) {
+            .goTop {
+                right: 20px;
+                bottom: 20px;
+            }
+
+            .goTop img {
+                width: 80px;
+            }
+        }
     </style>
     `;
     // 導航欄 HTML 模板
@@ -516,6 +554,10 @@ function updateUserDisplay() {
             </div>
         </div>
     </header>
+    <!-- 回到頂部按鈕 -->
+    <div class="goTop" id="goTopBtn">
+        <img id="goTopImg" src="" alt="回到最頂端" title="回到最頂端">
+    </div>
     `;
     // 插入導航欄的函數
     function injectNav() {
@@ -548,6 +590,9 @@ function updateUserDisplay() {
         // ========== 檢查登入狀態並動態修改登入連結 ==========
         updateLoginLinks();
 
+        // ========== 初始化回到頂部按鈕 ==========
+        initGoTopButton();
+
         console.log('✅ 導航欄已成功插入');
     }
 
@@ -579,6 +624,291 @@ function updateUserDisplay() {
     window.updateNavLoginStatus = function() {
         updateLoginLinks();
     };
+
+    // ========== 回到頂部按鈕功能 ==========
+    function initGoTopButton() {
+        const goTopBtn = document.getElementById('goTopBtn');
+        if (!goTopBtn) {
+            console.warn('回到頂部按鈕元素不存在');
+            return;
+        }
+
+        // 設置圖片路徑
+        const goTopImg = document.getElementById('goTopImg');
+        if (goTopImg) {
+            // 直接使用相對路徑，因為所有 HTML 文件都在同一目錄
+            goTopImg.src = './images/tiger.png';
+            console.log('✅ 設置回到頂部按鈕圖片路徑: ./images/tiger.png');
+            
+            // 如果圖片載入失敗，添加錯誤處理
+            goTopImg.onerror = function() {
+                console.error('❌ 回到頂部按鈕圖片載入失敗，請檢查路徑: ./images/tiger.png');
+            };
+            
+            // 圖片載入成功時的日誌
+            goTopImg.onload = function() {
+                console.log('✅ 回到頂部按鈕圖片載入成功');
+            };
+        } else {
+            console.error('❌ 找不到 goTopImg 元素');
+        }
+
+        // 獲取所有可能的滾動位置（兼容各種情況，包括水平滾動）
+        function getScrollPosition() {
+            // 嘗試從多個來源獲取滾動位置（垂直滾動）
+            const verticalScroll = [
+                window.pageYOffset,
+                window.scrollY,
+                document.documentElement.scrollTop,
+                document.body.scrollTop,
+                0
+            ];
+            
+            // 水平滾動位置
+            const horizontalScroll = [
+                window.pageXOffset,
+                window.scrollX,
+                document.documentElement.scrollLeft,
+                document.body.scrollLeft,
+                0
+            ];
+            
+            // 檢查是否有 .wrap 容器（首頁的特殊滾動容器）
+            const wrapContainer = document.querySelector('.wrap');
+            if (wrapContainer) {
+                verticalScroll.push(wrapContainer.scrollTop || 0);
+                horizontalScroll.push(wrapContainer.scrollLeft || 0);
+            }
+            
+            // 檢查是否有 #group 容器（首頁的水平滾動容器）
+            const groupContainer = document.querySelector('#group');
+            if (groupContainer) {
+                verticalScroll.push(groupContainer.scrollTop || 0);
+                horizontalScroll.push(groupContainer.scrollLeft || 0);
+            }
+            
+            // 獲取垂直和水平滾動的最大值
+            const maxVertical = Math.max(...verticalScroll.filter(val => val !== null && val !== undefined));
+            const maxHorizontal = Math.max(...horizontalScroll.filter(val => val !== null && val !== undefined));
+            
+            // 返回較大的值（可能是垂直或水平滾動）
+            return Math.max(maxVertical, maxHorizontal);
+        }
+        
+        // 滾動事件監聽器：根據滾動位置顯示/隱藏按鈕
+        let lastLogTime = 0;
+        function handleScroll() {
+            // 獲取滾動位置
+            const scrollTop = getScrollPosition();
+            
+            // 每 100ms 最多輸出一次日誌（避免過多輸出）
+            const now = Date.now();
+            if (now - lastLogTime > 100) {
+                console.log('📍 當前滾動位置:', scrollTop + 'px');
+                console.log('🔍 window.pageYOffset:', window.pageYOffset);
+                console.log('🔍 window.scrollY:', window.scrollY);
+                console.log('🔍 document.documentElement.scrollTop:', document.documentElement.scrollTop);
+                console.log('🔍 document.body.scrollTop:', document.body.scrollTop);
+                
+                // 檢查特殊容器
+                const wrapContainer = document.querySelector('.wrap');
+                if (wrapContainer) {
+                    console.log('🔍 .wrap.scrollTop:', wrapContainer.scrollTop);
+                    console.log('🔍 .wrap.scrollLeft:', wrapContainer.scrollLeft);
+                }
+                
+                const groupContainer = document.querySelector('#group');
+                if (groupContainer) {
+                    console.log('🔍 #group.scrollTop:', groupContainer.scrollTop);
+                    console.log('🔍 #group.scrollLeft:', groupContainer.scrollLeft);
+                }
+                
+                console.log('🔍 goTopBtn.classList:', goTopBtn.classList.toString());
+                console.log('🔍 是否有 show class:', goTopBtn.classList.contains('show'));
+                lastLogTime = now;
+            }
+            
+            // 當滾動超過 77px 時顯示按鈕
+            if (scrollTop > 77) {
+                if (!goTopBtn.classList.contains('show')) {
+                    goTopBtn.classList.add('show');
+                    // console.log('✅ 添加 show class，滾動位置:', scrollTop + 'px');
+                    // console.log('🔍 添加後 classList:', goTopBtn.classList.toString());
+                    // 再次檢查元素狀態
+                    // console.log('🔍 元素計算樣式 opacity:', window.getComputedStyle(goTopBtn).opacity);
+                    // console.log('🔍 元素計算樣式 visibility:', window.getComputedStyle(goTopBtn).visibility);
+                }
+            } else {
+                if (goTopBtn.classList.contains('show')) {
+                    goTopBtn.classList.remove('show');
+                    // console.log('ℹ️ 移除 show class，滾動位置:', scrollTop + 'px');
+                }
+            }
+        }
+
+        // 點擊事件：平滑滾動到頂部（處理所有可能的滾動容器）
+        goTopBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // 防止任何默認行為
+            e.stopPropagation(); // 防止事件冒泡
+            console.log('🖱️ 按鈕被點擊！開始滾動到頂部...');
+            
+            // 先嘗試平滑滾動，如果不支持則使用立即滾動
+            const scrollToTop = function() {
+                // 方法1: 使用原生 scrollTo（優先使用）
+                if (window.scrollTo && typeof window.scrollTo === 'function') {
+                    try {
+                        window.scrollTo({
+                            top: 0,
+                            left: 0,
+                            behavior: 'smooth'
+                        });
+                        console.log('✅ window.scrollTo (smooth) 已執行');
+                    } catch (err) {
+                        console.warn('⚠️ smooth scroll 不支持，使用立即滾動:', err);
+                        window.scrollTo(0, 0);
+                        console.log('✅ window.scrollTo (instant) 已執行');
+                    }
+                } else {
+                    window.scrollTo(0, 0);
+                    console.log('✅ window.scrollTo (fallback) 已執行');
+                }
+                
+                // 方法2: 直接設置所有可能的滾動位置（確保兼容性）
+                document.documentElement.scrollTop = 0;
+                document.documentElement.scrollLeft = 0;
+                document.body.scrollTop = 0;
+                document.body.scrollLeft = 0;
+                
+                // 方法3: 如果存在 .wrap 容器（首頁的主要滾動容器）
+                const wrapContainer = document.querySelector('.wrap');
+                if (wrapContainer) {
+                    console.log('🔍 找到 .wrap 容器，當前 scrollLeft:', wrapContainer.scrollLeft, 'scrollTop:', wrapContainer.scrollTop);
+                    try {
+                        wrapContainer.scrollTo({
+                            top: 0,
+                            left: 0,
+                            behavior: 'smooth'
+                        });
+                        console.log('✅ .wrap.scrollTo 已執行');
+                    } catch (err) {
+                        console.warn('⚠️ .wrap smooth scroll 失敗，使用直接設置:', err);
+                        wrapContainer.scrollLeft = 0;
+                        wrapContainer.scrollTop = 0;
+                    }
+                }
+                
+                // 方法4: 如果存在 #group 容器（首頁的水平滾動容器）
+                const groupContainer = document.querySelector('#group');
+                if (groupContainer) {
+                    console.log('🔍 找到 #group 容器，當前 scrollLeft:', groupContainer.scrollLeft, 'scrollTop:', groupContainer.scrollTop);
+                    try {
+                        groupContainer.scrollTo({
+                            top: 0,
+                            left: 0,
+                            behavior: 'smooth'
+                        });
+                        console.log('✅ #group.scrollTo 已執行');
+                    } catch (err) {
+                        console.warn('⚠️ #group smooth scroll 失敗，使用直接設置:', err);
+                        groupContainer.scrollLeft = 0;
+                        groupContainer.scrollTop = 0;
+                    }
+                }
+                
+                // 方法5: 如果頁面使用了 jQuery scrollTo 插件，嘗試使用它
+                if (typeof $ !== 'undefined' && typeof $.scrollTo !== 'undefined') {
+                    console.log('🔍 檢測到 jQuery scrollTo 插件，使用 jQuery 方法');
+                    try {
+                        // 滾動 window
+                        $(window).scrollTo(0, { duration: 800, axis: 'xy' });
+                        
+                        // 滾動 .wrap 容器（如果存在）
+                        if (wrapContainer) {
+                            $('.wrap').scrollTo(0, { duration: 800, axis: 'x' });
+                        }
+                        
+                        // 滾動 #group 容器（如果存在）
+                        if (groupContainer) {
+                            $('#group').scrollTo(0, { duration: 800, axis: 'x' });
+                        }
+                        
+                        console.log('✅ jQuery scrollTo 已執行');
+                    } catch (err) {
+                        console.error('❌ jQuery scrollTo 失敗:', err);
+                    }
+                }
+            };
+            
+            // 執行滾動
+            scrollToTop();
+            
+            // 延遲檢查滾動是否成功（用於調試）
+            setTimeout(function() {
+                const currentScroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+                console.log('🔍 滾動後檢查，當前 scrollTop:', currentScroll);
+                if (currentScroll > 10) {
+                    console.warn('⚠️ 滾動可能未完全成功，嘗試強制滾動到頂部');
+                    // 強制滾動（不使用平滑）
+                    window.scrollTo(0, 0);
+                    document.documentElement.scrollTop = 0;
+                    document.body.scrollTop = 0;
+                } else {
+                    console.log('✅ 已成功滾動到頂部');
+                }
+            }, 500);
+            
+            console.log('✅ 所有滾動方法已執行');
+        });
+
+        // 綁定滾動事件到所有可能的滾動容器
+        // 1. window 和 document
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        document.addEventListener('scroll', handleScroll, { passive: true });
+        
+        // 2. 檢查並綁定 .wrap 容器（首頁的特殊滾動容器）
+        const wrapContainer = document.querySelector('.wrap');
+        if (wrapContainer) {
+            wrapContainer.addEventListener('scroll', handleScroll, { passive: true });
+            console.log('✅ 已綁定 .wrap 容器的滾動事件');
+        }
+        
+        // 3. 檢查並綁定 #group 容器
+        const groupContainer = document.querySelector('#group');
+        if (groupContainer) {
+            groupContainer.addEventListener('scroll', handleScroll, { passive: true });
+            console.log('✅ 已綁定 #group 容器的滾動事件');
+        }
+        
+        // 4. 綁定到 body 和 html
+        document.body.addEventListener('scroll', handleScroll, { passive: true });
+        document.documentElement.addEventListener('scroll', handleScroll, { passive: true });
+        
+        console.log('✅ 已綁定所有滾動事件監聽器');
+        
+        // 初始檢查（處理頁面載入時已經滾動的情況）
+        // 使用 setTimeout 確保 DOM 完全渲染後再檢查
+        setTimeout(function() {
+            console.log('🔧 執行初始檢查...');
+            handleScroll();
+            
+            // 檢查按鈕元素是否真的存在
+            const checkBtn = document.getElementById('goTopBtn');
+            if (checkBtn) {
+                console.log('✅ goTopBtn 元素確認存在');
+                console.log('🔍 元素位置:', checkBtn.getBoundingClientRect());
+                console.log('🔍 元素樣式:', {
+                    position: window.getComputedStyle(checkBtn).position,
+                    right: window.getComputedStyle(checkBtn).right,
+                    bottom: window.getComputedStyle(checkBtn).bottom,
+                    zIndex: window.getComputedStyle(checkBtn).zIndex,
+                    opacity: window.getComputedStyle(checkBtn).opacity,
+                    visibility: window.getComputedStyle(checkBtn).visibility
+                });
+            } else {
+                console.error('❌ goTopBtn 元素不存在！');
+            }
+        }, 100);
+    }
 
     function updateLoginLinks() {
         // 檢查是否已登入
