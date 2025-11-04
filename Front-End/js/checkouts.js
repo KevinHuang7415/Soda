@@ -819,7 +819,7 @@
                         resumeMarquee();
                     } else {
                         // 新優惠不划算，仍然添加但標記為無效
-                        alert('比較已使用優惠 沒有更優惠>_< 魔法失效了');
+                        alert('已有更優惠 >_< 魔法失效了');
                         newDiscount.isInvalid = true;
                         appliedDiscounts.push(newDiscount);
                         updateDiscountDisplay();
@@ -2260,34 +2260,43 @@
                 throw new Error(`結帳金額不能低於 $10！\n\n目前結帳金額：$${finalAmount.toLocaleString()}\n請調整購物車或移除部分優惠券。`);
             }
 
-            // 備註（包含優惠券資訊）
-            let notes = `Email: ${email}, Tel: ${tel}`;
-            if (sendEmail) {
-                notes += ', 訂閱電子報';
-            }
-            
-            // 儲存折扣詳細資訊（包含名稱和金額）
+            // 備註（改為完整的 JSON 格式）
+            // 組裝商品詳細資訊
+            const productsInfo = cartData.cart.map(item => ({
+                productId: item.productId || item.id || null,
+                name: item.name,
+                size: item.size,
+                qty: item.qty,
+                price: item.price,
+                imageUrl: item.imageUrl || item.image || null
+            }));
+
+            // 組裝折扣資訊
+            let discountsInfo = [];
             if (appliedDiscounts.length > 0) {
                 const validDiscounts = appliedDiscounts.filter(d => !d.isInvalid && !d.isReplaced);
-                if (validDiscounts.length > 0) {
-                    // 儲存為 JSON 格式，方便後續解析
-                    const discountData = {
-                        discounts: validDiscounts.map(d => ({
-                            name: d.name || d.code || '未知優惠',
-                            amount: d.amount || 0,
-                            code: d.code || null
-                        })),
-                        totalDiscount: totalDiscount
-                    };
-                    notes += ` | DISCOUNTS_JSON:${JSON.stringify(discountData)}`;
-                    
-                    // 同時保留文字格式以便向後兼容
-                    const discountInfo = validDiscounts
-                        .map(d => d.code || d.name)
-                        .join(', ');
-                    notes += `, 使用優惠: ${discountInfo}`;
-                }
+                discountsInfo = validDiscounts.map(d => ({
+                    name: d.name || d.code || '未知優惠',
+                    amount: d.amount || 0,
+                    code: d.code || null
+                }));
             }
+
+            // 組合完整的 JSON 格式備註
+            const notesData = {
+                contact: {
+                    email: email,
+                    tel: tel,
+                    subscribeNewsletter: sendEmail
+                },
+                // products: productsInfo,
+                // discounts: {
+                //     items: discountsInfo,
+                //     totalDiscount: totalDiscount
+                // }
+            };
+            
+            const notes = JSON.stringify(notesData);
 
             // 組合訂單資料（JSON 格式）- 使用帕斯卡式命名以匹配後端 C# 模型
             // 確保所有必要的欄位都有值

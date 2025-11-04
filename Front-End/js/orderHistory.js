@@ -364,44 +364,100 @@ function showOrderDetailsModal(order) {
 
     // 備註內容（排除折扣 JSON 資訊，因為已經單獨顯示）
     let cleanNotes = order.notes || '';
+    let parsedNotesHtml = '';
+    
     if (cleanNotes) {
-        // 移除折扣 JSON 部分（使用更可靠的方式）
-        const discountJsonIndex = cleanNotes.indexOf('DISCOUNTS_JSON:');
-        if (discountJsonIndex !== -1) {
-            // 找到 JSON 結束位置
-            let jsonStart = discountJsonIndex + 'DISCOUNTS_JSON:'.length;
-            let jsonEnd = jsonStart;
-            let braceCount = 0;
-            let foundFirstBrace = false;
+        // 嘗試解析 JSON 格式的備註
+        try {
+            const notesData = JSON.parse(cleanNotes);
             
-            for (let i = jsonStart; i < cleanNotes.length; i++) {
-                if (cleanNotes[i] === '{') {
-                    braceCount++;
-                    foundFirstBrace = true;
-                } else if (cleanNotes[i] === '}') {
-                    braceCount--;
-                    if (foundFirstBrace && braceCount === 0) {
-                        jsonEnd = i + 1;
-                        break;
+            // 如果成功解析為 JSON，以易讀格式顯示
+            if (notesData && typeof notesData === 'object') {
+                parsedNotesHtml = '<div class="notes-section parsed-notes">';
+                
+                // 顯示聯絡資訊
+                if (notesData.contact) {
+                    parsedNotesHtml += '<div class="notes-group"><h4>聯絡資訊</h4>';
+                    
+                    if (notesData.contact.email) {
+                        parsedNotesHtml += `<p><strong>電子郵件：</strong>${notesData.contact.email}</p>`;
+                    }
+                    
+                    if (notesData.contact.tel) {
+                        parsedNotesHtml += `<p><strong>聯絡電話：</strong>${notesData.contact.tel}</p>`;
+                    }
+                    
+                    if (notesData.contact.subscribeNewsletter !== undefined) {
+                        const subscribeText = notesData.contact.subscribeNewsletter ? '是' : '否';
+                        parsedNotesHtml += `<p><strong>訂閱電子報：</strong>${subscribeText}</p>`;
+                    }
+                    
+                    parsedNotesHtml += '</div>';
+                }
+                
+                // 顯示其他可能的資訊
+                if (notesData.message || notesData.remark || notesData.note) {
+                    parsedNotesHtml += '<div class="notes-group"><h4>其他備註</h4>';
+                    const message = notesData.message || notesData.remark || notesData.note;
+                    parsedNotesHtml += `<p>${message}</p>`;
+                    parsedNotesHtml += '</div>';
+                }
+                
+                parsedNotesHtml += '</div>';
+            }
+        } catch (e) {
+            // 如果不是 JSON 格式，則進行一般文字處理
+            console.log('備註不是 JSON 格式，使用一般文字處理');
+            
+            // 移除折扣 JSON 部分（使用更可靠的方式）
+            const discountJsonIndex = cleanNotes.indexOf('DISCOUNTS_JSON:');
+            if (discountJsonIndex !== -1) {
+                // 找到 JSON 結束位置
+                let jsonStart = discountJsonIndex + 'DISCOUNTS_JSON:'.length;
+                let jsonEnd = jsonStart;
+                let braceCount = 0;
+                let foundFirstBrace = false;
+                
+                for (let i = jsonStart; i < cleanNotes.length; i++) {
+                    if (cleanNotes[i] === '{') {
+                        braceCount++;
+                        foundFirstBrace = true;
+                    } else if (cleanNotes[i] === '}') {
+                        braceCount--;
+                        if (foundFirstBrace && braceCount === 0) {
+                            jsonEnd = i + 1;
+                            break;
+                        }
                     }
                 }
+                
+                // 移除 | DISCOUNTS_JSON:... 部分
+                const beforeJson = cleanNotes.substring(0, discountJsonIndex).replace(/\s*\|\s*$/, '');
+                const afterJson = cleanNotes.substring(jsonEnd);
+                cleanNotes = (beforeJson + afterJson).trim();
             }
             
-            // 移除 | DISCOUNTS_JSON:... 部分
-            const beforeJson = cleanNotes.substring(0, discountJsonIndex).replace(/\s*\|\s*$/, '');
-            const afterJson = cleanNotes.substring(jsonEnd);
-            cleanNotes = (beforeJson + afterJson).trim();
+            // 移除折扣文字部分（因為已經在折扣詳情中顯示）
+            cleanNotes = cleanNotes.replace(/,\s*使用優惠:[^|,\n]+/, '');
         }
-        
-        // 移除折扣文字部分（因為已經在折扣詳情中顯示）
-        cleanNotes = cleanNotes.replace(/,\s*使用優惠:[^|,\n]+/, '');
     }
     
-    const notesHtml = cleanNotes && cleanNotes.trim() ? `
-        <div class="notes-section">
-            <p>${cleanNotes}</p>
-        </div>
-    ` : '<p class="detail-value">無備註</p>';
+    // 決定最終顯示的 HTML
+    let notesHtml;
+    if (parsedNotesHtml) {
+        // 使用解析後的 HTML
+        notesHtml = parsedNotesHtml;
+    } else if (cleanNotes && cleanNotes.trim()) {
+        // 使用清理後的純文字
+        notesHtml = `
+            <div class="notes-section">
+                <p>${cleanNotes}</p>
+            </div>
+        `;
+    } else {
+        // 沒有備註
+        notesHtml = '<p class="detail-value">無備註</p>';
+    }
 
     detailsContainer.innerHTML = `
         <div class="detail-section">

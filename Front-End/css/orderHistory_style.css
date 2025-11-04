@@ -419,6 +419,42 @@ body {
     color: var(--main-black);
 }
 
+/* 解析後的備註樣式 */
+.parsed-notes {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.notes-group {
+    margin-bottom: 20px;
+}
+
+.notes-group:last-child {
+    margin-bottom: 0;
+}
+
+.notes-group h4 {
+    font-size: 1.1em;
+    color: var(--main-orange);
+    margin: 0 0 10px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--main-orange);
+}
+
+.notes-group p {
+    margin: 8px 0;
+    padding-left: 10px;
+    line-height: 1.8;
+    color: var(--main-black);
+}
+
+.notes-group p strong {
+    color: var(--main-gray);
+    font-weight: 600;
+    min-width: 100px;
+    display: inline-block;
+}
+
 /* 響應式設計 */
 @media (max-width: 1200px) {
     .orderHistory-header {
