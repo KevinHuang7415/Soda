@@ -675,19 +675,29 @@
             marquee.addEventListener('click', handleMarqueeClick);
         }
 
-        // 計算折扣
+        // 計算折扣（累進式計算，每個折扣基於已折扣後的金額）
         function calculateDiscounts() {
+            let currentAmount = subtotal; // 當前金額，從小計開始
             let totalDiscount = 0;
+            
             appliedDiscounts.forEach(discount => {
-                // 只計算有效的折扣（沒有 isInvalid 和 isReplaced 標記）
-                if (!discount.isInvalid && !discount.isReplaced) {
-                    if (discount.type === 'percentage') {
-                        totalDiscount += Math.floor(subtotal * discount.value);
-                    } else if (discount.type === 'fixed' || discount.type === 'coupon') {
-                        totalDiscount += discount.value;
-                    }
+                let discountAmount = 0;
+                
+                if (discount.type === 'percentage') {
+                    // ⭐ 百分比折扣基於當前金額計算
+                    discountAmount = Math.floor(currentAmount * discount.value);
+                } else if (discount.type === 'fixed' || discount.type === 'coupon') {
+                    // 固定金額折扣
+                    discountAmount = discount.value;
                 }
+                
+                // ⭐ 確保折扣不會讓金額變成負數
+                discountAmount = Math.min(discountAmount, currentAmount);
+                
+                totalDiscount += discountAmount;
+                currentAmount -= discountAmount; // 更新當前金額
             });
+            
             return totalDiscount;
         }
 
@@ -709,14 +719,34 @@
             }
         }
 
-        // 計算優惠券折扣金額
+        // 計算優惠券折扣金額（基於當前已折扣後的金額）
         function calculateDiscountAmount(discount) {
+            // ⭐ 先計算目前已套用的折扣後的剩餘金額
+            let currentAmount = subtotal;
+            appliedDiscounts.forEach(appliedDiscount => {
+                let discountAmount = 0;
+                if (appliedDiscount.type === 'percentage') {
+                    discountAmount = Math.floor(currentAmount * appliedDiscount.value);
+                } else if (appliedDiscount.type === 'fixed' || appliedDiscount.type === 'coupon') {
+                    discountAmount = appliedDiscount.value;
+                }
+                // 確保折扣不會讓金額變成負數
+                discountAmount = Math.min(discountAmount, currentAmount);
+                currentAmount -= discountAmount;
+            });
+            
+            // ⭐ 基於當前金額計算新的折扣
+            let newDiscountAmount = 0;
             if (discount.type === 'percentage') {
-                return Math.floor(subtotal * discount.value);
+                newDiscountAmount = Math.floor(currentAmount * discount.value);
             } else if (discount.type === 'fixed' || discount.type === 'coupon') {
-                return discount.value;
+                newDiscountAmount = discount.value;
             }
-            return 0;
+            
+            // ⭐ 確保新折扣不會讓金額變成負數
+            newDiscountAmount = Math.min(newDiscountAmount, currentAmount);
+            
+            return newDiscountAmount;
         }
 
         // 添加折扣項目
@@ -759,15 +789,19 @@
                 return;
             }
 
+            // ⭐ 先計算當前已折扣後的金額
+            const currentTotalDiscount = calculateDiscounts();
+            const currentAmount = subtotal - currentTotalDiscount;
+            
+            // ⭐ 計算新的折扣金額（已經基於當前金額）
             const newDiscountAmount = calculateDiscountAmount(discount);
             
-            // ⭐ 新增：檢查使用優惠券後金額是否小於 10
-            const currentTotalDiscount = calculateDiscounts();
-            const finalAmountAfterNewDiscount = subtotal - currentTotalDiscount - newDiscountAmount;
+            // ⭐ 計算套用新折扣後的最終金額
+            const finalAmountAfterNewDiscount = currentAmount - newDiscountAmount;
             
             if (finalAmountAfterNewDiscount < 10) {
                 pauseMarquee();
-                alert(`使用此優惠券後結帳金額將低於 $10，無法使用！\n\n目前小計：$${subtotal.toLocaleString()}\n使用後金額：$${finalAmountAfterNewDiscount.toLocaleString()}\n最低結帳金額：$10`);
+                alert(`使用此優惠券後結帳金額將低於 $10，無法使用！\n\n目前小計：$${subtotal.toLocaleString()}\n已折扣後金額：$${currentAmount.toLocaleString()}\n使用後金額：$${finalAmountAfterNewDiscount.toLocaleString()}\n最低結帳金額：$10`);
                 resumeMarquee();
                 return;
             }
@@ -781,57 +815,15 @@
                 discountType: discount.discountType
             };
 
-            // 根據折扣類型處理
-            if (discount.discountType === 'event' || discount.discountType === 'newuser') {
-                // 活動優惠和新好友優惠：可以同時存在
-                appliedDiscounts.push(newDiscount);
-                updateDiscountDisplay();
-            } else {
-                // 所有優惠券類型：進行比較（每筆訂單只能用一份優惠券）
-                // 找到所有現有的優惠券
-                const existingCoupons = appliedDiscounts.filter(d =>
-                    d.discountType === 'coupon' && !d.isReplaced && !d.isInvalid
-                );
-
-                console.log('檢查現有優惠券:', existingCoupons);
-                console.log('新優惠券金額:', newDiscountAmount);
-
-                if (existingCoupons.length > 0) {
-                    // 找到最優惠的現有優惠券
-                    const bestExistingCoupon = existingCoupons.reduce((best, current) =>
-                        current.amount > best.amount ? current : best
-                    );
-
-                    console.log('最優惠的現有優惠券:', bestExistingCoupon);
-
-                    // 比較優惠程度
-                    if (newDiscountAmount > bestExistingCoupon.amount) {
-                        // 新優惠更划算，將所有現有優惠券標記為被替換
-                        appliedDiscounts.forEach(d => {
-                            if (d.discountType === 'coupon' && !d.isReplaced && !d.isInvalid) {
-                                d.isReplaced = true;
-                            }
-                        });
-                        alert('耶!! 獲得魔法~~');
-                        appliedDiscounts.push(newDiscount);
-                        updateDiscountDisplay();
-                        pauseMarquee();
-                        resumeMarquee();
-                    } else {
-                        // 新優惠不划算，仍然添加但標記為無效
-                        alert('已有更優惠 >_< 魔法失效了');
-                        newDiscount.isInvalid = true;
-                        appliedDiscounts.push(newDiscount);
-                        updateDiscountDisplay();
-                        pauseMarquee();
-                        resumeMarquee();
-                    }
-                } else {
-                    // 沒有現有優惠券，直接添加
-                    appliedDiscounts.push(newDiscount);
-                    updateDiscountDisplay();
-                }
-            }
+            // ⭐ 移除比較邏輯，所有優惠券都可以使用
+            // 直接添加優惠券（已經在前面檢查過金額不會小於10）
+            appliedDiscounts.push(newDiscount);
+            updateDiscountDisplay();
+            
+            // 顯示成功訊息
+            pauseMarquee();
+            alert('✨ 優惠券已成功套用！');
+            resumeMarquee();
 
             // 更新總計
             updateTotal();
@@ -869,29 +861,31 @@
             const container = document.getElementById('discount-items-container');
             container.innerHTML = '';
 
+            // ⭐ 累進計算每個折扣的實際扣除金額
+            let currentAmount = subtotal;
+            
             appliedDiscounts.forEach(discount => {
                 const discountItem = document.createElement('div');
                 discountItem.className = 'discount-item';
 
-                // 設定樣式
-                if (discount.isInvalid) {
-                    // 無效的優惠券（不划算的）
-                    discountItem.style.textDecoration = 'line-through';
-                    discountItem.style.opacity = '0.6';
-                    discountItem.style.color = '#999';
-                } else if (discount.isReplaced) {
-                    // 被替換的優惠券（更優惠的替換了這個）
-                    discountItem.style.textDecoration = 'line-through';
-                    discountItem.style.opacity = '0.6';
-                    discountItem.style.color = '#999';
+                // ⭐ 計算這個折扣的實際扣除金額（基於當前金額）
+                let actualDiscountAmount = 0;
+                if (discount.type === 'percentage') {
+                    actualDiscountAmount = Math.floor(currentAmount * discount.value);
+                } else if (discount.type === 'fixed' || discount.type === 'coupon') {
+                    actualDiscountAmount = discount.value;
                 }
+                // 確保不超過當前金額
+                actualDiscountAmount = Math.min(actualDiscountAmount, currentAmount);
+                currentAmount -= actualDiscountAmount; // 更新當前金額
 
                 // 使用動態生成函數
                 const displayName = generateDiscountDisplayName(discount);
 
+                // ⭐ 顯示實際扣除的金額
                 discountItem.innerHTML = `
                     <p>${displayName}</p>
-                    <p>-$${discount.amount.toLocaleString()}</p>
+                    <p>-$${actualDiscountAmount.toLocaleString()}</p>
                 `;
 
                 container.appendChild(discountItem);

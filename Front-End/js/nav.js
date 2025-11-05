@@ -927,23 +927,14 @@ function updateUserDisplay() {
                 // 檢查是否在 navIconBtn 中（使用者圖標按鈕）
                 const parentBtn = link.closest('.navIconBtn');
                 if (parentBtn) {
-                    // 如果是圖標按鈕，將圖片替換為使用者首字母
+                    // ⭐ 保留原始圖片，不替換為首字母
                     const img = link.querySelector('img');
-                    const existingInitial = link.querySelector('.user-initial');
-                    
-                    // 如果已經有首字母，更新它；如果有圖片，替換它
-                    if (existingInitial) {
-                        // 已經有首字母，只需要更新
-                        const initial = getUserInitial();
-                        existingInitial.textContent = initial || '?';
-                    } else if (img) {
-                        // 有圖片，替換為首字母
-                        const initial = getUserInitial();
-                        const initialSpan = document.createElement('span');
-                        initialSpan.className = 'user-initial';
-                        initialSpan.textContent = initial || '?';
-                        img.replaceWith(initialSpan);
-                        console.log('✅ 已將使用者圖標改為首字母:', initial);
+                    if (img) {
+                        // 確保圖片路徑正確
+                        if (!img.src.includes('user.svg')) {
+                            img.src = './images/user.svg';
+                        }
+                        console.log('✅ 已更新使用者圖標連結（保留圖片）');
                     }
                 } else {
                     // 如果是文字連結，可以選擇改變文字（可選）
@@ -954,7 +945,7 @@ function updateUserDisplay() {
                 }
             });
         } else {
-            // 未登入：恢復圖片（如果之前被替換了）
+            // 未登入：確保圖片正確顯示
             const loginLinks = document.querySelectorAll('a[href="./memberSystem.html"]');
             loginLinks.forEach(function(link) {
                 link.href = './login.html';
@@ -962,14 +953,13 @@ function updateUserDisplay() {
                 // 檢查是否在 navIconBtn 中
                 const parentBtn = link.closest('.navIconBtn');
                 if (parentBtn) {
-                    const existingInitial = link.querySelector('.user-initial');
-                    // 如果有首字母，恢復為圖片
-                    if (existingInitial) {
-                        const img = document.createElement('img');
-                        img.src = './images/user.svg';
-                        img.alt = '';
-                        existingInitial.replaceWith(img);
-                        console.log('✅ 已恢復使用者圖標');
+                    const img = link.querySelector('img');
+                    if (img) {
+                        // 確保圖片路徑正確
+                        if (!img.src.includes('user.svg')) {
+                            img.src = './images/user.svg';
+                        }
+                        console.log('✅ 已確認使用者圖標正確');
                     }
                 } else {
                     // 如果是文字連結，恢復為登入

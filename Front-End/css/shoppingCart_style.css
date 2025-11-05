@@ -169,26 +169,49 @@ body {
     outline: none;
     text-align: center;
     text-align-last: center; /* 針對 Firefox 和部分瀏覽器 */
-    height: 36px;
-    width: 130px;
+    height: 40px;
+    min-width: 140px;
+    width: auto;
+    max-width: 180px;
     font-weight: bold;
-    padding: 5px 10px;
-    background: none;
-    border: none;
+    font-size: 16px;
+    padding: 8px 35px 8px 15px; /* 右側留空間給下拉箭頭 */
+    background-color: #fff;
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 18px;
+    border: 2px solid #e0e0e0;
     line-height: 1.2;
     cursor: pointer;
-    border-radius: 6px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* 移除 focus 狀態的預設外框 */
+/* 移除 focus 狀態的預設外框，但加入更明顯的效果 */
 .sel-opt:focus {
     outline: none;
-    box-shadow: none;
+    border-color: var(--light-orange);
+    box-shadow: 0 0 0 3px rgba(255, 200, 124, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fffbf5;
 }
 
 /* 滑鼠移入 */
 .sel-opt:hover {
     background-color: var(--product-pink-cover);
+    border-color: var(--light-orange);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+/* 下拉選單展開時的樣式 */
+.sel-opt:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* 產品項目數量計算欄位 */

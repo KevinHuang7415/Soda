@@ -222,8 +222,13 @@ function createFavoriteItemBox(favItem) {
     const validImageUrl = imageUrl || getProductImageById(productId);
 
     // 使用快取資料（已在初始化時載入）
-    const productNames = productNamesCache || [name];
-    const productSizes = productSizesCache[name] || [size];
+    // ⭐ 加入更完善的錯誤處理
+    const productNames = (productNamesCache && productNamesCache.length > 0) ? productNamesCache : [name];
+    const productSizes = (productSizesCache && productSizesCache[name] && productSizesCache[name].length > 0) 
+        ? productSizesCache[name] 
+        : [size];
+    
+    console.log(`建立我的最愛項目: ${name}, 可用名稱: ${productNames.length}, 可用規格: ${productSizes.length}`);
 
     const box = document.createElement('div');
     box.className = 'item-box favorite-item';
@@ -290,8 +295,13 @@ function createItemBox(cartItem) {
     const validImageUrl = imageUrl || getProductImageById(productId);
 
     // 使用快取資料（已在初始化時載入）
-    const productNames = productNamesCache || [name];
-    const productSizes = productSizesCache[name] || [size];
+    // ⭐ 加入更完善的錯誤處理
+    const productNames = (productNamesCache && productNamesCache.length > 0) ? productNamesCache : [name];
+    const productSizes = (productSizesCache && productSizesCache[name] && productSizesCache[name].length > 0) 
+        ? productSizesCache[name] 
+        : [size];
+    
+    console.log(`建立購物車項目: ${name}, 可用名稱: ${productNames.length}, 可用規格: ${productSizes.length}`);
 
     const box = document.createElement('div');
     box.className = 'item-box';
@@ -695,7 +705,7 @@ async function updateFavoriteItemProduct(box, oldProductId, newName, newSize, ne
 
 // --- 加入商品到我的最愛 ---
 async function addToFavorites(productId, productName, size) {
-    // 獲取商品資訊（包含價格）
+    // ⭐ 優先從 API 獲取最新商品資訊（忽略傳入的 productName，使用最新的）
     let productInfo = await getProductInfo(productId, size);
 
     if (!productInfo) {
@@ -704,7 +714,7 @@ async function addToFavorites(productId, productName, size) {
         const priceMap = { '6': 199, '24': 599 };
         productInfo = {
             id: productId,
-            name: productName,
+            name: productName, // 離線時才使用傳入的名稱
             size: size,
             price: priceMap[extractSizeNumber(size)] || 599,
             stock: 999,
@@ -743,22 +753,74 @@ async function addToFavorites(productId, productName, size) {
     // 更新 localStorage
     localStorage.setItem('favorites', JSON.stringify(favorites));
 
-    // 重新渲染我的最愛
-    refreshFavorites();
+    // 重新渲染我的最愛（已經使用最新資料，不需要再同步）
+    await refreshFavorites();
 
-    console.log(`已加入我的最愛: ${productName} ${size}x355ml`);
+    console.log(`已加入我的最愛: ${productInfo.name} ${productInfo.size}x355ml`);
 
     // 打開購物車並切換到我的最愛 Tab
     const shoppingCart = document.getElementById('shoppingCart');
     if (shoppingCart.classList.contains('is-hidden')) {
-        toggleCart();
+        // 因為剛才已經 refreshFavorites()，所以這裡直接顯示即可
+        shoppingCart.classList.remove('is-hidden');
     }
     switchTab('favorite');
 }
 
-// --- 重新渲染我的最愛內容 ---
-function refreshFavorites() {
+// --- 同步我的最愛資料（從API更新價格和名稱）---
+async function syncFavoritesWithAPI() {
     const favData = JSON.parse(localStorage.getItem('favorites')) || [];
+    if (favData.length === 0) return favData;
+
+    const products = await fetchProducts();
+    let hasChanges = false;
+
+    // 遍歷我的最愛中的每個商品，更新最新的價格和名稱
+    const updatedFavorites = favData.map(item => {
+        // ⭐ 將 productId 轉換為數字，確保類型一致
+        const itemProductId = parseInt(item.productId);
+        
+        // 根據 productId 和 size 從API找到對應的商品
+        const apiProduct = products.find(p => 
+            parseInt(p.id) === itemProductId && p.size === item.size
+        );
+        
+        if (apiProduct) {
+            // 檢查是否有變化
+            if (item.price !== apiProduct.price || item.name !== apiProduct.name || item.imageUrl !== apiProduct.imageUrl) {
+                hasChanges = true;
+                console.log(`更新我的最愛商品: ${item.name} -> ${apiProduct.name}, 價格: $${item.price} -> $${apiProduct.price}`);
+            }
+            
+            // 更新商品資訊（保留原有數量）
+            return {
+                productId: apiProduct.id,
+                name: apiProduct.name,
+                size: apiProduct.size,
+                qty: item.qty || 1,
+                price: apiProduct.price,
+                imageUrl: apiProduct.imageUrl
+            };
+        }
+        
+        // 如果API中找不到該商品，保留原有資料但記錄警告
+        console.warn(`找不到最愛商品 ID: ${itemProductId}, size: ${item.size}，保留原有資料`);
+        return item;
+    });
+
+    // 如果有變化，更新 localStorage
+    if (hasChanges) {
+        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+        console.log('我的最愛資料已同步更新');
+    }
+
+    return updatedFavorites;
+}
+
+// --- 重新渲染我的最愛內容 ---
+async function refreshFavorites() {
+    // 先從API同步最新的商品資訊
+    const favData = await syncFavoritesWithAPI();
     const favContainer = document.getElementById('favorite-items');
 
     // 清空現有內容
@@ -778,14 +840,22 @@ function refreshFavorites() {
 }
 
 // --- 開關購物車 (toggle) ---
-function toggleCart() {
+async function toggleCart() {
     const shoppingCart = document.getElementById('shoppingCart');
+    const isOpening = shoppingCart.classList.contains('is-hidden');
+    
+    // 如果是打開購物車，先同步最新資料
+    if (isOpening) {
+        await refreshCart();
+        await refreshFavorites();
+    }
+    
     shoppingCart.classList.toggle('is-hidden');
 }
 
 // --- 加入商品到購物車（新版：包含完整商品資訊）---
 async function addToCart(productId, productName, size, quantity) {
-    // 獲取商品資訊（包含價格）
+    // ⭐ 優先從 API 獲取最新商品資訊（忽略傳入的 productName，使用最新的）
     let productInfo = await getProductInfo(productId, size);
 
     if (!productInfo) {
@@ -794,7 +864,7 @@ async function addToCart(productId, productName, size, quantity) {
         const priceMap = { '6': 199, '24': 599 };
         productInfo = {
             id: productId,
-            name: productName,
+            name: productName, // 離線時才使用傳入的名稱
             size: size,
             price: priceMap[extractSizeNumber(size)] || 199,
             stock: 999, // 假設庫存充足
@@ -837,15 +907,16 @@ async function addToCart(productId, productName, size, quantity) {
     // 更新 localStorage
     localStorage.setItem('cart', JSON.stringify(cart));
 
-    // 重新渲染購物車
-    refreshCart();
+    // 重新渲染購物車（已經使用最新資料，不需要再同步）
+    await refreshCart();
 
-    console.log(`已加入購物車: ${productName} ${size}x355ml x ${quantity}`);
+    console.log(`已加入購物車: ${productInfo.name} ${productInfo.size}x355ml x ${quantity}`);
 
     // 打開購物車並切換到購物車 Tab
     const shoppingCart = document.getElementById('shoppingCart');
     if (shoppingCart.classList.contains('is-hidden')) {
-        toggleCart();
+        // 因為剛才已經 refreshCart()，所以這裡直接顯示即可
+        shoppingCart.classList.remove('is-hidden');
     }
     switchTab('cart');
 
@@ -868,9 +939,60 @@ async function addToCart(productId, productName, size, quantity) {
     }, 350);
 }
 
-// --- 重新渲染購物車內容 ---
-function refreshCart() {
+// --- 同步購物車資料（從API更新價格和名稱）---
+async function syncCartWithAPI() {
     const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+    if (cartData.length === 0) return cartData;
+
+    const products = await fetchProducts();
+    let hasChanges = false;
+
+    // 遍歷購物車中的每個商品，更新最新的價格和名稱
+    const updatedCart = cartData.map(item => {
+        // ⭐ 將 productId 轉換為數字，確保類型一致
+        const itemProductId = parseInt(item.productId);
+        
+        // 根據 productId 和 size 從API找到對應的商品
+        const apiProduct = products.find(p => 
+            parseInt(p.id) === itemProductId && p.size === item.size
+        );
+        
+        if (apiProduct) {
+            // 檢查是否有變化
+            if (item.price !== apiProduct.price || item.name !== apiProduct.name || item.imageUrl !== apiProduct.imageUrl) {
+                hasChanges = true;
+                console.log(`更新購物車商品: ${item.name} -> ${apiProduct.name}, 價格: $${item.price} -> $${apiProduct.price}`);
+            }
+            
+            // 更新商品資訊（保留原有數量）
+            return {
+                productId: apiProduct.id,
+                name: apiProduct.name,
+                size: apiProduct.size,
+                qty: item.qty,
+                price: apiProduct.price,
+                imageUrl: apiProduct.imageUrl
+            };
+        }
+        
+        // 如果API中找不到該商品，保留原有資料但記錄警告
+        console.warn(`找不到商品 ID: ${itemProductId}, size: ${item.size}，保留原有資料`);
+        return item;
+    });
+
+    // 如果有變化，更新 localStorage
+    if (hasChanges) {
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
+        console.log('購物車資料已同步更新');
+    }
+
+    return updatedCart;
+}
+
+// --- 重新渲染購物車內容 ---
+async function refreshCart() {
+    // 先從API同步最新的商品資訊
+    const cartData = await syncCartWithAPI();
     const cartContainer = document.getElementById('cart-items');
 
     // 清空現有內容
@@ -1071,7 +1193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             } else {
                 // 這是純粹「打開購物車」的按鈕
-                toggleCart();
+                await toggleCart();
             }
         });
     });
