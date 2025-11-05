@@ -690,6 +690,10 @@
                         <h3>總金額</h3>
                         <canvas id="revenueChart" width="400" height="400"></canvas>
                     </div>
+                    <div style="flex:1; min-width:300px;">
+                        <h3>每月銷售折線圖</h3>
+                        <canvas id="linearChart" width="400" height="400"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -711,9 +715,9 @@
             const userRole = user.role;
             const token = user.token;
 
-            console.log("目前登入的使用者 ID:", userId);
-            console.log("目前登入的 token:", token);
-            console.log("目前登入的角色:", userRole);
+            // console.log("目前登入的使用者 ID:", userId);
+            // console.log("目前登入的 token:", token);
+            // console.log("目前登入的角色:", userRole);
 
             if (!token) {
                 alert("登入逾時，請重新登入");
@@ -976,7 +980,6 @@
             })
                 .then(res => {
                     const data = res.data;
-                    console.log("取得的使用者資料:", data);
 
                     const tbody = document.querySelector('#userTable tbody');
                     tbody.innerHTML = "";
@@ -1228,7 +1231,15 @@
                             labels: labels,
                             datasets: [{
                                 data: quantities,
-                                backgroundColor: labels.map(() => `hsl(${Math.random() * 360},70%,60%)`)
+                                //backgroundColor: labels.map(() => `hsl(${Math.random() * 360},70%,60%)`)
+                                backgroundColor: [
+                                    '#FF6384', // 紅
+                                    '#36A2EB', // 藍
+                                    '#FFCE56', // 黃
+                                    '#4BC0C0', // 青綠
+                                    '#9966FF', // 紫
+                                    '#FF9F40'  // 橘
+                                ]
                             }]
                         },
                         options: {
@@ -1255,7 +1266,15 @@
                             datasets: [{
                                 label: '總金額 ($)',
                                 data: totals,
-                                backgroundColor: 'rgba(255, 159, 64, 0.7)'
+                                // backgroundColor: 'rgba(255, 159, 64, 0.7)'
+                                backgroundColor: [
+                                    '#FF6384', // 紅
+                                    '#36A2EB', // 藍
+                                    '#FFCE56', // 黃
+                                    '#4BC0C0', // 青綠
+                                    '#9966FF', // 紫
+                                    '#FF9F40'  // 橘
+                                ]
                             }]
                         },
                         options: {
@@ -1275,6 +1294,64 @@
                             }
                         }
                     });
+                    // 每月銷售折線圖
+                    const ctx3 = document.getElementById('linearChart').getContext('2d');
+
+                    const now = new Date();
+                    const currentYear = now.getFullYear();
+
+                    const monthlySales = {}; 
+
+                    for (let m = 1; m <= 12; m++) {
+                        monthlySales[m] = 0;
+                    }
+                    orders.forEach(o => {
+                        const date = new Date(o.orderDate);
+                        if (isNaN(date)) return;
+
+                        if (date.getFullYear() === currentYear) {
+                            const month = date.getMonth() + 1; 
+                            const total = o.totalAmount || 0;
+                            monthlySales[month] += total;
+                        }
+                    });
+
+                    // X 
+                    const labels3 = Object.keys(monthlySales).map(m => m + '月');
+
+                    // Y 
+                    const totals3 = Object.values(monthlySales).map(v => v.toFixed(2));
+
+                    // console.log("labels:", labels3);
+                    // console.log("totals:", totals3);
+                    // console.log("monthlySales:", monthlySales);
+
+                    // 畫折線圖
+                    new Chart(ctx3, {
+                        type: 'line',
+                        data: {
+                            labels: labels3,
+                            datasets: [{
+                                label: '每月銷售總額 ($)',
+                                data: totals3,
+                                borderColor: '#36A2EB',
+                                backgroundColor: 'rgba(54,162,235,0.3)',
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: { title: { display: true, text: '月份' } },
+                                y: { suggestedMin: 0, title: { display: true, text: '銷售金額 ($)' } }
+                            },
+                            plugins: {
+                                legend: { position: 'bottom' },
+                                tooltip: { callbacks: { label: (ctx) => `$${ctx.raw}` } }
+                            }
+                        }
+                    });
+
+
                 })
                 .catch(err => console.error('載入銷售資料錯誤:', err));
         }
