@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="show"></div>
+
+  <script>
+    const API_BASE_URL = 'https://localhost:7085/api';
+    let productsName = "";
+    let productsPrice = "";
+    let productsSize = "";
+
+    fetch(`${API_BASE_URL}/products`) // 改成實際 API 路徑
+      .then(response => {
+        if (!response.ok) throw new Error("HTTP 錯誤狀態：" + response.status);
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+        productsName = data.map(item => item.name);
+        productsPrice = data.map(item => item.price);
+        productsSize = data.map(item => item.size);
+        show.innerHTML = `
+          <p>名稱：${productsName[0]}</p>
+          <p>價格：${productsPrice[1]}</p>
+          <p>尺寸：${productsSize[2]}</p>
+        `;
+      })
+      .catch(error => console.error("Fetch 錯誤：", error));
+  </script>
+</body>
+</html>
