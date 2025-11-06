@@ -641,42 +641,9 @@ p {
 }
 
 .coupon {
-    background-color: var(--drck-orange);
-  border-radius: 12px;
-  position: relative;
-  clip-path: polygon(
-    /* Top side */
-    0 0, 100% 0%, 
-
-    /* Right notch */
-    100% 45%, 95% 50%, 100% 55%, 
-
-    /* Bottom side */
-    100% 100%, 0 100%, 
-
-    /* Left notch */
-    0 55%,5% 50%, 0 45%);
-}
-.bubble{
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  line-height: 100px;
-  text-align: center;
-  background-color: white;
-  border-radius: 10px;
-  clip-path: polygon(
-    /* Top side */
-    0 0, 100% 0%, 
-    
-    /* Right notch */
-    100% 44%, 94% 50%, 100% 56%, 
-    
-    /* Bottom side */
-    100% 100%, 0 100%, 
-    
-    /* Left notch */
-    0 56%, 6% 50%, 0 44%);
+    background-color: #fff;
+    max-width: 80%;
+    margin: 0 auto;
 }
 
 .marginTop {
@@ -691,7 +658,6 @@ p {
     .part1 {
         width: 100%;
         height: 60%;
-        min-height: 640px;
     }
 }
 /* ==================== 手機版 RWD (最大 640px，以 320px 為基準) ==================== */
@@ -989,8 +955,8 @@ p {
 
     .part1 {
         width: 100%;
-        height: 60vw;
-        min-height: 640px;
+        height: 60vh;
+        min-height: 800px;
     }
 
     /* ======== 主視覺圖片 ======== */
