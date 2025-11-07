@@ -23,6 +23,34 @@ body {
     /* 扣掉導覽列的高度 */
     margin: auto;
     overflow: hidden;
+    /* 背景淡入淡出設定 */
+    transition: background-color 1s ease, opacity 0.8s ease;
+    opacity: 1;
+}
+
+/* 淡出動畫（旋轉時背景漸隱） */
+.wrap.fade-out {
+    opacity: 0;
+}
+
+/* 淡入動畫（切換完新 group 漸顯） */
+.wrap.fade-in {
+    opacity: 1;
+}
+
+/* ------------------------------------------
+   為每個 group 預設對應背景色（方便 JS 讀取）
+------------------------------------------- */
+[data-group="1"] {
+    --bg-gradient: linear-gradient(180deg, #C7FF8F 0%, #2BAD2F 100%);
+}
+
+[data-group="2"] {
+    --bg-gradient: linear-gradient(180deg, #E7C2FF 0%, #DDA2F2 100%);
+}
+
+[data-group="3"] {
+    --bg-gradient: linear-gradient(180deg, #FFA1C1 0%, #FE3489 100%);
 }
 
 h2,
@@ -187,7 +215,6 @@ p {
 #group1 h2,
 #group2 h2,
 #group3 h2 {
-    font-family: "Mogra", system-ui;
     font-weight: 400;
     font-style: normal;
     width: 20vw;
@@ -390,7 +417,7 @@ p {
 }
 
 .boxBody1 {
-    top: calc(50% - 67vh);
+    top: calc(50% - 67.5vh);
     left: calc(50% - 0vw);
     transform: translate(-50%, -50%) rotate(0deg) !important;
     opacity: 1 !important;
@@ -400,7 +427,7 @@ p {
 
 .boxBody2 {
     top: calc(50% - 55vh);
-    left: calc(50% - 38vw);
+    left: calc(50% - 33vw);
     transform: translate(-50%, -50%) rotate(-90deg) !important;
     opacity: 1 !important;
     visibility: visible !important;
@@ -408,7 +435,7 @@ p {
 }
 
 .boxBody3 {
-    top: calc(50% - 45vh);
+    top: calc(50% - 44vh);
     left: calc(50% + 0vh);
     transform: translate(-50%, -50%) rotate(-180deg) !important;
     opacity: 1 !important;
@@ -446,8 +473,8 @@ p {
 }
 
 .contentMain p {
-    width: 85%;
-    padding: 35px;
+    width: 100%;
+    padding: 40px;
     font-size: 1.5vw;
     text-align: justify;
 }
@@ -552,17 +579,38 @@ p {
 
 .soda .show {
     width: 100%;
-    text-align: center;
-    justify-content: center;
+    height: 60%;
     position: absolute;
-    top: 47.59vh;
+    top: 38vh;
     display: none;
     z-index: 11;
+    text-align: center;
 }
 
 .show a {
-    text-decoration: none;
-    padding: 0.5vw;
+    display: inline-block;
+}
+
+.touch {
+    margin: 0.2vw;
+    width: 6.5vw;
+    height: 12.7vh;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: background-image 0.3s;
+}
+
+.touch1 {
+    background-image: url(../images/product/show1.png);
+}
+
+.touch2 {
+    background-image: url(../images/product/show2.png);
+}
+
+.touch3 {
+    background-image: url(../images/product/show3.png);
 }
 
 .coverBlack {
@@ -586,6 +634,21 @@ p {
 .soda.sodaGreen:hover .coverBlack,
 .soda.sodaPink:hover .coverBlack,
 .soda.sodaPurple:hover .coverBlack {
+    display: block;
+}
+
+.touch1:hover {
+    background-image: url(../images/product/touch1.png);
+    display: block;
+}
+
+.touch2:hover {
+    background-image: url(../images/product/touch2.png);
+    display: block;
+}
+
+.touch3:hover {
+    background-image: url(../images/product/touch3.png);
     display: block;
 }
 
@@ -660,6 +723,7 @@ p {
         height: 60%;
     }
 }
+
 /* ==================== 手機版 RWD (最大 640px，以 320px 為基準) ==================== */
 @media screen and (max-width: 640px) {
 
@@ -704,7 +768,7 @@ p {
         font-size: 5vw;
         position: static;
         transform: none;
-        margin-top: -1vh;
+
     }
 
     #group1 p,
@@ -714,6 +778,7 @@ p {
         font-size: 5vw;
         position: static;
         transform: none;
+        margin-top: 0.5vh;
     }
 
     /* 檸檬圖片調整 */
@@ -818,8 +883,8 @@ p {
     }
 
     .boxBody1 {
-        top: calc(50% - 47vh);
-        left: calc(50% + 1vw);
+        top: calc(50% - 46.5vh);
+        left: calc(50% + 1.8vw);
         transform: translate(-50%, -50%) rotate(0deg) !important;
         opacity: 1 !important;
         visibility: visible !important;
@@ -828,7 +893,7 @@ p {
 
     .boxBody2 {
         top: calc(50% - 33.5vh);
-        left: calc(50% - 72vw);
+        left: calc(50% - 74vw);
         transform: translate(-50%, -50%) rotate(-120deg) !important;
         opacity: 1 !important;
         visibility: visible !important;
@@ -836,12 +901,17 @@ p {
     }
 
     .boxBody3 {
-        top: calc(50% - 87vh);
+        top: calc(50% - 88vh);
         left: calc(50% + 40vh);
-        transform: translate(-50%, -50%) rotate(122deg) !important;
+        transform: translate(-50%, -50%) rotate(120deg) !important;
         opacity: 1 !important;
         visibility: visible !important;
         display: block !important;
+    }
+
+    .contentBg {
+        width: 120%;
+        width: 120%;
     }
 
     .contentTitle {
@@ -862,8 +932,8 @@ p {
     }
 
     .contentMain p {
-        width: 75%;
-        font-size: 5vw;
+        width: 100%;
+        font-size: 6vw;
     }
 
     /* Product 區塊改為垂直堆疊 */
@@ -936,22 +1006,23 @@ p {
 
     /* hover 改為點擊可用狀態（手機沒有 hover） */
     .soda .show {
-        width: 100%;
-        top: 40vh;
+        width: 100vw;
+        height: 15%;
+        top: 42vh;
         display: block;
-        /* 手機直接顯示 */
     }
 
-    .show a {
-        font-size: 4vw;
-        display: inline-block;
+    .touch {
+        width: 15.5vw;
+        height: 15vh;
     }
 
-    .coverBlack {
+    /* 手機版不顯示遮罩，避免誤觸 */
+    .soda.sodaGreen:hover .coverBlack,
+    .soda.sodaPink:hover .coverBlack,
+    .soda.sodaPurple:hover .coverBlack {
         display: none;
-        /* 手機版不顯示遮罩，避免誤觸 */
     }
-
 
     .part1 {
         width: 100%;
@@ -1025,7 +1096,7 @@ p {
     .sect5 {
         height: 100vh;
     }
-    
+
     .part5 {
         height: 100%;
         display: flex;
@@ -1039,6 +1110,7 @@ p {
         height: 50vh;
         margin: 2vw;
     }
+
     .discount img {
         width: 30vw;
     }
