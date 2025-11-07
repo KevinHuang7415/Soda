@@ -1122,7 +1122,16 @@
             const newDiscount = parseFloat(document.getElementById(`discount-${id}`).value);
             const newStatus = document.getElementById(`status-${id}`).value;
             const newDiscountType = document.getElementById(`discountType-${id}`).value;
-
+            if (newDiscount >= 100 && newDiscountType == "P") {
+                showMessage('折扣百分比錯誤', 'error')
+                loadCoupons()
+                return;
+            }
+            if (!Number.isFinite(newDiscount) || newDiscount < 0) {
+                showMessage('折扣必須為正數', 'error');
+                loadCoupons()
+                return;
+            }
             axios.put(`https://localhost:7085/api/coupons/${id}`, {
                 code: newCode,
                 discount: newDiscount,
@@ -1152,6 +1161,10 @@
             }
             if (isNaN(discount) || discount < 0) {
                 showMessage('折扣必須為正數', 'error');
+                return;
+            }
+            if (discount >= 100 && discountType == "P") {
+                showMessage('折扣百分比錯誤', 'error')
                 return;
             }
 
@@ -1300,7 +1313,7 @@
                     const now = new Date();
                     const currentYear = now.getFullYear();
 
-                    const monthlySales = {}; 
+                    const monthlySales = {};
 
                     for (let m = 1; m <= 12; m++) {
                         monthlySales[m] = 0;
@@ -1310,7 +1323,7 @@
                         if (isNaN(date)) return;
 
                         if (date.getFullYear() === currentYear) {
-                            const month = date.getMonth() + 1; 
+                            const month = date.getMonth() + 1;
                             const total = o.totalAmount || 0;
                             monthlySales[month] += total;
                         }
