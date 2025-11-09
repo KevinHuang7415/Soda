@@ -8,13 +8,16 @@
     const footerStyles = `
         <style id="footer-styles">
         footer {
-            padding: 1.1vw 0;
-            font-size: 1.4vw;
+            padding: 20px 0;
+            font-size: 20px;
             background-color: var(--main-color);
             text-align: center;
             width: 100%;
             margin: 0;
             margin-top: auto;
+        }
+        footer a{
+            color : var(--main-black);
         }
         </style>
     `;
@@ -22,7 +25,7 @@
     // Footer HTML 模板
     const footerHTML = `
         <footer>
-            Copyright &copy;<ins>第五組</ins> All Rights Reserved.
+            Copyright &copy;<a href="https://hackmd.io/@3pdJlRQXSIyn0smQYMFd_A/B1rUQpDjgl" target="_blank"><ins>第五組</ins></a> All Rights Reserved.
         </footer>
     `;
 

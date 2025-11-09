@@ -10,6 +10,7 @@
 
     --main-yellow: #FEE832;
     --light-yellow: #fff7e6;
+    --light-yellow2: #FFF9B9;
     --drck-yellow: #ada89d;
 
     --main-orange: #fe8e32;
@@ -35,7 +36,7 @@
 html,
 body {
     /* 文字設定 */
-    font-family: 'coolFont', 'FakePearl-regular',sans-serif;
+    font-family: 'coolFont', 'FakePearl-regular', sans-serif;
     font-weight: 650;
     /* 主樣式設定 */
     vertical-align: top;
@@ -65,6 +66,24 @@ body {
     transition: all 100ms ease;
 }
 
+.btn-m {
+    margin: 30px auto;
+    height: 70px;
+    line-height: 50px;
+    text-align: center;
+    width: 200px;
+    color: #333;
+    padding: 10px 0;
+    text-align: center;
+    border-radius: 50px;
+    font-size: 20px;
+    font-weight: 400;
+    background-color: white;
+    border: 1px solid var(--main-black);
+    box-shadow: 0px 3px 0px var(--main-black);
+    transition: all 100ms ease;
+}
+
 .btn-s {
     margin: 30px auto;
     transition: all 100ms ease;
@@ -89,56 +108,67 @@ body {
     box-shadow: 0px 0px 0px #ffffff00;
 }
 
+.btn-m:hover {
+    cursor: pointer;
+    transform: translateY(3px);
+    box-shadow: 0px 0px 0px #ffffff00;
+}
+
 .btn-s:hover {
     cursor: pointer;
     transform: translateY(3px);
 }
 
-.scale-in-center1{
-    animation:scale-in-center .5s cubic-bezier(.25,.46,.45,.94) both;
+.scale-in-center1 {
+    animation: scale-in-center .5s cubic-bezier(.25, .46, .45, .94) both;
 }
-.scale-in-center2{
-    animation:scale-in-center .6s cubic-bezier(.25,.46,.45,.94) both;
+
+.scale-in-center2 {
+    animation: scale-in-center .6s cubic-bezier(.25, .46, .45, .94) both;
 }
-.scale-in-center3{
-    animation:scale-in-center .7s cubic-bezier(.25,.46,.45,.94) both;
+
+.scale-in-center3 {
+    animation: scale-in-center .7s cubic-bezier(.25, .46, .45, .94) both;
 }
-.scale-in-center4{
-    animation:scale-in-center .8s cubic-bezier(.25,.46,.45,.94) both;
+
+.scale-in-center4 {
+    animation: scale-in-center .8s cubic-bezier(.25, .46, .45, .94) both;
 }
+
 @font-face {
-        font-family: 'coolFont';
-        /* 自訂的字體名稱 */
-        src: url('../fonts/字幫玩酷體.ttf') format('truetype'),
-            /* 優先使用ttf */
-            url('../fonts/搖滾樂.ttf') format('woff'),
-            /* 備用woff */
-            url('../fonts/宅在家粉條甜.ttf') format('truetype');
-        /* 最終備用truetype */
+    font-family: 'coolFont';
+    /* 自訂的字體名稱 */
+    src: url('../fonts/字幫玩酷體.ttf') format('truetype'),
+        /* 優先使用ttf */
+        url('../fonts/搖滾樂.ttf') format('woff'),
+        /* 備用woff */
+        url('../fonts/宅在家粉條甜.ttf') format('truetype');
+    /* 最終備用truetype */
+}
+
+@font-face {
+    font-family: "FakePearl-regular";
+    /* 自訂名稱 */
+    src: url("../fonts/FakePearl-regular.ttf") format("truetype");
+    /* 字體檔路徑 */
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@keyframes scale-in-center {
+    0% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+        opacity: 1;
     }
 
-    @font-face {
-        font-family: "FakePearl-regular";
-        /* 自訂名稱 */
-        src: url("../fonts/FakePearl-regular.ttf") format("truetype");
-        /* 字體檔路徑 */
-        font-weight: normal;
-        font-style: normal;
+    100% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        opacity: 1;
     }
-
-
-      @keyframes scale-in-center {
-        0% {
-          -webkit-transform: scale(0);
-                  transform: scale(0);
-          opacity: 1;
-        }
-        100% {
-          -webkit-transform: scale(1);
-                  transform: scale(1);
-          opacity: 1;
-        }
-      }
+}
 
 @media (max-width: 768px) {
     .btn-l {
@@ -146,4 +176,5 @@ body {
 
         padding: 12px 0;
     }
+
 }

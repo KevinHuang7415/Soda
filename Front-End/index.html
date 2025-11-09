@@ -17,6 +17,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Mogra&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/main_setting.css">
     <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/game.css">
+
     <!-- Reset -->
     <link rel="stylesheet" href="./css/Reset.css">
     <!-- main_setting -->
@@ -310,8 +312,21 @@
         </div>
     </div>
 
+    <section id="runnerGame" class="runnerGame">
+        <h2>小喜鵲跳跳樂</h2>
+        <a href="https://hackmd.io/@3pdJlRQXSIyn0smQYMFd_A/B1rUQpDjgl" target="_blank"></a>
+        <div class="gameWrap">
+            <div class="gameBox">
+                <canvas id="board"></canvas>
+                <button id="startBtn" class="btn-m">按空白鍵跳躍</button>
+                <button id="restartBtn" class="btn-m">再玩一次</button>
+            </div>
+            <ul id="result">
+            </ul>
+        </div>
+    </section>
 
-
+    <script src="./js/game.js" defer></script>
     <!-- jQuery主程式 -->
     <script src="./jquary/js/jquery-1.11.3.min.js"></script>
     <!-- 轉場主程式 -->
@@ -358,7 +373,7 @@
 
     </script>
 
-
+    
 </body>
 
 </html>
