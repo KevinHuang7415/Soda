@@ -51,7 +51,13 @@ namespace SodaBackend.Controllers
                 return BadRequest(new { success = false, message = "TotalAmount 必須大於 0，目前值：" + orderRequest.TotalAmount });
             _context.Orders.Add(orderRequest);
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Orders created successfully!", data = orderRequest });
+            return Ok(new
+            {
+                success = true,
+                message = "Orders created successfully!",
+                orderId = orderRequest.OrderID,
+                data = orderRequest
+            });
         }
 
         //[HttpPost]
