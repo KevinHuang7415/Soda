@@ -2325,18 +2325,18 @@
         async function submitOrder(orderData) {
             try {
                 // 🔍 調試：詳細記錄要發送的數據
-                console.log('========== 訂單數據 ==========');
-                console.log('原始數據 (orderData):', orderData);
-                console.log('JSON 字串:', JSON.stringify(orderData, null, 2));
-                console.log('數據類型檢查:');
-                console.log('  - UserID:', typeof orderData.UserID, '=', orderData.UserID);
-                console.log('  - ProductList:', typeof orderData.ProductList, '=', orderData.ProductList?.substring(0, 100) + '...');
-                console.log('  - TotalAmount:', typeof orderData.TotalAmount, '=', orderData.TotalAmount);
-                console.log('  - OrderItems:', typeof orderData.OrderItems, '=', orderData.OrderItems?.substring(0, 200) + '...');
-                console.log('  - ShippingAddress:', typeof orderData.ShippingAddress, '=', orderData.ShippingAddress);
-                console.log('  - ReceiverName:', typeof orderData.ReceiverName, '=', orderData.ReceiverName);
-                console.log('===============================');
-                console.log('開始發送 POST 請求到: https://localhost:7085/api/Orders');
+                // console.log('========== 訂單數據 ==========');
+                // console.log('原始數據 (orderData):', orderData);
+                // console.log('JSON 字串:', JSON.stringify(orderData, null, 2));
+                // console.log('數據類型檢查:');
+                // console.log('  - UserID:', typeof orderData.UserID, '=', orderData.UserID);
+                // console.log('  - ProductList:', typeof orderData.ProductList, '=', orderData.ProductList?.substring(0, 100) + '...');
+                // console.log('  - TotalAmount:', typeof orderData.TotalAmount, '=', orderData.TotalAmount);
+                // console.log('  - OrderItems:', typeof orderData.OrderItems, '=', orderData.OrderItems?.substring(0, 200) + '...');
+                // console.log('  - ShippingAddress:', typeof orderData.ShippingAddress, '=', orderData.ShippingAddress);
+                // console.log('  - ReceiverName:', typeof orderData.ReceiverName, '=', orderData.ReceiverName);
+                // console.log('===============================');
+                // console.log('開始發送 POST 請求到: https://localhost:7085/api/Orders');
                 
                 // 使用 axios 或 fetch 發送請求
                 const response = await fetch('https://localhost:7085/api/Orders', {
@@ -2368,7 +2368,20 @@
 
                 const data = await response.json();
                 console.log('成功收到訂單響應:', data);
-                return data;
+                
+                // 將後端的格式轉換為前端期望的格式
+                // 後端成功時返回: { message: "...", data: { OrderID: 123, ... }, orderId: 123 }
+                return {
+                    success: true,
+                    message: data.message || '訂單建立成功',
+                    orderId: data.orderId || data.data?.OrderID || data.OrderID,
+                    data: data.data || data
+                };
+                
+                console.log('轉換後的響應格式:', {
+                    success: true,
+                    orderId: data.orderId || data.data?.OrderID || data.OrderID
+                });
             } catch (error) {
                 console.error('API 請求失敗:', error);
                 console.error('錯誤詳情:', error.message);
