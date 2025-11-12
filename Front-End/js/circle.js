@@ -1,36 +1,33 @@
-// 滾動控制圓形軌道旋轉
 let rotation = 0;
 let targetRotation = 0;
 let isAnimating = false;
-const container = document.getElementById('orbit-container');
+let isOrbitActive = false; // 是否接管滾輪 / 觸控
+let direction = 'down';
+const rotationLimit = 360;
+
+const container = document.querySelector('.orbit-container');
 const circleBackground = document.getElementById('circle-background');
+const sectionWrap = document.querySelector('.wrap');
+const sectionProduct = document.querySelector('.product');
 
-console.log('Container:', container);
-console.log('Circle Background:', circleBackground);
-
-// 更新圓形背景旋轉（卡片保持靜止）
+// 更新旋轉
 function updateRotation() {
     if (circleBackground) {
         circleBackground.style.transform = `translate(-50%, 50%) rotate(${rotation}deg)`;
     }
 
-    // 角度正規化到 0~360
     let normalizedRotation = ((rotation % 360) + 360) % 360;
 
-    // 根據角度判斷顯示哪個卡片
     if (normalizedRotation >= 300 || normalizedRotation < 60) {
-        // 卡片 1 - 檸檬
-        container.style.backgroundColor = '#2BAD2F'; // 綠色
+        container.style.backgroundColor = '#2BAD2F'; // 綠
     } else if (normalizedRotation >= 60 && normalizedRotation < 180) {
-        // 卡片 2 - 葡萄
-        container.style.backgroundColor = '#DDA2F2'; // 紫色
+        container.style.backgroundColor = '#DDA2F2'; // 紫
     } else {
-        // 卡片 3 - 草莓
-        container.style.backgroundColor = '#FE3489'; // 粉紅色
+        container.style.backgroundColor = '#FE3489'; // 粉
     }
 }
 
-// 平滑動畫函數
+// 平滑動畫
 function animate() {
     if (Math.abs(targetRotation - rotation) > 0.1) {
         rotation += (targetRotation - rotation) * 0.1;
@@ -40,49 +37,114 @@ function animate() {
         rotation = targetRotation;
         updateRotation();
         isAnimating = false;
-    }
-}
 
-// 滑鼠滾輪事件
-if (container) {
-    container.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const delta = e.deltaY * 0.05;
-        targetRotation -= delta; // 改為減去，讓滾輪向下時順時針轉動
+        // 旋轉滿一圈 → 自動滾動切換頁面 + 釋放控制
+        if (Math.abs(rotation) >= rotationLimit) {
+            isOrbitActive = false;
+            document.body.style.overflow = ''; // ✅ 恢復頁面滾動
+            rotation = 0;
+            targetRotation = 0;
 
-        if (!isAnimating) {
-            isAnimating = true;
-            requestAnimationFrame(animate);
-        }
-    });
-
-    // 僅在手機螢幕啟用觸控旋轉功能
-    if (window.innerWidth <= 768) {
-        let touchStartY = 0;
-
-        container.addEventListener('touchstart', function (e) {
-            touchStartY = e.touches[0].clientY;
-        }, { passive: true });
-
-        container.addEventListener('touchmove', function (e) {
-            const touchEndY = e.touches[0].clientY;
-            // 計算滑動距離，讓「往下滑 = 順時針轉動」
-            const deltaY = touchEndY - touchStartY;
-
-            const scrollDelta = deltaY * 0.2; // 靈敏度
-            targetRotation -= scrollDelta; // 改為減去，讓往下滑時順時針轉動
-
-            if (!isAnimating) {
-                isAnimating = true;
-                requestAnimationFrame(animate);
+            if (direction === 'down') {
+                sectionProduct.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                sectionWrap.scrollIntoView({ behavior: 'smooth' });
             }
-
-            touchStartY = touchEndY;
-
-            e.preventDefault();
-        }, { passive: false });
+        }
     }
 }
+
+// 滾輪事件（桌機）
+function handleWheel(e) {
+    if (!isOrbitActive) return;
+    e.preventDefault();
+
+    const delta = e.deltaY;
+    direction = delta > 0 ? 'down' : 'up';
+    const rotateDelta = delta * 0.3;
+
+    if (direction === 'down') {
+        targetRotation += rotateDelta;
+        if (targetRotation > rotationLimit) targetRotation = rotationLimit;
+    } else {
+        targetRotation += rotateDelta;
+        if (targetRotation < -rotationLimit) targetRotation = -rotationLimit;
+    }
+
+    if (!isAnimating) {
+        isAnimating = true;
+        requestAnimationFrame(animate);
+    }
+}
+
+// ✅ 手機觸控版本
+let touchStartY = 0;
+let touchActive = false;
+
+function handleTouchStart(e) {
+    if (!isOrbitActive) return;
+    touchActive = true;
+    touchStartY = e.touches[0].clientY;
+}
+
+function handleTouchMove(e) {
+    if (!isOrbitActive || !touchActive) return;
+    e.preventDefault(); // ✅ 阻止整頁滑動
+
+    const currentY = e.touches[0].clientY;
+    const deltaY = touchStartY - currentY; // 往上滑 = 正值
+    direction = deltaY > 0 ? 'down' : 'up';
+
+    const rotateDelta = deltaY * 0.5; // 可自行調靈敏度
+    if (direction === 'down') {
+        targetRotation += rotateDelta;
+        if (targetRotation > rotationLimit) targetRotation = rotationLimit;
+    } else {
+        targetRotation += rotateDelta;
+        if (targetRotation < -rotationLimit) targetRotation = -rotationLimit;
+    }
+
+    if (!isAnimating) {
+        isAnimating = true;
+        requestAnimationFrame(animate);
+    }
+
+    touchStartY = currentY;
+}
+
+function handleTouchEnd() {
+    touchActive = false;
+}
+
+// 監聽滾動進出 orbit 區
+window.addEventListener('scroll', () => {
+    const rect = container.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    // 容器可見高度 = 視窗底部與容器底部的最小值 - 視窗頂部與容器頂部的最大值
+    const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+    const visibleRatio = visibleHeight / rect.height; // 可見比例
+
+    if (visibleRatio >= 0.9) {
+        // ✅ 當 .orbit-container 有 90% 高度進入畫面
+        if (!isOrbitActive) {
+            isOrbitActive = true;
+            document.body.style.overflow = 'hidden'; // 鎖住整頁滾動
+        }
+    } else {
+        if (isOrbitActive) {
+            isOrbitActive = false;
+            document.body.style.overflow = ''; // 釋放滾動
+        }
+    }
+});
+
+
+// 綁定事件
+window.addEventListener('wheel', handleWheel, { passive: false });
+container.addEventListener('touchstart', handleTouchStart, { passive: true });
+container.addEventListener('touchmove', handleTouchMove, { passive: false });
+container.addEventListener('touchend', handleTouchEnd, { passive: true });
 
 // 初始化
 updateRotation();
