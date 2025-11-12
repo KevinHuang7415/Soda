@@ -49,16 +49,14 @@ namespace SodaBackend.Controllers
 
             if (orderRequest.TotalAmount <= 0)
                 return BadRequest(new { success = false, message = "TotalAmount 必須大於 0，目前值：" + orderRequest.TotalAmount });
-            
             _context.Orders.Add(orderRequest);
             await _context.SaveChangesAsync();
-            
-            // SaveChangesAsync 後，orderRequest.OrderID 會被 Entity Framework 自動填入
-            // 返回包含 OrderID 的完整訂單資料
-            return Ok(new { 
-                message = "Orders created successfully!", 
-                data = orderRequest,
-                orderId = orderRequest.OrderID  // 明確返回 OrderID
+            return Ok(new
+            {
+                success = true,
+                message = "Orders created successfully!",
+                orderId = orderRequest.OrderID,
+                data = orderRequest
             });
         }
 
