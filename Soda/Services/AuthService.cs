@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Soda.Data;
 using Soda.Helpers;
 using Soda.Models.DTOs;
@@ -31,8 +30,7 @@ namespace Soda.Services
             _configuration = configuration;
             _logger = logger;
 
-            _emailVerificationEnabled = _configuration
-                .GetValue<bool>("FeatureFlags:EnableEmailVerification");
+            _emailVerificationEnabled = _configuration.GetValue<bool>("FeatureFlags:EnableEmailVerification");
         }
 
         public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
@@ -92,8 +90,7 @@ namespace Soda.Services
             if (!_emailVerificationEnabled)
             {
                 // 功能關閉時，註冊即可登入
-                token = _jwtHelper.GenerateToken(
-                    user.Id, user.Username, user.Email, user.Role.ToString());
+                token = _jwtHelper.GenerateToken(user.Id, user.Username, user.Email, user.Role.ToString());
             }
 
             return new AuthResponse
@@ -302,8 +299,7 @@ namespace Soda.Services
                 // 產生重設 Token
                 var resetToken = GenerateVerificationToken();
                 user.PasswordResetToken = resetToken;
-                user.PasswordResetTokenExpiry = 
-                    DateTime.UtcNow.AddHours(1).ToTaipeiTimeString(); 
+                user.PasswordResetTokenExpiry = DateTime.UtcNow.AddHours(1).ToTaipeiTimeString(); 
                 user.UpdatedAt = DateTime.UtcNow.ToTaipeiTimeString();
 
                 await _context.SaveChangesAsync();

@@ -24,7 +24,7 @@ namespace Soda.Services
             _domain = _configuration["Mailgun:Domain"] ?? throw new ArgumentNullException("Mailgun:Domain");
             _fromEmail = _configuration["Mailgun:FromEmail"] ?? "noreply@example.com";
             _fromName = _configuration["Mailgun:FromName"] ?? "會員系統";
-            _baseUrl = _configuration["AppSettings:BaseUrl"] ?? "https://localhost:7085";
+            _baseUrl = _configuration["AppSettings:BaseUrl"] ?? "http://sodateam5.shop";
         }
 
         public async Task<bool> SendVerificationEmailAsync(string toEmail, string username, string verificationToken)
