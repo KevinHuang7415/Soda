@@ -698,6 +698,18 @@ function updateUserDisplay() {
         // 滾動事件監聽器：根據滾動位置顯示/隱藏按鈕
         let lastLogTime = 0;
         function handleScroll() {
+            // 如果 orbit 容器正在激活狀態，跳過處理（避免與 circle.js 衝突）
+            const orbitContainer = document.querySelector('.orbit-container');
+            if (orbitContainer) {
+                const rect = orbitContainer.getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+                // 如果 orbit 容器在視窗中央區域，且 body 被鎖定，則跳過處理
+                if (rect.top < windowHeight * 0.4 && rect.bottom > windowHeight * 0.6 && 
+                    document.body.style.overflow === 'hidden') {
+                    return;
+                }
+            }
+            
             // 獲取滾動位置
             const scrollTop = getScrollPosition();
             

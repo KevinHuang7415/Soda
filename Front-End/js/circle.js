@@ -117,28 +117,22 @@ function handleTouchEnd() {
 }
 
 // 監聽滾動進出 orbit 區
-window.addEventListener('scroll', () => {
+window.addEventListener('scroll', (e) => {
     const rect = container.getBoundingClientRect();
     const windowHeight = window.innerHeight;
 
-    // 容器可見高度 = 視窗底部與容器底部的最小值 - 視窗頂部與容器頂部的最大值
-    const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
-    const visibleRatio = visibleHeight / rect.height; // 可見比例
-
-    if (visibleRatio >= 0.9) {
-        // ✅ 當 .orbit-container 有 90% 高度進入畫面
+    if (rect.top < windowHeight * 0.4 && rect.bottom > windowHeight * 0.6) {
         if (!isOrbitActive) {
             isOrbitActive = true;
-            document.body.style.overflow = 'hidden'; // 鎖住整頁滾動
+            document.body.style.overflow = 'hidden'; // ✅ 鎖住整頁
         }
     } else {
         if (isOrbitActive) {
             isOrbitActive = false;
-            document.body.style.overflow = ''; // 釋放滾動
+            document.body.style.overflow = '';
         }
     }
-});
-
+}, { passive: true, capture: true }); // 使用 capture 階段優先執行，確保在 nav.js 之前處理
 
 // 綁定事件
 window.addEventListener('wheel', handleWheel, { passive: false });
