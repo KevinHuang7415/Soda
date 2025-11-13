@@ -85,7 +85,7 @@ namespace Soda.Services
         {
             try
             {
-                var resetUrl = $"http://127.0.0.1:5501/resetPassword.html?token={resetToken}";
+                var resetUrl = $"{_baseUrl}/resetPassword.html?token={resetToken}";
 
                 var subject = "重設密碼 - 會員系統";
                 var htmlBody = GetPasswordResetEmailTemplate(username, resetUrl);
